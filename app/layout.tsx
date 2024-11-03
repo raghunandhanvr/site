@@ -8,6 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "./components/footer";
 import { ThemeProvider } from "./components/theme-switch";
 import { metaData } from "./config";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   metadataBase: new URL(metaData.baseUrl),
@@ -55,6 +56,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={cx(GeistSans.variable, GeistMono.variable)}>
       <head>
+        <Script
+         async 
+         src="https://www.googletagmanager.com/gtag/js?id=G-8FH9L00XNR">
+        </Script>
+        <Script id="google-analytics">
+          {`         
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-8FH9L00XNR');
+          `}
+        </Script>
         <link
           rel="alternate"
           type="application/rss+xml"
