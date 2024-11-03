@@ -1,6 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import { projects } from "./project-data";
+import { socialLinks } from "../config";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Projects() {
   return (
     <section>
-      <h1 className="mb-8 text-2xl font-medium tracking-tight">Projects</h1>
+      <h1 className="mb-8 text-2xl font-medium tracking-tight">I love to build!</h1>
       <div className="space-y-6">
         {projects.map((project, index) => (
           <a
@@ -32,10 +33,17 @@ export default function Projects() {
               <p className="prose prose-neutral dark:prose-invert pt-3">
                 {project.description}
               </p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
+                Tech Stack: {project.techStack}
+              </p>
             </div>
           </a>
         ))}
       </div>
+      <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-10">
+          Checkout some of my simple works on my {" "}  
+          <a href={socialLinks.github} target="_blank" className="underline"> GitHub.</a>
+      </p>
     </section>
   );
 }
