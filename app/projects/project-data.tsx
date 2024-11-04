@@ -16,7 +16,7 @@ export const projects: Project[] = [
   },
   {
     title: "DataAtmos",
-    year: "2024",
+    year: "2024 (In Development)",
     description: "We thought everyone needs a single place to manage all of your data-related activities like database, data analytics, data for your AI/ML models. So we built DataAtmos. This is not fully functional yet. But we are working on it. Ping me if you want to join us.",
     url: "https://dev.dataatmos.com",
     techStack: "Next.js, Terraform",
