@@ -88,10 +88,17 @@ export default function Blog({ params }) {
       <h1 className="title mb-3 font-medium text-2xl tracking-tight">
         {post.metadata.title}
       </h1>
-      <div className="flex justify-between items-center mt-2 mb-8 text-medium">
+      <div className="flex justify-between items-center mt-2 text-medium">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
           {formatDate(post.metadata.publishedAt)}
         </p>
+      </div>
+      <div className="text-sm text-gray-600 dark:text-gray-300 mb-8 mt-2">
+        {post.metadata.tags.split(',').map((tag, index) => (
+          <span key={index} className="mr-2">
+            #{tag.trim()}
+          </span>
+        ))}
       </div>
       <article className="prose prose-quoteless prose-neutral dark:prose-invert">
         <CustomMDX source={post.content} />

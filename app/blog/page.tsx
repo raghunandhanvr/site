@@ -37,6 +37,13 @@ export default function BlogPosts() {
                   {formatDate(post.metadata.publishedAt, false)}
                 </p>
               </div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">
+                  {post.metadata.tags.split(',').map((tag, index) => (
+                    <span key={index} className="mr-2">
+                      #{tag.trim()}
+                    </span>
+                  ))}
+              </div>
             </Link>
           ))}
       </div>
