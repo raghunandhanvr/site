@@ -1,41 +1,17 @@
-'use client'
-
 import Image from "next/image";
 import { socialLinks } from "./config";
-import { useState, useEffect } from 'react';
 import { SiGoland, SiTypescript, SiPhp, SiJavascript, SiTerraform, SiAmazon, SiMicrosoftazure, SiPython, SiBitcoin, SiEthereum, SiSolidity, SiGit, SiPostgresql, SiMysql, SiMongodb, SiBurpsuite, SiWireshark, SiLinux } from 'react-icons/si';
+import dynamic from 'next/dynamic';
+
+const AgeCounter = dynamic(() => import('./components/age-counter'), { ssr: false });
 
 export default function Page() {
-  const [age, setAge] = useState({ years: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    const birthday = new Date('2002-06-21T05:30:00');
-
-    const updateAge = () => {
-      const now = new Date();
-      const difference = now.getTime() - birthday.getTime();
-
-      const years = Math.floor(difference / (1000 * 60 * 60 * 24 * 365.25));
-      const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      setAge({ years, days, hours, minutes, seconds });
-    };
-
-    updateAge();
-    const timer = setInterval(updateAge, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <section>
       <div className="sm:block hidden">
         <a href={socialLinks.github} target="_blank">
           <Image
-            src="/raghu.jpeg"
+            src="/profile.jpeg"
             alt="Profile photo"
             className="rounded-full bg-gray-100 block lg:mt-5 mt-0 lg:mb-5 mb-10 mx-auto sm:float-right sm:ml-5 sm:mb-5 grayscale hover:grayscale-0"
             unoptimized
@@ -52,11 +28,10 @@ export default function Page() {
 
       <div className="prose prose-neutral dark:prose-invert">
         <p>
-          Hi! I usually go by the Raghu on the Internet, though my full name is Raghunandhan VR. I'm{' '}
-          <span className="font-medium">
-            {age.years}y {age.days}d {age.hours}h {age.minutes}m {age.seconds}s
-          </span>{' '}
-          overclocked human developer, security researcher, and deeply passionate about web2 and web3.
+          Hi! I'm Raghu.
+        </p>
+        <p>
+        {' '} <AgeCounter />{' '} old human developer, security researcher, and deeply passionate about web2 and web3.
         </p>
         <p>
           Sometimes, I'm into blockchain and Generative AI, with a serious passion for self-hosted setups. Bringing datacenter vibes to my living room, one ambitious server at a time, is just how I roll.         
@@ -119,30 +94,27 @@ export default function Page() {
           <SiBitcoin size={24} />
           <SiEthereum size={24} />
         </div>
-      {/* Large screen layout: Flex with all icons in one row */}
-      <div className="hidden lg:flex justify-center space-x-4">
-        {/* Icons */}
-        <SiGoland size={24} />
-        <SiTypescript size={24} />
-        <SiPhp size={24} />
-        <SiJavascript size={24} />
-        <SiPython size={24} />
-        <SiSolidity size={24} />
-        <SiAmazon size={24} />
-        <SiMicrosoftazure size={24} />
-        <SiLinux size={24} />
-        <SiTerraform size={24} />
-        <SiGit size={24} />
-        <SiBurpsuite size={24} />
-        <SiWireshark size={24} />
-        <SiPostgresql size={24} />
-        <SiMysql size={24} />
-        <SiMongodb size={24} />
-        <SiBitcoin size={24} />
-        <SiEthereum size={24} />
+        <div className="hidden lg:flex justify-center space-x-4">
+          <SiGoland size={24} />
+          <SiTypescript size={24} />
+          <SiPhp size={24} />
+          <SiJavascript size={24} />
+          <SiPython size={24} />
+          <SiSolidity size={24} />
+          <SiAmazon size={24} />
+          <SiMicrosoftazure size={24} />
+          <SiLinux size={24} />
+          <SiTerraform size={24} />
+          <SiGit size={24} />
+          <SiBurpsuite size={24} />
+          <SiWireshark size={24} />
+          <SiPostgresql size={24} />
+          <SiMysql size={24} />
+          <SiMongodb size={24} />
+          <SiBitcoin size={24} />
+          <SiEthereum size={24} />
+        </div>
       </div>
-</div>
-
     </section>
   );
 }

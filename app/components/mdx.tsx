@@ -10,6 +10,10 @@ import { ImageGrid } from "./image-grid";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
+import remarkGfm from 'remark-gfm';
+import dynamic from 'next/dynamic';
+
+const ClientMermaidDiagram = dynamic(() => import('./client-mermaid-diagram'), { ssr: false, loading: () => <div>Loading...</div> });
 
 function CustomLink(props) {
   let href = props.href;
@@ -30,9 +34,21 @@ function RoundedImage(props) {
   return <Image alt={props.alt} className="rounded-lg" {...props} />;
 }
 
-function Code({ children, ...props }) {
+function Code({ children, className, ...props }) {
+  const language = className?.replace('language-', '');
+
+  if (language === 'mermaid') {
+    return <ClientMermaidDiagram>{children}</ClientMermaidDiagram>;
+  }
+
   let codeHTML = highlight(children);
-  return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
+  return (
+    <code
+      dangerouslySetInnerHTML={{ __html: codeHTML }}
+      className={className}
+      {...props}
+    />
+  );
 }
 
 function Table({ data }) {
@@ -117,6 +133,7 @@ let components = {
   Table,
   del: Strikethrough,
   Callout,
+  MermaidDiagram: ClientMermaidDiagram,
 };
 
 export function CustomMDX(props) {
@@ -126,7 +143,7 @@ export function CustomMDX(props) {
       components={{ ...components, ...(props.components || {}) }}
       options={{
         mdxOptions: {
-          remarkPlugins: [remarkMath],
+          remarkPlugins: [remarkMath, remarkGfm],
           rehypePlugins: [rehypeKatex],
         },
       }}
