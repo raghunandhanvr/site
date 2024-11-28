@@ -1,19 +1,20 @@
-import React from "react";
+'use client'
+
+import * as React from 'react';
+import dynamic from 'next/dynamic';
 import Link from "next/link";
 import Image from "next/image";
-import { MDXRemote } from "next-mdx-remote/rsc";
 import { highlight } from "sugar-high";
-import { TweetComponent } from "./tweet";
-import { CaptionComponent } from "./caption";
-import { YouTubeComponent } from "./youtube";
-import { ImageGrid } from "./image-grid";
-import rehypeKatex from "rehype-katex";
-import remarkMath from "remark-math";
-import "katex/dist/katex.min.css";
-import remarkGfm from 'remark-gfm';
-import dynamic from 'next/dynamic';
+import ClientMermaidDiagram from './client-mermaid-diagram';
+import { useTheme } from 'next-themes';
 
-const ClientMermaidDiagram = dynamic(() => import('./client-mermaid-diagram'), { ssr: false, loading: () => <div>Loading...</div> });
+const MDXRemote = dynamic(() => import('next-mdx-remote').then(mod => mod.MDXRemote), {
+  ssr: false,
+  loading: () => <div className="animate-pulse space-y-4">
+    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-3/4"></div>
+    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/2"></div>
+  </div>
+});
 
 function CustomLink(props) {
   let href = props.href;
@@ -35,10 +36,11 @@ function RoundedImage(props) {
 }
 
 function Code({ children, className, ...props }) {
+  const { theme } = useTheme();
   const language = className?.replace('language-', '');
 
   if (language === 'mermaid') {
-    return <ClientMermaidDiagram>{children}</ClientMermaidDiagram>;
+    return <ClientMermaidDiagram theme={theme}>{children}</ClientMermaidDiagram>;
   }
 
   let codeHTML = highlight(children);
@@ -51,102 +53,20 @@ function Code({ children, className, ...props }) {
   );
 }
 
-function Table({ data }) {
-  let headers = data.headers.map((header, index) => (
-    <th key={index}>{header}</th>
-  ));
-  let rows = data.rows.map((row, index) => (
-    <tr key={index}>
-      {row.map((cell, cellIndex) => (
-        <td key={cellIndex}>{cell}</td>
-      ))}
-    </tr>
-  ));
-  return (
-    <table>
-      <thead>
-        <tr className="text-left">{headers}</tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
-  );
-}
-
-function Strikethrough(props) {
-  return <del {...props} />;
-}
-
-function Callout(props) {
-  return (
-    <div className="px-4 py-3 bg-[#F7F7F7] dark:bg-[#181818] rounded p-1 text-sm flex items-center text-neutral-900 dark:text-neutral-100 mb-8">
-      <div className="flex items-center w-4 mr-4">{props.emoji}</div>
-      <div className="w-full callout leading-relaxed">{props.children}</div>
-    </div>
-  );
-}
-
-function slugify(str) {
-  return str
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/&/g, "-and-")
-    .replace(/[^\w\-]+/g, "")
-    .replace(/\-\-+/g, "-");
-}
-
-function createHeading(level) {
-  const Heading = ({ children }) => {
-    let slug = slugify(children);
-    return React.createElement(
-      `h${level}`,
-      { id: slug },
-      [
-        React.createElement("a", {
-          href: `#${slug}`,
-          key: `link-${slug}`,
-          className: "anchor",
-        }),
-      ],
-      children
-    );
+function getComponents(theme) {
+  return {
+    Image: RoundedImage,
+    a: CustomLink,
+    code: props => <Code {...props} theme={theme} />
   };
-  Heading.displayName = `Heading${level}`;
-  return Heading;
 }
 
-let components = {
-  h1: createHeading(1),
-  h2: createHeading(2),
-  h3: createHeading(3),
-  h4: createHeading(4),
-  h5: createHeading(5),
-  h6: createHeading(6),
-  Image: RoundedImage,
-  ImageGrid,
-  a: CustomLink,
-  StaticTweet: TweetComponent,
-  Caption: CaptionComponent,
-  YouTube: YouTubeComponent,
-  code: Code,
-  Table,
-  del: Strikethrough,
-  Callout,
-  MermaidDiagram: ClientMermaidDiagram,
-};
+export function MDXContent({ source }) {
+  const { theme } = useTheme();
 
-export function CustomMDX(props) {
   return (
-    <MDXRemote
-      {...props}
-      components={{ ...components, ...(props.components || {}) }}
-      options={{
-        mdxOptions: {
-          remarkPlugins: [remarkMath, remarkGfm],
-          rehypePlugins: [rehypeKatex],
-        },
-      }}
-    />
+    <div className="mdx">
+      <MDXRemote {...source} components={getComponents(theme)} />
+    </div>
   );
 }

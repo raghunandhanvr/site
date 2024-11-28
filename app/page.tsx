@@ -34,7 +34,7 @@ export default function Page() {
         {' '} <AgeCounter />{' '} old human developer, security researcher, and deeply passionate about web2 and web3.
         </p>
         <p>
-          Sometimes, I'm into blockchain and Generative AI, with a serious passion for self-hosted setups. Bringing datacenter vibes to my living room, one ambitious server at a time, is just how I roll.         
+          Sometimes, I'm into blockchain and GenAI. I write code in both statically and dynamically typed languages, deploying on self-hosted bare metal instead of just cloud infrastructure. Not anti-cloud, but homelab supremacy ⌐■_■
         </p>
         <p>Some things I believe:</p>
         <ul>
@@ -46,23 +46,26 @@ export default function Page() {
             I feel like LLMs are super helpful, but sometimes they make me feel dumber by overdoing the assistance          
           </li>
           <li>
-            The{" "}
-            <a
-              href="https://en.wikipedia.org/wiki/Effective_accelerationism"
-              target="_blank"
-            >
-              e/acc
-            </a>{" "}
-            techno-optimist philosophy is the way forward. We should speed up
-            technological progress, especially in developing AGI
+            Just like filter coffee requires the perfect brew, technological progress (
+            <span>
+              <a
+                href="https://en.wikipedia.org/wiki/Effective_accelerationism"
+                target="_blank"
+              >
+                e/acc
+              </a>
+            </span>
+            ) needs the right balance, but we should certainly push for faster AGI development
           </li>
           <li>
-            We don't need to be dependent on AWS or any cloud provider always. Just take the risk and deploy on your own home server
+            Cloud providers are like paying rent in Bangalore - sometimes it's better to just buy your own server and host it at home
           </li>
           <li>
             Open source and open research are crucial
           </li>
-          <li>AGI is more likely to help humans than harm them</li>
+          <li>
+            AGI is more likely to help humans than harm them
+          </li>
         </ul>
         <p>
           If you're interested in collaborating on web-stuffs (or not), just

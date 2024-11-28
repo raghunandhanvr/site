@@ -34,6 +34,21 @@ const nextConfig = {
       },
     ];
   },
+  webpack: (config, { defaultLoaders }) => {
+    config.module.rules.push({
+      test: /\.mdx?$/,
+      use: [
+        defaultLoaders.babel,
+        {
+          loader: '@mdx-js/loader',
+          options: {
+          },
+        },
+      ],
+    });
+
+    return config;
+  },
 };
 
 module.exports = nextConfig;

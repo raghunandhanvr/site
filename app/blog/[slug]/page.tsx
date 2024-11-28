@@ -1,34 +1,37 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { CustomMDX } from "app/components/mdx";
-import { formatDate, getBlogPosts } from "app/lib/posts";
-import { metaData } from "app/config";
+import type { Metadata } from "next"
+import { notFound } from "next/navigation"
+import { getBlogPosts } from "app/lib/posts"
+import { metaData } from "app/config"
+import { BlogPostContent } from "@/app/components/blog-post-content"
+import { serializeMDX } from "@/app/components/mdx-server"
 
 export async function generateStaticParams() {
-  let posts = getBlogPosts();
-
+  const posts = await getBlogPosts()
   return posts.map((post) => ({
     slug: post.slug,
-  }));
+  }))
 }
 
 export async function generateMetadata({
   params,
 }): Promise<Metadata | undefined> {
-  let post = getBlogPosts().find((post) => post.slug === params.slug);
+  const posts = await getBlogPosts()
+  const post = posts.find((post) => post.slug === params.slug)
+  
   if (!post) {
-    return;
+    return
   }
 
-  let {
+  const {
     title,
     publishedAt: publishedTime,
     summary: description,
     image,
-  } = post.metadata;
-  let ogImage = image
+  } = post.metadata
+
+  const ogImage = image
     ? image
-    : `${metaData.baseUrl}/og?title=${encodeURIComponent(title)}`;
+    : `${metaData.baseUrl}/og?title=${encodeURIComponent(title)}`
 
   return {
     title,
@@ -51,58 +54,37 @@ export async function generateMetadata({
       description,
       images: [ogImage],
     },
-  };
+  }
 }
 
-export default function Blog({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug);
+export default async function BlogPost({ params }) {
+  const posts = await getBlogPosts()
+  const post = posts.find((post) => post.slug === params.slug)
 
   if (!post) {
-    notFound();
+    notFound()
   }
 
+  // Pre-format the date on the server
+  const formattedDate = new Date(post.metadata.publishedAt).toLocaleString("en-us", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })
+
+  // Serialize the MDX content
+  const mdxSource = await serializeMDX(post.content)
+
   return (
-    <section>
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            headline: post.metadata.title,
-            datePublished: post.metadata.publishedAt,
-            dateModified: post.metadata.publishedAt,
-            description: post.metadata.summary,
-            image: post.metadata.image
-              ? `${metaData.baseUrl}${post.metadata.image}`
-              : `/og?title=${encodeURIComponent(post.metadata.title)}`,
-            url: `${metaData.baseUrl}/blog/${post.slug}`,
-            author: {
-              "@type": "Person",
-              name: metaData.name,
-            },
-          }),
-        }}
-      />
-      <h1 className="title mb-3 font-medium text-2xl tracking-tight">
-        {post.metadata.title}
-      </h1>
-      <div className="flex justify-between items-center mt-2 text-medium">
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">
-          {formatDate(post.metadata.publishedAt)}
-        </p>
-      </div>
-      <div className="text-sm text-gray-600 dark:text-gray-300 mb-8 mt-2">
-        {post.metadata.tags.split(',').map((tag, index) => (
-          <span key={index} className="mr-2">
-            #{tag.trim()}
-          </span>
-        ))}
-      </div>
-      <article className="prose prose-quoteless prose-neutral dark:prose-invert">
-        <CustomMDX source={post.content} />
-      </article>
-    </section>
-  );
+    <BlogPostContent 
+      post={{
+        ...post,
+        content: mdxSource,
+      }}
+      formattedDate={formattedDate}
+      baseUrl={metaData.baseUrl}
+      authorName={metaData.name}
+    />
+  )
 }
+
