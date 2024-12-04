@@ -4,6 +4,7 @@ import { SiGoland, SiTypescript, SiPhp, SiJavascript, SiTerraform, SiAmazon, SiM
 import dynamic from 'next/dynamic';
 
 const AgeCounter = dynamic(() => import('./components/age-counter'), { ssr: false });
+const WavingHand = dynamic(() => import('./components/waving-hand'), { ssr: false });
 
 export default function Page() {
   return (
@@ -23,23 +24,23 @@ export default function Page() {
       </div>
 
       <h1 className="mb-8 text-2xl font-medium tracking-tight">
-        I build, break, innovate, engineer & code!
+        I build, break, engineer & code!
       </h1>
 
       <div className="prose prose-neutral dark:prose-invert">
         <p>
-          Hi! I'm Raghu.
+          Hi! I'm Raghu <WavingHand />
         </p>
         <p>
-        {' '} <AgeCounter />{' '} old human developer, security researcher, and deeply passionate about web2 and web3.
+        {' '} <AgeCounter />{' '} old human developer, security researcher, and <strong>deeply passionate about web2 and web3</strong>.
         </p>
         <p>
-          Sometimes, I'm into blockchain and GenAI. I write code in both statically and dynamically typed languages, deploying on self-hosted bare metal instead of just cloud infrastructure. Not anti-cloud, but homelab supremacy ⌐■_■
+          Sometimes, I'm into blockchain and GenAI. I write code in both statically and dynamically typed languages, deploying on <strong>self-hosted bare metal</strong> instead of just cloud infrastructure. Not anti-cloud, but <strong>homelab supremacy</strong> ⌐■_■
         </p>
         <p>Some things I believe:</p>
         <ul>
           <li>
-            Anyone can learn anything on the internet (for free) if they're
+            <strong>Anyone can learn anything on the internet (for free)</strong> if they're
             truly passionate about it
           </li>
           <li>
@@ -55,13 +56,13 @@ export default function Page() {
                 e/acc
               </a>
             </span>
-            ) needs the right balance, but we should certainly push for faster AGI development
+            ) needs the right balance, but we should certainly push for <strong>faster AGI development</strong>
           </li>
           <li>
             Cloud providers are like paying rent in Bangalore - sometimes it's better to just buy your own server and host it at home
           </li>
           <li>
-            Open source and open research are crucial
+            <strong>Open source and open research are crucial</strong>
           </li>
           <li>
             AGI is more likely to help humans than harm them

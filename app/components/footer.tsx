@@ -48,6 +48,10 @@ export default function Footer() {
       >
         {metaData.title}
       </a>
+      <span className="ml-2 inline-block cursor-default group">
+        🇮🇳
+        <span className="hidden group-hover:inline ml-1">Surviving in India</span>
+      </span>
       <style jsx>{`
         @media screen and (max-width: 480px) {
           article {
@@ -60,3 +64,4 @@ export default function Footer() {
     </small>
   );
 }
+
