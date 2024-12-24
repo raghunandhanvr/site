@@ -38,7 +38,7 @@ function SocialLinks() {
 
 export default function Footer() {
   return (
-    <small className="block lg:mt-24 mt-16 text-[#1C1C1C] dark:text-[#D4D4D4]">
+    <small className="block lg:mt-20 mt-16 text-[#1C1C1C] dark:text-[#D4D4D4]">
       <time>© {YEAR}</time>{" "}
       <a
         className="no-underline"
@@ -48,10 +48,6 @@ export default function Footer() {
       >
         {metaData.title}
       </a>
-      <span className="ml-2 inline-block cursor-default group">
-        🇮🇳
-        <span className="hidden group-hover:inline ml-1">Surviving in India</span>
-      </span>
       <style jsx>{`
         @media screen and (max-width: 480px) {
           article {

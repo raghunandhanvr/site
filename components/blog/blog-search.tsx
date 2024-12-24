@@ -1,33 +1,38 @@
-import { useState } from 'react';
-import { useSearchStore } from '../lib/search-store';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSearchStore } from '@/lib/search-store';
 import { Search } from 'lucide-react';
 
 interface BlogSearchProps {
   allTags: string[];
-  onSearch: (query: string, tags: string[]) => void;
 }
 
-export function BlogSearch({ allTags, onSearch }: BlogSearchProps) {
+export function BlogSearch({ allTags }: BlogSearchProps) {
   const { query, selectedTags, setQuery, setSelectedTags } = useSearchStore();
+  const [localQuery, setLocalQuery] = useState(query);
   const [showTags, setShowTags] = useState(false);
 
-  const handleSearch = (newQuery: string) => {
-    setQuery(newQuery);
-    onSearch(newQuery, selectedTags);
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setQuery(localQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [localQuery, setQuery]);
 
   const toggleTag = (tag: string) => {
-    const newTags = selectedTags.includes(tag)
-      ? selectedTags.filter((t) => t !== tag)
-      : [...selectedTags, tag];
-    setSelectedTags(newTags);
-    onSearch(query, newTags);
+    setSelectedTags(
+      selectedTags.includes(tag)
+        ? selectedTags.filter((t) => t !== tag)
+        : [...selectedTags, tag]
+    );
   };
 
   const clearSearch = () => {
+    setLocalQuery('');
     setQuery('');
     setSelectedTags([]);
-    onSearch('', []);
   };
 
   return (
@@ -40,8 +45,8 @@ export function BlogSearch({ allTags, onSearch }: BlogSearchProps) {
         <input
           type="text"
           placeholder="Search posts..."
-          value={query}
-          onChange={(e) => handleSearch(e.target.value)}
+          value={localQuery}
+          onChange={(e) => setLocalQuery(e.target.value)}
           className="w-full pl-9 pr-3 h-8 rounded-md border border-neutral-300 bg-white text-sm text-neutral-800 placeholder-neutral-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:placeholder-neutral-500"
         />
       </div>

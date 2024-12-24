@@ -149,3 +149,22 @@ table {
 .title {
   text-wrap: balance;
 }
+
+.transition-element {
+  view-transition-name: raghu;
+}
+
+::view-transition-old(raghu) {
+  animation: fade-out 0.8s ease-in-out;
+}
+
+::view-transition-new(raghu) {
+  animation: fade-in-up 0.4s ease-in-out;
+}
+
+@supports (view-transition-name: none) {
+  .fade-in {
+    animation: fade-in 0.8s ease-in-out forwards;
+    opacity: 0;
+  }
+}

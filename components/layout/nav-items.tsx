@@ -1,12 +1,10 @@
-'use client'
-
-import Link from "next/link"
-import { ThemeSwitch } from "./theme-switch"
+import Link from "next/link";
+import { ThemeSwitch } from "@/components/theme-switch";
 
 const navItems = {
   "/blog": { name: "Blog" },
   "/work": { name: "Work" },
-}
+};
 
 export function NavItems() {
   return (
@@ -22,5 +20,5 @@ export function NavItems() {
       ))}
       <ThemeSwitch />
     </div>
-  )
+  );
 }

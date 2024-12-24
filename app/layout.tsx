@@ -2,12 +2,12 @@ import "./global.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
-import { Navbar } from "./components/nav";
+import { Navbar } from "@/components/layout/nav";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import Footer from "./components/footer";
-import { ThemeProvider } from "./components/theme-switch";
-import { metaData } from "./config";
+import Footer from "@/components/layout/footer";
+import { ThemeProvider } from "@/components/theme-switch";
+import { metaData } from "@/app/config";
 import Script from "next/script";
 
 export const metadata: Metadata = {
@@ -88,14 +88,14 @@ export default function RootLayout({
           title="JSON Feed"
         />
       </head>
-      <body className="antialiased flex flex-col items-center justify-center mx-auto mt-2 lg:mt-8 mb-20 lg:mb-40">
+      <body className="antialiased flex flex-col items-center justify-center mx-auto mt-1 lg:mt-4 mb-20 lg:mb-40">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <main className="flex-auto min-w-0 mt-2 md:mt-6 flex flex-col px-6 sm:px-4 md:px-0 max-w-[640px] w-full">
+          <main className="flex-auto min-w-0 mt-1 md:mt-3 flex flex-col px-6 sm:px-4 md:px-0 max-w-[640px] w-full">
             <Navbar />
             {children}
             <Footer />
@@ -107,3 +107,4 @@ export default function RootLayout({
     </html>
   );
 }
+

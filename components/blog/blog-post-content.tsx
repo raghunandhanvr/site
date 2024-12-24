@@ -1,5 +1,9 @@
+'use client';
+
 import * as React from 'react';
-import { MDXContent } from './mdx';
+import { MDXRemote } from 'next-mdx-remote';
+import { components } from '@/components/mdx/mdx';
+import { trackView, getViews } from '@/app/actions/track-blog-views';
 
 interface BlogPostContentProps {
   post: {
@@ -24,6 +28,28 @@ export function BlogPostContent({
   baseUrl,
   authorName,
 }: BlogPostContentProps) {
+  const [views, setViews] = React.useState<number>(0);
+
+  const handleViewUpdate = React.useCallback(async () => {
+    const updatedViews = await trackView(post.slug);
+    setViews(updatedViews);
+  }, [post.slug]);
+
+  React.useEffect(() => {
+    const fetchViews = async () => {
+      const initialViews = await getViews(post.slug);
+      setViews(initialViews);
+      const updatedViews = await trackView(post.slug);
+      setViews(updatedViews);
+    };
+
+    fetchViews();
+  }, [post.slug]);
+
+  React.useEffect(() => {
+    handleViewUpdate();
+  }, [handleViewUpdate]);
+
   return (
     <section>
       <script
@@ -51,9 +77,13 @@ export function BlogPostContent({
       <h1 className="title mb-3 font-medium text-2xl tracking-tight">
         {post.metadata.title}
       </h1>
-      <div className="flex justify-between items-center mt-2 text-medium">
+      <div className="flex flex-wrap items-center mt-2 text-medium">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
           {formattedDate}
+        </p>
+        <span className="mx-2 text-neutral-600 dark:text-neutral-400">•</span>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          {views} view{views === 1 ? '' : 's'}
         </p>
       </div>
       <div className="text-sm text-gray-600 dark:text-gray-300 mb-8 mt-2">
@@ -64,8 +94,9 @@ export function BlogPostContent({
         ))}
       </div>
       <article className="prose prose-quoteless prose-neutral dark:prose-invert">
-        <MDXContent source={post.content} />
+        <MDXRemote {...post.content} components={components} />
       </article>
     </section>
   );
 }
+

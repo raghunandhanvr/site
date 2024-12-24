@@ -1,8 +1,16 @@
+'use client';
+
 import React, { useEffect, useRef } from 'react';
 import mermaid from 'mermaid';
+import { useTheme } from 'next-themes';
 
-export default function ClientMermaidDiagram({ children, theme }) {
-  const ref = useRef(null);
+interface ClientMermaidDiagramProps {
+  children: React.ReactNode;
+}
+
+export default function ClientMermaidDiagram({ children }: ClientMermaidDiagramProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     mermaid.initialize({

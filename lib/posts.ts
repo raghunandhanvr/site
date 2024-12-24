@@ -53,6 +53,6 @@ async function getMDXData(dir: string) {
 }
 
 export async function getBlogPosts() {
-  return getMDXData(path.join(process.cwd(), "content"));
+  return getMDXData(path.join(process.cwd(), "./app/content"));
 }
 

@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { getBlogPosts } from "app/lib/posts"
+import { getBlogPosts } from "@/lib/posts"
 import { metaData } from "app/config"
-import { BlogPostContent } from "@/app/components/blog-post-content"
-import { serializeMDX } from "@/app/components/mdx-server"
+import { BlogPostContent } from "@/components/blog/blog-post-content"
+import { serializeMDX } from "@/lib/mdx-server"
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts()
@@ -65,14 +65,12 @@ export default async function BlogPost({ params }) {
     notFound()
   }
 
-  // Pre-format the date on the server
   const formattedDate = new Date(post.metadata.publishedAt).toLocaleString("en-us", {
     month: "short",
     day: "numeric",
     year: "numeric",
   })
 
-  // Serialize the MDX content
   const mdxSource = await serializeMDX(post.content)
 
   return (
@@ -87,4 +85,3 @@ export default async function BlogPost({ params }) {
     />
   )
 }
-

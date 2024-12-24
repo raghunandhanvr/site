@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
-import { getBlogPosts } from "./lib/posts";
-import { metaData } from "./config";
+import { getBlogPosts } from "@/lib/posts";
+import { metaData } from "@/app/config";
 
 const BaseUrl = metaData.baseUrl.endsWith("/")
   ? metaData.baseUrl
@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: post.metadata.publishedAt,
   }));
 
-  let routes = ["", "blog", "projects", "photos"].map((route) => ({
+  let routes = ["", "blog", "work"].map((route) => ({
     url: `${BaseUrl}${route}`,
     lastModified: new Date().toISOString().split("T")[0],
   }));

@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { socialLinks } from "./config";
+import { socialLinks } from "@/app/config";
 import { SiGoland, SiTypescript, SiPhp, SiJavascript, SiTerraform, SiAmazon, SiMicrosoftazure, SiPython, SiBitcoin, SiEthereum, SiSolidity, SiGit, SiPostgresql, SiMysql, SiMongodb, SiBurpsuite, SiWireshark, SiLinux } from 'react-icons/si';
 import dynamic from 'next/dynamic';
 
-const AgeCounter = dynamic(() => import('./components/age-counter'), { ssr: false });
-const WavingHand = dynamic(() => import('./components/waving-hand'), { ssr: false });
+const AgeCounter = dynamic(() => import('@/components/age-counter'), { ssr: false });
+const WavingHand = dynamic(() => import('@/components/waving-hand'), { ssr: false });
 
 export default function Page() {
   return (
@@ -23,16 +23,12 @@ export default function Page() {
         </a>
       </div>
 
-      <h1 className="mb-8 text-2xl font-medium tracking-tight">
-        I build, break, engineer & code!
-      </h1>
-
       <div className="prose prose-neutral dark:prose-invert">
         <p>
           Hi! I'm Raghu <WavingHand />
         </p>
         <p>
-        {' '} <AgeCounter />{' '} old human developer, security researcher, and <strong>deeply passionate about web2 and web3</strong>.
+        {' '} <AgeCounter />{' '} old human developer, security researcher, and <strong>deeply passionate about web2 and web3</strong> from India.
         </p>
         <p>
           Sometimes, I'm into blockchain and GenAI. I write code in both statically and dynamically typed languages, deploying on <strong>self-hosted bare metal</strong> instead of just cloud infrastructure. Not anti-cloud, but <strong>homelab supremacy</strong> ⌐■_■

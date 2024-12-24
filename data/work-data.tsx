@@ -1,4 +1,4 @@
-export interface Project {
+export interface Work {
   title: string;
   year: string;
   description: string;
@@ -6,7 +6,7 @@ export interface Project {
   techStack: string;
 }
 
-export const projects: Project[] = [
+export const works: Work[] = [
   {
     title: "Freightify (I work here)",
     year: "2021 - Present",
