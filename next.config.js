@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  experimental: {
+    esmExternals: 'loose',
+  },
   async rewrites() {
     return [
       {

@@ -1,9 +1,13 @@
 'use client';
 
 import * as React from 'react';
-import { MDXRemote } from 'next-mdx-remote';
+import dynamic from 'next/dynamic';
 import { components } from '@/components/mdx/mdx';
 import { trackView, getViews } from '@/app/actions/track-blog-views';
+
+const MDXRemote = dynamic(() => import('next-mdx-remote').then((mod) => mod.MDXRemote), {
+  ssr: false
+});
 
 interface BlogPostContentProps {
   post: {
