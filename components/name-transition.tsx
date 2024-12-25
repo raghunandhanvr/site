@@ -2,7 +2,7 @@ import { metaData } from "@/app/config";
 
 export function NameTransition() {
   return (
-    <h1 className="font-medium bold text-xl transition-element">
+    <h1 className="font-medium bold text-xl">
       <span className="sr-only">{metaData.name}</span>
       <span aria-hidden="true" className="block overflow-hidden group relative">
         <span className="inline-block transition-all duration-300 ease-in-out group-hover:-translate-y-full">

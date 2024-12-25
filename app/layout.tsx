@@ -9,6 +9,7 @@ import Footer from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/theme-switch";
 import { metaData } from "@/app/config";
 import Script from "next/script";
+import { ViewTransitions } from 'next-view-transitions';
 
 export const metadata: Metadata = {
   metadataBase: new URL(metaData.baseUrl),
@@ -54,57 +55,59 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cx(GeistSans.variable, GeistMono.variable)}>
-      <head>
-        <Script
-         async 
-         src="https://www.googletagmanager.com/gtag/js?id=G-8E3Y6STYEC">
-        </Script>
-        <Script id="google-analytics">
-          {`         
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
+    <ViewTransitions>
+      <html lang="en" className={cx(GeistSans.variable, GeistMono.variable)}>
+        <head>
+          <Script
+          async 
+          src="https://www.googletagmanager.com/gtag/js?id=G-8E3Y6STYEC">
+          </Script>
+          <Script id="google-analytics">
+            {`         
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
 
-            gtag('config', 'G-8E3Y6STYEC');
-          `}
-        </Script>
-        <link
-          rel="alternate"
-          type="application/rss+xml"
-          href="/rss.xml"
-          title="RSS Feed"
-        />
-        <link
-          rel="alternate"
-          type="application/atom+xml"
-          href="/atom.xml"
-          title="Atom Feed"
-        />
-        <link
-          rel="alternate"
-          type="application/feed+json"
-          href="/feed.json"
-          title="JSON Feed"
-        />
-      </head>
-      <body className="antialiased flex flex-col items-center justify-center mx-auto mt-1 lg:mt-4 mb-20 lg:mb-40">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main className="flex-auto min-w-0 mt-1 md:mt-3 flex flex-col px-6 sm:px-4 md:px-0 max-w-[640px] w-full">
-            <Navbar />
-            {children}
-            <Footer />
-            <Analytics />
-            <SpeedInsights />
-          </main>
-        </ThemeProvider>
-      </body>
-    </html>
+              gtag('config', 'G-8E3Y6STYEC');
+            `}
+          </Script>
+          <link
+            rel="alternate"
+            type="application/rss+xml"
+            href="/rss.xml"
+            title="RSS Feed"
+          />
+          <link
+            rel="alternate"
+            type="application/atom+xml"
+            href="/atom.xml"
+            title="Atom Feed"
+          />
+          <link
+            rel="alternate"
+            type="application/feed+json"
+            href="/feed.json"
+            title="JSON Feed"
+          />
+        </head>
+        <body className="antialiased flex flex-col items-center justify-center mx-auto mt-1 lg:mt-4 mb-20 lg:mb-40">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <main className="flex-auto min-w-0 mt-1 md:mt-3 flex flex-col px-6 sm:px-4 md:px-0 max-w-[640px] w-full">
+              <Navbar />
+              {children}
+              <Footer />
+              <Analytics />
+              <SpeedInsights />
+            </main>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }
 
