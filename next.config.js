@@ -4,6 +4,7 @@ const nextConfig = {
   swcMinify: true,
   experimental: {
     esmExternals: 'loose',
+    serverActions: true,
   },
   async rewrites() {
     return [
@@ -37,7 +38,14 @@ const nextConfig = {
       },
     ];
   },
-  webpack: (config, { defaultLoaders }) => {
+  webpack: (config, { isServer, defaultLoaders }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+
     config.module.rules.push({
       test: /\.mdx?$/,
       use: [
@@ -55,3 +63,4 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
