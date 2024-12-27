@@ -27,12 +27,36 @@ export default function Page() {
         <p>
           Hi! I'm Raghu <WavingHand />
         </p>
+        <h3>About</h3>
         <p>
-        {' '} <AgeCounter />{' '} old human developer, security researcher, and <strong>deeply passionate about web2 and web3</strong> from India.
+          {' '} <AgeCounter />{' '} old human developer, security researcher, and <strong>deeply passionate about web2 and web3</strong> from India.
         </p>
         <p>
-          Sometimes, I'm into blockchain and GenAI. I write code in both statically and dynamically typed languages, deploying on <strong>self-hosted bare metal</strong> instead of just cloud infrastructure. Not anti-cloud, but <strong>homelab supremacy</strong> ⌐■_■
+          I hold a <strong>B.Tech in Information Technology</strong> from <a href="https://sece.ac.in/" target="_blank" rel="noopener noreferrer">Sri Eshwar College of Engineering</a>.
         </p>
+        <p>
+          Sometimes, I'm into blockchain and GenAI. I write code in both statically and dynamically typed languages, I like deploying on <strong>self-hosted bare metal</strong> instead of just cloud infrastructure. Not anti-cloud, but <strong>homelab supremacy</strong> ⌐■_■
+        </p>
+
+
+        <h3>Technical Contributions</h3>
+        <ul>
+          <li>Developed an <strong>IAM Service</strong> at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a> using GoLang, MySQL, PHP, and K8s, serving over 100,000 customers daily</li>
+          <li>Built a custom <strong>API Gateway</strong> at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a> based on <a href="https://opensource.zalando.com/skipper/" target="_blank" rel="noopener noreferrer">Skipper</a>, handling over 1 million daily API requests with fully flexible configurations</li>
+          <li>Contributed to breaking down monolithic software into <strong>microservice architecture</strong> at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a> with Node, GoLang, K8s and PHP</li>
+          <li>Published <strong>research</strong> on detecting fake face images using a <strong>Convolutional Neural Network (CNN)</strong> with an accuracy over <strong>87.5%</strong> - More details at <a href="https://ieeexplore.ieee.org/document/10046797" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></li>
+          <li>Engaged in <strong>bug bounty hunting</strong>, earning rewards from companies like McAfee, Uber</li>
+          <li>Implemented security measures to fix XSS and SQL injection vulnerabilities at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a></li>
+          <li>Developed a <strong>social media application</strong> for <a href="https://sece.ac.in/" target="_blank" rel="noopener noreferrer">Sri Eshwar College of Engineering</a>, used by 500+ students for college events</li>
+          <li>Created <a href="https://dev.dataatmos.com/" target="_blank" rel="noopener noreferrer">DataAtmos</a>, a platform for managing data-related activities using Next.js and Terraform (in progress)</li>
+          <li>Built and implemented a <strong>network infrastructure</strong> for <a href="https://www.kghospital.com/" target="_blank" rel="noopener noreferrer">KG Hospital</a>, a renowned hospital in <a href="https://www.google.com/search?q=coimbatore" target="_blank" rel="noopener noreferrer">Coimbatore</a></li>
+          <li>Assembled and provided <strong>custom-built computers</strong> for 20+ individuals</li>
+          <li>Developed a <strong>Micro-Finance Portfolio Website</strong> using WordPress, implementing SEO and Google My Business maintenance</li>
+          <li>Led a team of 5 members and was shortlisted to the top 50 in the <strong>Smart India Hackathon</strong></li>
+          <li>Served as <strong>President of the Cyberspace Club</strong> at <a href="https://sece.ac.in/" target="_blank" rel="noopener noreferrer">Sri Eshwar College of Engineering</a> for all 4 years</li>
+          <li>Shared knowledge on Developing and Securing Web Applications, solving challenges in HackTheBox, and Basics of Networking with hundreds of students weekly</li>
+        </ul>
+
         <p>Some things I believe:</p>
         <ul>
           <li>

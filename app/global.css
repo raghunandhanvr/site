@@ -60,7 +60,7 @@ html {
 }
 
 .prose a:hover {
-  @apply dark:decoration-neutral-400 decoration-neutral-600;
+  @apply text-blue-600 dark:text-blue-400 decoration-blue-600 dark:decoration-blue-400;
 }
 
 .prose .anchor:after {
@@ -167,4 +167,10 @@ table {
     animation: fade-in 0.8s ease-in-out forwards;
     opacity: 0;
   }
+}
+
+.badge {
+  border-radius: 4px;
+  font-weight: 500;
+  letter-spacing: 0.025em;
 }
