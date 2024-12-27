@@ -1,6 +1,6 @@
 import { Feed } from "feed";
 import { getBlogPosts } from "@/lib/posts";
-import { metaData } from "app/config";
+import { metaData, socialLinks } from "app/config";
 import { NextResponse } from "next/server";
 
 export async function generateStaticParams() {
@@ -29,21 +29,27 @@ export async function GET(
     ? metaData.baseUrl
     : `${metaData.baseUrl}/`;
 
-  const feed = new Feed({
-    title: metaData.title,
-    description: metaData.description,
-    id: BaseUrl,
-    link: BaseUrl,
-    copyright: `All rights reserved ${new Date().getFullYear()}, ${
-      metaData.title
-    }`,
-    generator: "Feed for Node.js",
-    feedLinks: {
-      json: `${BaseUrl}feed.json`,
-      atom: `${BaseUrl}atom.xml`,
-      rss: `${BaseUrl}rss.xml`,
-    },
-  });
+    const feed = new Feed({
+      title: metaData.title,
+      description: metaData.description,
+      id: BaseUrl,
+      link: BaseUrl,
+      language: "en",
+      author: {
+        name: metaData.name,
+        email: socialLinks.email.replace("mailto:", ""),
+        link: BaseUrl
+      },
+      copyright: `All rights reserved ${new Date().getFullYear()}, ${metaData.name}`,
+      generator: "Feed for Node.js",
+      feedLinks: {
+        json: `${BaseUrl}feed.json`,
+        atom: `${BaseUrl}atom.xml`,
+        rss: `${BaseUrl}rss.xml`,
+      },
+      image: `${BaseUrl}${metaData.ogImage}`,
+      favicon: `${BaseUrl}favicon.ico`
+    });
 
   const allPosts = await getBlogPosts();
 
@@ -63,6 +69,12 @@ export async function GET(
         term: tag,
       })),
       date: new Date(post.metadata.publishedAt),
+      author: [{
+        name: metaData.name,
+        email: socialLinks.email.replace("mailto:", ""),
+        link: BaseUrl
+      }],
+      image: post.metadata.image ? `${BaseUrl}${post.metadata.image}` : undefined,
     });
   });
 

@@ -7,7 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/theme-switch";
-import { metaData } from "@/app/config";
+import { metaData, structuredData } from "@/app/config";
 import Script from "next/script";
 import { ViewTransitions } from 'next-view-transitions';
 
@@ -18,6 +18,23 @@ export const metadata: Metadata = {
     template: `%s | ${metaData.title}`,
   },
   description: metaData.description,
+  keywords: [ 
+    "Raghunandhan VR", "raghunandhan vr",
+    "Raghu Nandhan", "raghu nandhan",  
+    "Raghu", "raghu",
+    "RaghuVR", "raghuvr",
+    "Raghunandhanvr", "raghunandhanvr", 
+    "Software Engineer", "Tech Blog", 
+    "Raghu", "Raghunandhanvr"
+  ],
+  alternates: {
+    canonical: metaData.baseUrl,
+    types: {
+      'application/rss+xml': '/rss.xml',
+      'application/atom+xml': '/atom.xml',
+      'application/feed+json': '/feed.json',
+    },
+  },
   openGraph: {
     images: metaData.ogImage,
     title: metaData.title,
@@ -71,6 +88,12 @@ export default function RootLayout({
               gtag('config', 'G-8E3Y6STYEC');
             `}
           </Script>
+          <script type="application/ld+json">
+            {JSON.stringify(structuredData)}
+          </script>
+          <meta name="author" content={metaData.name} />
+          <meta name="keywords" content="Raghunandhan VR, raghunandhan vr, Raghu Nandhan, raghu nandhan, Raghu, raghu, RaghuVR, raghuvr, Raghunandhanvr, raghunandhanvr Software Engineer, Tech Blog, Web Development, Distributed Systems" />
+          <link rel="canonical" href={metaData.baseUrl} />
           <link
             rel="alternate"
             type="application/rss+xml"
