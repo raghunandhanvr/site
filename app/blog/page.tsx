@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { Loader } from 'lucide-react';
 import BlogSearch from '@/components/blog/blog-search';
 import { fetchBlogPosts } from '@/app/actions/blog';
 
@@ -22,7 +23,12 @@ export default async function Page() {
       <h1 className="mb-8 text-xl font-medium tracking-tight">
         Thoughts, Opinions, Ideas
       </h1>
-      <Suspense fallback={<div>Loading posts...</div>}>
+      <Suspense fallback={
+        <div className="flex flex-col items-center justify-center space-y-4 h-32">
+          <Loader className="w-6 h-6 animate-spin" />
+          <p>Loading posts...</p>
+        </div>
+      }>
         <BlogSearch initialPosts={initialPosts} allTags={allTags} />
       </Suspense>
     </section>
