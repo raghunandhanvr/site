@@ -42,7 +42,7 @@ export default function Page() {
         <h3>Technical Contributions</h3>
         <ul>
           <li>Developed an <strong>IAM Service</strong> at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a> using GoLang, MySQL, PHP, and K8s, serving over 100,000 customers daily</li>
-          <li>Built a custom <strong>API Gateway</strong> at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a> based on <a href="https://opensource.zalando.com/skipper/" target="_blank" rel="noopener noreferrer">Skipper</a>, handling over 1 million daily API requests with fully flexible configurations</li>
+          <li>Built a custom <strong>reverse proxy</strong> at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a> based on <a href="https://opensource.zalando.com/skipper/" target="_blank" rel="noopener noreferrer">Skipper</a>, handling over 1 million daily API requests with fully flexible configurations</li>
           <li>Contributed to breaking down monolithic software into <strong>microservice architecture</strong> at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a> with Node, GoLang, K8s and PHP</li>
           <li>Published <strong>research</strong> on detecting fake face images using a <strong>Convolutional Neural Network (CNN)</strong> with an accuracy over <strong>87.5%</strong> - More details at <a href="https://ieeexplore.ieee.org/document/10046797" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></li>
           <li>Engaged in <strong>bug bounty hunting</strong>, earning rewards from companies like McAfee, Uber</li>
