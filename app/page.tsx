@@ -51,7 +51,7 @@ export default function Page() {
           <li>Created <a href="https://dev.dataatmos.com/" target="_blank" rel="noopener noreferrer">DataAtmos</a>, a platform for managing data-related activities using Next.js and Terraform (in progress)</li>
           <li>Built and implemented a <strong>network infrastructure</strong> for <a href="https://www.kghospital.com/" target="_blank" rel="noopener noreferrer">KG Hospital</a>, a renowned hospital in <a href="https://www.google.com/search?q=coimbatore" target="_blank" rel="noopener noreferrer">Coimbatore</a></li>
           <li>Assembled and provided <strong>custom-built computers</strong> for 20+ individuals</li>
-          <li>Developed a <strong>Micro-Finance Portfolio Website</strong> using WordPress, implementing SEO and Google My Business maintenance</li>
+          <li>Developed a <strong>Micro-Finance Portfolio Website</strong> using WordPress, implementing SEO and Google My Business maintenance as my first freelance project</li>
           <li>Led a team of 5 members and was shortlisted to the top 50 in the <strong>Smart India Hackathon</strong></li>
           <li>Served as <strong>President of the Cyberspace Club</strong> at <a href="https://sece.ac.in/" target="_blank" rel="noopener noreferrer">Sri Eshwar College of Engineering</a> for all 4 years</li>
           <li>Shared knowledge on Developing and Securing Web Applications, solving challenges in HackTheBox, and Basics of Networking with hundreds of students weekly</li>
