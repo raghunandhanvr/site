@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import Image from 'next/image';
 import Link from 'next/link';
-import { highlight } from 'sugar-high';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
@@ -13,7 +12,12 @@ import { metaData } from '@/app/config';
 import { ViewCounter } from '@/components/blog/view-counter';
 import dynamic from 'next/dynamic';
 
-const ClientMermaidDiagram = dynamic(() => import('@/components/mdx/client-mermaid-diagram'), { ssr: false });
+const Code = dynamic(() => import('@/components/mdx/code'), { ssr: false });
+const Tokenization = dynamic(() => import('@/components/blog/ai/tokenization'), { ssr: false });
+const NeuralNetwork = dynamic(() => import('@/components/blog/ai/neural-network'), { ssr: false });
+const Transformer = dynamic(() => import('@/components/blog/ai/transformer'), { ssr: false });
+const ContextAwareResponse = dynamic(() => import('@/components/blog/ai/context-aware-response'), { ssr: false });
+const SelfAttention = dynamic(() => import('@/components/blog/ai/self-attention'), { ssr: false });
 
 function CustomLink(props) {
   let href = props.href;
@@ -32,23 +36,6 @@ function CustomLink(props) {
 
 function RoundedImage(props) {
   return <Image alt={props.alt} className="rounded-lg" {...props} />;
-}
-
-function Code({ children, className, ...props }) {
-  const language = className?.replace('language-', '');
-
-  if (language === 'mermaid') {
-    return <ClientMermaidDiagram>{children}</ClientMermaidDiagram>;
-  }
-
-  let codeHTML = highlight(children);
-  return (
-    <code
-      dangerouslySetInnerHTML={{ __html: codeHTML }}
-      className={className}
-      {...props}
-    />
-  );
 }
 
 function Table({ data }) {
@@ -127,6 +114,11 @@ const components = {
   h4: createHeading(4),
   h5: createHeading(5),
   h6: createHeading(6),
+  Tokenization,
+  NeuralNetwork,
+  Transformer,
+  ContextAwareResponse,
+  SelfAttention,
 };
 
 export async function generateStaticParams() {
@@ -155,7 +147,7 @@ export async function generateMetadata({ params }) {
       description,
       type: 'article',
       publishedTime,
-      url: `${metaData.baseUrl}/blog/${post.slug}`,
+      url: `${metaData.baseUrl}/b/${post.slug}`,
       images: [{ url: ogImage }],
     },
     twitter: {
@@ -191,7 +183,7 @@ export default async function BlogPost({ params }) {
             image: post.metadata.image
               ? `${metaData.baseUrl}${post.metadata.image}`
               : `${metaData.baseUrl}/og?title=${encodeURIComponent(post.metadata.title)}`,
-            url: `${metaData.baseUrl}/blog/${post.slug}`,
+            url: `${metaData.baseUrl}/b/${post.slug}`,
             author: {
               '@type': 'Person',
               name: metaData.name,

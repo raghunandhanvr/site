@@ -18,15 +18,12 @@ export const metadata: Metadata = {
     template: `%s | ${metaData.title}`,
   },
   description: metaData.description,
-  keywords: [ 
-    "Raghunandhan VR", "raghunandhan vr",
-    "Raghu Nandhan", "raghu nandhan",  
-    "Raghu", "raghu",
-    "RaghuVR", "raghuvr",
-    "Raghunandhanvr", "raghunandhanvr", 
-    "Software Engineer", "Tech Blog", 
-    "Raghu", "Raghunandhanvr"
-  ],
+  keywords: metaData.alternateNames.concat([
+    "Software Engineer",
+    "Tech Blog",
+    "Web Development",
+    "Distributed Systems"
+  ]),
   alternates: {
     canonical: metaData.baseUrl,
     types: {
@@ -64,7 +61,19 @@ export const metadata: Metadata = {
   },
 };
 
-const cx = (...classes) => classes.filter(Boolean).join(" ");
+// Create a separate component for structured data to prevent hydration issues
+function StructuredData() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData)
+      }}
+    />
+  );
+}
+
+const cx = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 export default function RootLayout({
   children,
@@ -76,23 +85,19 @@ export default function RootLayout({
       <html lang="en" className={cx(GeistSans.variable, GeistMono.variable)}>
         <head>
           <Script
-          async 
-          src="https://www.googletagmanager.com/gtag/js?id=G-8E3Y6STYEC">
-          </Script>
+            async 
+            src="https://www.googletagmanager.com/gtag/js?id=G-8E3Y6STYEC"
+          />
           <Script id="google-analytics">
-            {`         
+            {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-
               gtag('config', 'G-8E3Y6STYEC');
             `}
           </Script>
-          <script type="application/ld+json">
-            {JSON.stringify(structuredData)}
-          </script>
+          <StructuredData />
           <meta name="author" content={metaData.name} />
-          <meta name="keywords" content="Raghunandhan VR, raghunandhan vr, Raghu Nandhan, raghu nandhan, Raghu, raghu, RaghuVR, raghuvr, Raghunandhanvr, raghunandhanvr Software Engineer, Tech Blog, Web Development, Distributed Systems" />
           <link rel="canonical" href={metaData.baseUrl} />
           <link
             rel="alternate"
@@ -116,7 +121,7 @@ export default function RootLayout({
         <body className="antialiased flex flex-col items-center justify-center mx-auto mt-1 lg:mt-4 mb-20 lg:mb-40">
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >

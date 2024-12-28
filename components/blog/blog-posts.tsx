@@ -16,7 +16,7 @@ export default function BlogPosts({ posts }: BlogPostsProps) {
           <Link
             key={post.slug}
             className="block transition-opacity duration-200 hover:opacity-80"
-            href={`/blog/${post.slug}`}
+            href={`/b/${post.slug}`}
           >
             <div className="w-full flex flex-col">
               <div className="w-full sm:w-auto flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1 sm:mb-0">

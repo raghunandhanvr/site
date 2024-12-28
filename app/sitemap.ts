@@ -8,11 +8,11 @@ const BaseUrl = metaData.baseUrl.endsWith("/")
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogs = (await getBlogPosts()).map((post) => ({
-    url: `${BaseUrl}blog/${post.slug}`,
+    url: `${BaseUrl}b/${post.slug}`,
     lastModified: post.metadata.publishedAt,
   }));
 
-  let routes = ["", "blog", "work"].map((route) => ({
+  let routes = ["", "b", "w"].map((route) => ({
     url: `${BaseUrl}${route}`,
     lastModified: new Date().toISOString().split("T")[0],
   }));

@@ -38,4 +38,4 @@ export const structuredData = {
   image: metaData.ogImage,
   sameAs: Object.values(socialLinks),
   knowsAbout: ["Software Development", "Databases", "Distributed Systems", "Web Development"]
-};
+} as const;

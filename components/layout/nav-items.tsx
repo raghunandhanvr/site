@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ThemeSwitch } from "@/components/theme-switch";
 
 const navItems = {
-  "/blog": { name: "Blog" },
-  "/work": { name: "Work" },
+  "/b": { name: "Blog" },
+  "/w": { name: "Work" },
 };
 
 export function NavItems() {
