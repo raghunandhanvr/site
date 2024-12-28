@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const steps = [
-  { id: 1, title: 'Input', content: 'The cat sat on the mat' },
-  { id: 2, title: 'Tokenization', content: ['The', 'cat', 'sat', 'on', 'the', 'mat'] },
+  { id: 1, title: 'Input', content: 'The dog chased the cat because it was scared' },
+  { id: 2, title: 'Tokenization', content: ['The', 'dog', 'chased', 'the', 'cat', 'because', 'it', 'was', 'scared'] },
   { id: 3, title: 'Embedding', content: 'Word vectors' },
   { id: 4, title: 'Self-Attention', content: 'Contextual representations' },
   { id: 5, title: 'Feed-Forward', content: 'Further processing' },

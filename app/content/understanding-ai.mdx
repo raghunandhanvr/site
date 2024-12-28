@@ -263,43 +263,12 @@ output = model.forward(sample_input)
 
 #### Beyond Simple Pattern Matching
 
-<Transformer />
-
 Attention mechanisms revolutionized AI by allowing models to focus on specific parts of the input data. It's like having a spotlight that highlights the most important information, enabling the model to make more accurate predictions. This concept was popularized by the paper "[Attention is All You Need](https://arxiv.org/abs/1706.03762)" and is the foundation of transformer models like GPT.
-
-<details>
-<summary>Example Code for Simple Attention Mechanism</summary>
-
-```python
-import numpy as np
-
-class SimpleAttention:
-    def __init__(self):
-        self.softmax = lambda x: np.exp(x) / np.sum(np.exp(x), axis=-1, keepdims=True)
-    
-    def attend(self, query, key, value):
-        # Compute attention scores
-        scores = np.dot(query, key.T)
-        
-        # Apply softmax to get attention weights
-        attention_weights = self.softmax(scores)
-        
-        # Get weighted sum of values
-        output = np.dot(attention_weights, value)
-        return output, attention_weights
-
-# Usage
-attention = SimpleAttention()
-query = np.random.randn(1, 64)  # 1 query vector of size 64
-key = np.random.randn(10, 64)   # 10 key vectors of size 64
-value = np.random.randn(10, 32)  # 10 value vectors of size 32
-
-output, weights = attention.attend(query, key, value)
-```
-</details>
 
 #### How Attention Works in Practice
 Attention mechanisms allow models to understand context and relationships between words in a sentence. For example, in the sentence "The dog **chased** the cat because **it** was scared," attention helps the model determine that "it" refers to "cat." This ability to focus on relevant parts of the input makes attention mechanisms crucial for tasks like language translation and text generation.
+
+<SelfAttention />
 
 ```python
 def example_attention_flow():
@@ -316,7 +285,51 @@ def example_attention_flow():
 attention_result = example_attention_flow()  # Returns ["cat", 0.8]
 ```
 
-### Context-Aware Responses: Understanding the GOAT
+### 5. Transformers: The Backbone of Modern AI
+
+Transformers have become the backbone of modern AI, especially in natural language processing tasks. They leverage attention mechanisms to process input data in parallel, making them highly efficient and effective for large-scale data.
+
+<Transformer />
+
+#### How Transformers Work
+Transformers use a mechanism called self-attention to weigh the importance of different words in a sentence relative to each other. This allows them to capture context and relationships more effectively than previous models.
+
+Here's a simplified explanation of the transformer architecture:
+- **Input Embedding**: Converts input tokens into vectors.
+- **Positional Encoding**: Adds information about the position of each token.
+- **Self-Attention**: Computes attention scores for each token pair.
+- **Feedforward Neural Network**: Processes the attention outputs.
+- **Output Layer**: Generates predictions or further embeddings.
+
+
+<details>
+<summary>Example Code for a Simple Transformer</summary>
+
+```python
+import torch
+import torch.nn as nn
+
+class SimpleTransformer(nn.Module):
+    def __init__(self, input_dim, model_dim, num_heads, num_layers):
+        super(SimpleTransformer, self).__init__()
+        self.encoder_layer = nn.TransformerEncoderLayer(d_model=model_dim, nhead=num_heads)
+        self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=num_layers)
+        self.linear = nn.Linear(model_dim, input_dim)
+
+    def forward(self, src):
+        output = self.transformer_encoder(src)
+        return self.linear(output)
+
+# Usage
+model = SimpleTransformer(input_dim=512, model_dim=512, num_heads=8, num_layers=6)
+src = torch.rand((10, 32, 512))  # (sequence_length, batch_size, input_dim)
+output = model(src)
+```
+</details>
+
+Transformers have enabled breakthroughs in AI by allowing models to understand context and relationships in data more effectively. They are the foundation of many state-of-the-art models, including GPT, BERT, and more.
+
+#### Context-Aware Responses: Understanding the GOAT
 
 AI models can provide different responses based on the context. Let's see how this works with our GOAT (Greatest of All Time) example:
 
@@ -324,7 +337,7 @@ AI models can provide different responses based on the context. Let's see how th
 
 This example demonstrates how AI models can adapt their responses based on the given context. Whether we're talking about cricket, football, or Tamil cinema, the model understands the context and provides an appropriate answer.
 
-### 5. Training: Teaching Our AI
+### 6. Training: Teaching Our AI
 
 #### The Learning Process
 Training an AI model is like teaching a child to ride a bike. It involves trial and error, with the model learning from its mistakes. During training, the model processes vast amounts of data, adjusting its parameters to minimize errors and improve accuracy. This iterative process is what enables AI models to learn and make predictions.
@@ -376,7 +389,7 @@ for epoch in range(100):
 ```
 </details>
 
-### 6. Fine-tuning and RLHF: Teaching Manners
+### 7. Fine-tuning and RLHF: Teaching Manners
 
 #### Making AI Helpful and Safe
 Fine-tuning and Reinforcement Learning from Human Feedback (RLHF) are like teaching AI models good manners. They refine the model's behavior, ensuring it provides helpful and safe responses. By incorporating human feedback, models learn to prioritize user satisfaction and safety, making them more reliable and user-friendly.
@@ -430,7 +443,7 @@ better_response = rlhf.generate_response(prompt)
 ```
 </details>
 
-### 7. Deployment: Going Live
+### 8. Deployment: Going Live
 
 #### From Training to Production
 Deploying an AI model is like launching a rocket. After rigorous testing and fine-tuning, the model is ready to go live and serve users. This involves setting up infrastructure, ensuring scalability, and monitoring performance to maintain reliability and efficiency.
@@ -473,7 +486,7 @@ async def generate_text(query: Query):
 ```
 </details>
 
-### 8. Future Trends and Real-world Applications
+### 9. Future Trends and Real-world Applications
 
 The AI landscape is evolving faster than we update our npm packages. Here are some exciting trends:
 
