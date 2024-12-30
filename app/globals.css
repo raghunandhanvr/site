@@ -183,3 +183,29 @@ table {
     opacity: 0;
   }
 }
+
+/* Updated anchor styles */
+a {
+  @apply underline transition-all decoration-neutral-400 dark:decoration-neutral-600 underline-offset-2 decoration-[0.1em] font-medium text-[#333333] dark:text-[#D4D4D4];
+}
+
+a:hover {
+  @apply text-blue-600 dark:text-blue-400 decoration-blue-600 dark:decoration-blue-400;
+}
+
+.anchor {
+  @apply absolute invisible no-underline ml-[-1em] pr-2 w-[80%] max-w-[700px] cursor-pointer;
+}
+
+.anchor:hover {
+  @apply visible;
+}
+
+.anchor:after {
+  @apply text-neutral-300 dark:text-neutral-700;
+  content: "#";
+}
+
+*:hover > .anchor {
+  @apply visible;
+}
