@@ -1,0 +1,51 @@
+import { AnimatedName } from '@/app/components/animated-name';
+
+export const metadata = {
+  title: 'Other DB Options',
+  description: 'A look at some interesting managed database products that offer unique features and cost-saving benefits.',
+  alternates: {
+    canonical: '/b/db',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=Other+DB+Options`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# Exploring Cost-Effective Managed Database Options Beyond the Big Three
+<AnimatedName />
+
+## PlanetScale (MySQL)
+
+[PlanetScale](https://planetscale.com/) uses Vitess, developed at YouTube, for advanced sharding and scaling. Features like database branching (similar to Git branching) and Github's Ghost for schema migrations make it a solid option for MySQL. PlanetScale is my personal choice, and they also provide great knowledge transfer for Vitess on their [YouTube channel](https://www.youtube.com/c/PlanetScale).
+
+## Neon.tech (Serverless PostgreSQL)
+
+[Neon](https://neon.tech/) offers a serverless PostgreSQL that automatically scales up or down with zero downtime, saving costs and optimizing performance. It also has database branching. Keep in mind, 'serverless' is just a fancy term—they handle the servers for us, so we don't need to worry about scaling or maintenance, but our database is still running on servers somewhere.
+
+## TimescaleDB (PostgreSQL extension)
+
+[TimescaleDB](https://www.timescale.com/) is a time-series database built on PostgreSQL, perfect for handling time-series data. It might be helpful for blockchain teams and those dealing with logging. TimescaleDB is open-source.
+
+## DragonflyDB (Redis alternative)
+
+[DragonflyDB](https://dragonflydb.io/) is faster and more memory-efficient than Redis, fully compatible with Redis protocols for efficient caching. In a project where Redis was handling a large volume of caching for session management and API rate limiting, switching to DragonflyDB allowed us to handle more traffic with the same resources, reduce memory consumption, and keep costs down, all while being fully compatible with our existing Redis setup.
+
+## ClickHouse (Analytical DB)
+
+[ClickHouse](https://clickhouse.com/), developed by Yandex, is excellent for real-time analytical reporting with SQL, handling huge datasets efficiently. Its retrieval speed is really surprising. ClickHouse is open-source.
+
+## FaunaDB (Serverless DB)
+
+With [FaunaDB](https://fauna.com/), there are no worries about scaling or server maintenance. It supports complex queries with GraphQL and FQL.
+
+## CockroachDB (NewSQL)
+
+[CockroachDB](https://www.cockroachlabs.com/) is cloud-native and SQL-compatible, ensuring robust transaction processing across regions without the high costs.
+
+Yes, I know I've missed a few, like [Xata](https://xata.io/), [AWS Aurora](https://aws.amazon.com/rds/aurora/), etc. But, the focus here is on services that truly make "cost-effective" worth considering. These solutions are not only ideal for developers handling side projects but also beneficial for enterprise-level companies aiming to optimize costs and scale their infrastructure efficiently.

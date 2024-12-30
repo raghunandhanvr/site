@@ -1,0 +1,551 @@
+import { AnimatedName } from '@/app/components/animated-name';
+import Image from 'next/image';
+import Tokenization  from './tokenization';
+import SelfAttention from './self-attention';
+import NeuralNetwork from './neural-network';
+import ContextAwareResponse from './context-aware-response';
+import Transformer from './transformer';
+import MermaidDiagram from '@/app/components/mermaid'
+
+export const metadata = {
+  title: 'Understanding AI Models',
+  description: 'A comprehensive guide to understanding how modern AI models work, from data collection to deployment, with practical insights for developers.',
+  alternates: {
+    canonical: '/n/ai',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=Understanding+AI+Models`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# Understanding AI Models: A Developer's Guide
+<AnimatedName />
+
+### Before We Start
+**Bro**, this AI knows if you search for the best place to eat **Dosa, Vada, and Filter Coffee** at 8AM, it’ll guide you to the top-notch tiffin shop. But if you ask the same question at 10PM? It might suggest, “**Vada and filter coffee at night? Bro, it might duck your sleep, how about I suggest something else, or are you feeling like a Dosa Night special?**” And no, this isn’t just a if-else, it’s a **billion trillions zillions** of if-else conditions, powered by complex **neural networks** and **deep learning** algorithms.
+
+Decided not only to use **[ChatGPT](https://openai.com/chatgpt)** or any other LLM just to code, debug, write content. Let us understand how they work. Not to become an expert, but to understand how they work.
+
+While reading this blog, let's do something interesting: we'll not just learn concepts, but also imagine building our own **Large Language Model (LLM)** step by step. This mental model will help you understand how models like **[ChatGPT](https://openai.com/chatgpt)** actually work, know why they sometimes give weird answers, learn how to talk to them more effectively, and appreciate the complexity behind what happens after you just type "Hello!" and send it to GPT.
+
+### Overview
+Let's start with a high-level overview of how AI models work:
+
+<MermaidDiagram diagram={`
+graph TD
+    subgraph DataPipeline[Data Pipeline]
+        A[(Raw Data Store)]
+        B[Data Processing]
+        C[Training Dataset]
+    end
+    
+    subgraph ModelDev[Model Development]
+        D[Base Model]
+        E[Specialized Model]
+        F[Production Model]
+    end
+    
+    subgraph Deploy[Production Environment]
+        G[API Service]
+        H[Model Registry]
+        I[Monitoring System]
+    end
+
+    A -->|Extract & Validate| B
+    B -->|Clean & Transform| C
+    C -->|Initialize Training| D
+    D -->|Domain Adaptation| E
+    E -->|Human Feedback Loop| F
+    F -->|Version Control| H
+    H -->|Deploy| G
+    G -->|Track Metrics| I
+    I -.->|Performance Feedback| B
+    
+    style DataPipeline fill:transparent,stroke:#333,stroke-width:1px
+    style ModelDev fill:transparent,stroke:#333,stroke-width:1px
+    style Deploy fill:transparent,stroke:#333,stroke-width:1px
+`} />
+
+Yeah, lets break down the whole process into smaller steps.
+
+### 1. Everything Starts with Data
+
+#### The Data Hunger Games
+Before any AI magic happens, we need data. Lots of it. Here's what AI models actually learn from:
+
+<MermaidDiagram diagram={`
+graph TD
+    A[Web Scraping] -->|Raw Data| D[Processing Pipeline]
+    B[User Content] -->|Filtered Data| D
+    C[Academic Sources] -->|Curated Data| D
+    D -->|Tokenization| E[Processed Data]
+    E -->|Embedding| F[Training Ready Data]
+`}/>
+Data is the lifeblood of AI models. Imagine trying to learn a new language without ever hearing it spoken. That's what AI models face without data. They need vast amounts of information to understand patterns, context, and nuances. From web scraping to user-generated content, every piece of data contributes to the model's learning process. It's like a never-ending buffet for AI, where more data means better understanding and performance.
+
+#### Simple Data Collector
+<details>
+<summary>Example Code for Simple Data Collector</summary>
+
+```python
+import requests
+from bs4 import BeautifulSoup
+
+class SimpleDataCollector:
+    def __init__(self):
+        self.collected_data = []
+    
+    def collect_from_url(self, url):
+        # Fetch content from URL
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Extract text content
+        text = soup.get_text()
+        
+        # Basic cleaning
+        cleaned_text = ' '.join(text.split())
+        self.collected_data.append(cleaned_text)
+        
+    def get_data(self):
+        return self.collected_data
+
+# Usage
+collector = SimpleDataCollector()
+collector.collect_from_url('https://example.com')
+data = collector.get_data()
+```
+</details>
+
+#### Tokenization: Breaking Down Language
+Tokenization is like teaching a child to read by breaking down sentences into words. It's the process of converting text into smaller, manageable pieces called tokens. These tokens are the building blocks that AI models use to understand and generate language. By breaking down language into tokens, models can analyze and learn from vast amounts of text data efficiently.
+
+<Tokenization />
+
+<details>
+<summary>Example Code for Simple Tokenizer</summary>
+
+```python
+class SimpleTokenizer:
+    def __init__(self):
+        self.vocab = {}  # word -> id mapping
+        self.next_id = 0
+    
+    def tokenize(self, text):
+        # Split into words
+        words = text.lower().split()
+        
+        # Convert to token ids
+        tokens = []
+        for word in words:
+            if word not in self.vocab:
+                self.vocab[word] = self.next_id
+                self.next_id += 1
+            tokens.append(self.vocab[word])
+            
+        return tokens
+    
+    def decode(self, tokens):
+        # Convert token ids back to words
+        reverse_vocab = {id: word for word, id in self.vocab.items()}
+        return ' '.join(reverse_vocab[token] for token in tokens)
+
+# Usage
+tokenizer = SimpleTokenizer()
+text = "Hello world of AI"
+tokens = tokenizer.tokenize(text)  # [0, 1, 2, 3]
+decoded = tokenizer.decode(tokens)  # "hello world of ai"
+```
+</details>
+
+#### Building Our LLM: Data Collection Phase
+
+1. **The Data Shopping List**
+    - [Wikipedia dumps](https://dumps.wikimedia.org/) (knowledge base)
+    - [Books and literature](https://www.goodreads.com/) (language understanding) 
+    - [Code repositories](https://github.com/) (technical knowledge)
+    - [Social media](https://www.twitter.com/) (current trends)
+    - [Academic papers](https://arxiv.org/) (specialized knowledge)
+
+2. **Pattern Recognition Examples**
+    - User behavior patterns (late-night vs. daytime searches)
+    - Language patterns (formal vs. casual)
+    - Context switching (different domains)
+    - Regional patterns (location-specific content)
+
+### 2. Neural Networks: The Digital Brain
+
+#### Basic Building Blocks
+Neural networks are the digital brains of AI models. They mimic the way our brains work, with neurons and synapses, to process information. Each layer of a neural network transforms the input data, allowing the model to learn complex patterns and make predictions. It's like teaching a computer to recognize faces by showing it thousands of pictures until it can identify a face on its own.
+
+<NeuralNetwork />
+
+<details>
+<summary>Example Code for Simple Neural Network</summary>
+
+```python
+import numpy as np
+
+class SimpleNeuralNetwork:
+    def __init__(self, input_size, hidden_size, output_size):
+        # Initialize weights with random values
+        self.hidden_weights = np.random.randn(input_size, hidden_size)
+        self.output_weights = np.random.randn(hidden_size, output_size)
+    
+    def sigmoid(self, x):
+        # Activation function
+        return 1 / (1 + np.exp(-x))
+    
+    def forward(self, inputs):
+        # Forward pass through the network
+        self.hidden = self.sigmoid(np.dot(inputs, self.hidden_weights))
+        self.output = self.sigmoid(np.dot(self.hidden, self.output_weights))
+        return self.output
+
+# Usage
+nn = SimpleNeuralNetwork(input_size=3, hidden_size=4, output_size=2)
+sample_input = np.array([0.5, 0.3, 0.7])
+prediction = nn.forward(sample_input)
+```
+</details>
+
+#### Pattern Recognition in Action
+Neural networks excel at pattern recognition. They can identify patterns in data that are too complex for humans to see. For example, they can determine whether a user wants workout songs or party songs based on the time of day and location. This ability to recognize patterns makes neural networks powerful tools for tasks like image recognition, language translation, and more.
+
+Here's what's happening inside these networks:
+- Input: "I need songs"
+- Context: Time is 6 AM, user is at the gym
+- Model thinks: "87% chance they mean workout songs"
+
+But if:
+- Input: Same "I need songs"
+- Context: Time is 10 PM, user is at a party
+- Model thinks: "92% chance they mean party songs"
+
+### 3. Deep Learning: Going Deeper
+
+Deep learning takes neural networks to the next level by adding more layers and complexity. It's like stacking multiple brains on top of each other, each one learning from the previous one. This allows deep learning models to understand and generate more complex data, from natural language to images and beyond.
+
+<MermaidDiagram diagram={`
+graph TD
+    I((Input)) --> H1((Hidden 1))
+    H1 --> H2((Hidden 2))
+    H2 --> H3((Hidden 3))
+    H3 --> O((Output))
+`}/>
+
+<details>
+<summary>Example Code for Deep Learning Model</summary>
+
+```python
+import numpy as np
+
+class DeepLearningModel:
+    def __init__(self, layer_sizes):
+        self.weights = []
+        self.layers = []
+        
+        # Initialize weights for each layer
+        for i in range(len(layer_sizes) - 1):
+            w = np.random.randn(layer_sizes[i], layer_sizes[i+1]) * 0.01
+            self.weights.append(w)
+    
+    def relu(self, x):
+        # ReLU activation function
+        return np.maximum(0, x)
+    
+    def forward(self, inputs):
+        current_input = inputs
+        self.layers = [inputs]
+        
+        # Forward pass through each layer
+        for w in self.weights:
+            z = np.dot(current_input, w)
+            current_input = self.relu(z)
+            self.layers.append(current_input)
+            
+        return current_input
+
+# Usage
+model = DeepLearningModel([4, 8, 6, 2])  # 4 layers
+sample_input = np.array([0.2, 0.7, 0.1, 0.9])
+output = model.forward(sample_input)
+```
+</details>
+
+### 4. Attention: The Game Changer
+
+#### Beyond Simple Pattern Matching
+
+Attention mechanisms revolutionized AI by allowing models to focus on specific parts of the input data. It's like having a spotlight that highlights the most important information, enabling the model to make more accurate predictions. This concept was popularized by the paper "[Attention is All You Need](https://arxiv.org/abs/1706.03762)" and is the foundation of transformer models like GPT.
+
+#### How Attention Works in Practice
+Attention mechanisms allow models to understand context and relationships between words in a sentence. For example, in the sentence "The dog **chased** the cat because **it** was scared," attention helps the model determine that "it" refers to "cat." This ability to focus on relevant parts of the input makes attention mechanisms crucial for tasks like language translation and text generation.
+
+<SelfAttention />
+
+```python
+def example_attention_flow():
+    sentence = ["The", "dog", "chased", "the", "cat", "because", "it", "was", "scared"]
+    focus_word = "it"
+    context = {
+        "it": ["cat", 0.8],  # 80% attention to "cat"
+        "cat": ["scared", 0.7],  # 70% attention to "scared"
+        "dog": ["chased", 0.6]  # 60% attention to "chased"
+    }
+    return context[focus_word]
+
+# The model learns these attention patterns during training
+attention_result = example_attention_flow()  # Returns ["cat", 0.8]
+```
+
+### 5. Transformers: The Backbone of Modern AI
+
+Transformers have become the backbone of modern AI, especially in natural language processing tasks. They leverage attention mechanisms to process input data in parallel, making them highly efficient and effective for large-scale data.
+
+<Transformer />
+
+#### How Transformers Work
+Transformers use a mechanism called self-attention to weigh the importance of different words in a sentence relative to each other. This allows them to capture context and relationships more effectively than previous models.
+
+Here's a simplified explanation of the transformer architecture:
+- **Input Embedding**: Converts input tokens into vectors.
+- **Positional Encoding**: Adds information about the position of each token.
+- **Self-Attention**: Computes attention scores for each token pair.
+- **Feedforward Neural Network**: Processes the attention outputs.
+- **Output Layer**: Generates predictions or further embeddings.
+
+
+<details>
+<summary>Example Code for a Simple Transformer</summary>
+
+```python
+import torch
+import torch.nn as nn
+
+class SimpleTransformer(nn.Module):
+    def __init__(self, input_dim, model_dim, num_heads, num_layers):
+        super(SimpleTransformer, self).__init__()
+        self.encoder_layer = nn.TransformerEncoderLayer(d_model=model_dim, nhead=num_heads)
+        self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=num_layers)
+        self.linear = nn.Linear(model_dim, input_dim)
+
+    def forward(self, src):
+        output = self.transformer_encoder(src)
+        return self.linear(output)
+
+# Usage
+model = SimpleTransformer(input_dim=512, model_dim=512, num_heads=8, num_layers=6)
+src = torch.rand((10, 32, 512))  # (sequence_length, batch_size, input_dim)
+output = model(src)
+```
+</details>
+
+Transformers have enabled breakthroughs in AI by allowing models to understand context and relationships in data more effectively. They are the foundation of many state-of-the-art models, including GPT, BERT, and more.
+
+#### Context-Aware Responses: Understanding the GOAT
+
+AI models can provide different responses based on the context. Let's see how this works with our GOAT (Greatest of All Time) example:
+
+<ContextAwareResponse />
+
+This example demonstrates how AI models can adapt their responses based on the given context. Whether we're talking about cricket, football, or Tamil cinema, the model understands the context and provides an appropriate answer.
+
+### 6. Training: Teaching Our AI
+
+#### The Learning Process
+Training an AI model is like teaching a child to ride a bike. It involves trial and error, with the model learning from its mistakes. During training, the model processes vast amounts of data, adjusting its parameters to minimize errors and improve accuracy. This iterative process is what enables AI models to learn and make predictions.
+
+<MermaidDiagram diagram={`
+graph TD
+    D[Training Data] -->|Batching| B[Forward Pass]
+    B -->|Loss Calculation| C[Backward Pass]
+    C -->|Update Weights| D
+`}/>
+
+<details>
+<summary>Example Code for Simple Training Loop</summary>
+
+```python
+import numpy as np
+
+class ModelTrainer:
+    def __init__(self, model, learning_rate=0.01):
+        self.model = model
+        self.lr = learning_rate
+        
+    def calculate_loss(self, predictions, targets):
+        # Simple MSE loss
+        return np.mean((predictions - targets) ** 2)
+        
+    def train_step(self, inputs, targets):
+        # Forward pass
+        outputs = self.model.forward(inputs)
+        
+        # Calculate loss
+        loss = self.calculate_loss(outputs, targets)
+        
+        # Simple backward pass (gradient descent)
+        gradient = 2 * (outputs - targets)
+        self.model.update_weights(gradient, self.lr)
+        
+        return loss
+
+# Usage
+trainer = ModelTrainer(model=SimpleNeuralNetwork(2, 4, 1))
+input_data = np.array([[0.1, 0.2], [0.3, 0.4]])
+target_data = np.array([[0.3], [0.7]])
+
+for epoch in range(100):
+    loss = trainer.train_step(input_data, target_data)
+    if epoch % 10 == 0:
+        print(f"Epoch {epoch}, Loss: {loss}")
+```
+</details>
+
+### 7. Fine-tuning and RLHF: Teaching Manners
+
+#### Making AI Helpful and Safe
+Fine-tuning and Reinforcement Learning from Human Feedback (RLHF) are like teaching AI models good manners. They refine the model's behavior, ensuring it provides helpful and safe responses. By incorporating human feedback, models learn to prioritize user satisfaction and safety, making them more reliable and user-friendly.
+
+<MermaidDiagram diagram={`
+graph TD
+    M[Base Model] -->|Human Feedback| R[Reward Model]
+    R -->|Training| P[Policy Update]
+    P -->|Improved| F[Fine-tuned Model]
+`}/>
+
+<details>
+<summary>Example Code for Simple RLHF</summary>
+
+```python
+class SimpleRLHF:
+    def __init__(self, base_model):
+        self.base_model = base_model
+        self.reward_scores = {}
+        
+    def collect_feedback(self, response, human_score):
+        # Store human feedback scores
+        self.reward_scores[response] = human_score
+        
+    def generate_response(self, prompt, temperature=0.7):
+        # Generate multiple responses
+        responses = [
+            self.base_model.generate(prompt, temperature)
+            for _ in range(3)
+        ]
+        
+        # Pick response with highest historical reward
+        best_response = max(
+            responses,
+            key=lambda r: self.reward_scores.get(r, 0)
+        )
+        
+        return best_response
+
+# Usage
+rlhf = SimpleRLHF(base_model=PretrainedModel())
+
+# Collect feedback
+response = "I can help you with that task!"
+human_score = 0.9  # High score for helpful response
+rlhf.collect_feedback(response, human_score)
+
+# Generate improved response
+prompt = "How can you help me?"
+better_response = rlhf.generate_response(prompt)
+```
+</details>
+
+### 8. Deployment: Going Live
+
+#### From Training to Production
+Deploying an AI model is like launching a rocket. After rigorous testing and fine-tuning, the model is ready to go live and serve users. This involves setting up infrastructure, ensuring scalability, and monitoring performance to maintain reliability and efficiency.
+
+<MermaidDiagram diagram={`
+flowchart LR
+    C[Client] --> LB[Load Balancer]
+    LB --> S1[Server 1]
+    LB --> S2[Server 2]
+    S1 --> C
+    S2 --> C
+`}/>
+
+<details>
+<summary>Example Code for API Server Deployment</summary>
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+model = LoadModel("path/to/model")
+
+class Query(BaseModel):
+    text: str
+    temperature: float = 0.7
+
+@app.post("/generate")
+async def generate_text(query: Query):
+    try:
+        response = model.generate(
+            query.text,
+            temperature=query.temperature
+        )
+        return {"response": response}
+    except Exception as e:
+        return {"error": str(e)}
+
+# Run with: uvicorn app:app --host 0.0.0.0 --port 8000
+```
+</details>
+
+### 9. Future Trends and Real-world Applications
+
+The AI landscape is evolving faster than we update our npm packages. Here are some exciting trends:
+
+1. **[Multimodal Models](https://arxiv.org/abs/2106.10752)**
+   - Text + Images (like DALL-E)
+   - Text + Code (like Copilot)
+   - Text + Audio (like Whisper)
+
+2. **[Efficient Models](https://arxiv.org/abs/2009.01325)**
+   - Smaller, faster models
+   - Specialized for specific tasks
+   - Optimized for edge devices
+
+3. **Enhanced Privacy**
+   - Local model deployment
+   - [Federated learning](https://en.wikipedia.org/wiki/Federated_learning)
+   - [Differential privacy](https://en.wikipedia.org/wiki/Differential_privacy)
+
+<MermaidDiagram diagram={`
+graph TD
+    subgraph "Future of AI"
+        M[Multimodal] -->|Integration| F[Future Models]
+        E[Efficiency] -->|Optimization| F
+        P[Privacy] -->|Enhancement| F
+    end
+`}/>
+
+### Conclusion
+
+Understanding how AI models work has changed how I interact with them. It's like knowing a friend really well - you know when they'll be helpful and when they might need a bit more context.
+
+Remember:
+1. These models learn from patterns in our digital lives
+2. They understand context better than you might think
+3. But they're still programs - amazingly sophisticated ones, but programs nonetheless
+4. The better you understand them, the better you can work with them
+
+### Resources for Going Deeper
+- [3Blue1Brown on Neural Network](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
+- [Good Resource for GNN and others](https://distill.pub)
+- ["Attention Is All You Need"](https://arxiv.org/abs/1706.03762) - The Transformer paper
+- [Hugging Face Documentation](https://huggingface.co/docs)

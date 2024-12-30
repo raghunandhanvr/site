@@ -1,15 +1,14 @@
-import "./global.css";
-import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import { Navbar } from "@/components/layout/nav";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import Footer from "@/components/layout/footer";
-import { ThemeProvider } from "@/components/theme-switch";
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { ViewTransitions } from 'next-view-transitions';
+import { Analytics } from '@vercel/analytics/react';
+import Footer from './components/layout/footer';
 import { metaData, structuredData } from "@/app/config";
 import Script from "next/script";
-import { ViewTransitions } from 'next-view-transitions';
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(metaData.baseUrl),
@@ -61,7 +60,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Create a separate component for structured data to prevent hydration issues
 function StructuredData() {
   return (
     <script
@@ -73,69 +71,60 @@ function StructuredData() {
   );
 }
 
-const cx = (...classes: string[]) => classes.filter(Boolean).join(" ");
-
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <ViewTransitions>
-      <html lang="en" className={cx(GeistSans.variable, GeistMono.variable)}>
+      <html lang="en" className={`${inter.className}`}>
         <head>
-          <Script
-            async 
-            src="https://www.googletagmanager.com/gtag/js?id=G-8E3Y6STYEC"
-          />
-          <Script id="google-analytics">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-8E3Y6STYEC');
-            `}
-          </Script>
-          <StructuredData />
-          <meta name="author" content={metaData.name} />
-          <link rel="canonical" href={metaData.baseUrl} />
-          <link
-            rel="alternate"
-            type="application/rss+xml"
-            href="/rss.xml"
-            title="RSS Feed"
-          />
-          <link
-            rel="alternate"
-            type="application/atom+xml"
-            href="/atom.xml"
-            title="Atom Feed"
-          />
-          <link
-            rel="alternate"
-            type="application/feed+json"
-            href="/feed.json"
-            title="JSON Feed"
-          />
+            <Script
+              async 
+              src="https://www.googletagmanager.com/gtag/js?id=G-8E3Y6STYEC"
+            />
+            <Script id="google-analytics">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-8E3Y6STYEC');
+              `}
+            </Script>
+            <StructuredData />
+            <meta name="author" content={metaData.name} />
+            <link rel="canonical" href={metaData.baseUrl} />
+            <link
+              rel="alternate"
+              type="application/rss+xml"
+              href="/rss.xml"
+              title="RSS Feed"
+            />
+            <link
+              rel="alternate"
+              type="application/atom+xml"
+              href="/atom.xml"
+              title="Atom Feed"
+            />
+            <link
+              rel="alternate"
+              type="application/feed+json"
+              href="/feed.json"
+              title="JSON Feed"
+            />
         </head>
-        <body className="antialiased flex flex-col items-center justify-center mx-auto mt-1 lg:mt-4 mb-20 lg:mb-40">
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <main className="flex-auto min-w-0 mt-1 md:mt-3 flex flex-col px-6 sm:px-4 md:px-0 max-w-[640px] w-full">
-              <Navbar />
+        <body className="antialiased tracking-tight">
+          <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
+            <main className="max-w-[60ch] mx-auto w-full space-y-6">
               {children}
               <Footer />
-              <Analytics />
-              <SpeedInsights />
             </main>
-          </ThemeProvider>
+            <Analytics />
+            <SpeedInsights />
+          </div>
         </body>
       </html>
     </ViewTransitions>
   );
 }
-
