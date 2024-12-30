@@ -184,13 +184,13 @@ table {
   }
 }
 
-/* Updated anchor styles */
+/* Anchor styles */
 a {
-  @apply underline transition-all decoration-neutral-400 dark:decoration-neutral-600 underline-offset-2 decoration-[0.1em] font-medium text-[#333333] dark:text-[#D4D4D4];
+  @apply underline transition-all decoration-neutral-400 underline-offset-2 decoration-[0.1em] font-medium text-[#333333];
 }
 
 a:hover {
-  @apply text-blue-600 dark:text-blue-400 decoration-blue-600 dark:decoration-blue-400;
+  @apply text-blue-600 decoration-blue-600;
 }
 
 .anchor {
@@ -202,7 +202,7 @@ a:hover {
 }
 
 .anchor:after {
-  @apply text-neutral-300 dark:text-neutral-700;
+  @apply text-neutral-300;
   content: "#";
 }
 
