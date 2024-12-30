@@ -185,14 +185,26 @@ table {
 }
 
 /* Anchor styles */
-a {
+a:not(.work-link, .fade-in) {
   @apply underline transition-all decoration-neutral-400 underline-offset-2 decoration-[0.1em] font-medium text-[#333333];
 }
 
-a:hover {
+a:not(.work-link, .fade-in):hover {
   @apply text-blue-600 decoration-blue-600;
 }
 
+/* Work page and header specific styles */
+.work-link, .fade-in {
+  @apply no-underline cursor-pointer;
+  text-decoration: none !important;
+}
+
+.work-link:hover, .fade-in:hover {
+  @apply no-underline;
+  text-decoration: none !important;
+}
+
+/* Your existing anchor-related styles */
 .anchor {
   @apply absolute invisible no-underline ml-[-1em] pr-2 w-[80%] max-w-[700px] cursor-pointer;
 }

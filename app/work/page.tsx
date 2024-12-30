@@ -31,7 +31,7 @@ export default function Works() {
           <div key={index} className="group">
             <Link
               href={work.url}
-              className="block hover:opacity-80 transition-opacity duration-200"
+              className="block hover:opacity-80 transition-opacity duration-200 work-link"
             >
               <div className="flex flex-col space-y-2">
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between">

@@ -19,7 +19,7 @@ function Footer() {
           href={link.url}
           target={link.name === 'rss' ? '_self' : '_blank'}
           rel={link.name === 'rss' ? undefined : 'noopener noreferrer'}
-          className="text-gray-400 hover:text-blue-500 transition-colors duration-200"
+          className="text-gray-400 hover:text-blue-500 transition-colors duration-200 work-link"
           >
             {link.name}
           </a>
