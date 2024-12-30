@@ -5,7 +5,7 @@ import SelfAttention from './self-attention';
 import NeuralNetwork from './neural-network';
 import ContextAwareResponse from './context-aware-response';
 import Transformer from './transformer';
-
+import MermaidDiagram from '@/app/components/mermaid'
 
 export const metadata = {
   title: 'Understanding AI Models',
@@ -37,7 +37,7 @@ While reading this blog, let's do something interesting: we'll not just learn co
 ### Overview
 Let's start with a high-level overview of how AI models work:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     subgraph DataPipeline[Data Pipeline]
         A[(Raw Data Store)]
@@ -70,7 +70,7 @@ graph TD
     style DataPipeline fill:transparent,stroke:#333,stroke-width:1px
     style ModelDev fill:transparent,stroke:#333,stroke-width:1px
     style Deploy fill:transparent,stroke:#333,stroke-width:1px
-```
+`} />
 
 Yeah, lets break down the whole process into smaller steps.
 
@@ -79,14 +79,14 @@ Yeah, lets break down the whole process into smaller steps.
 #### The Data Hunger Games
 Before any AI magic happens, we need data. Lots of it. Here's what AI models actually learn from:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     A[Web Scraping] -->|Raw Data| D[Processing Pipeline]
     B[User Content] -->|Filtered Data| D
     C[Academic Sources] -->|Curated Data| D
     D -->|Tokenization| E[Processed Data]
     E -->|Embedding| F[Training Ready Data]
-```
+`}/>
 Data is the lifeblood of AI models. Imagine trying to learn a new language without ever hearing it spoken. That's what AI models face without data. They need vast amounts of information to understand patterns, context, and nuances. From web scraping to user-generated content, every piece of data contributes to the model's learning process. It's like a never-ending buffet for AI, where more data means better understanding and performance.
 
 #### Simple Data Collector
@@ -232,13 +232,13 @@ But if:
 
 Deep learning takes neural networks to the next level by adding more layers and complexity. It's like stacking multiple brains on top of each other, each one learning from the previous one. This allows deep learning models to understand and generate more complex data, from natural language to images and beyond.
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     I((Input)) --> H1((Hidden 1))
     H1 --> H2((Hidden 2))
     H2 --> H3((Hidden 3))
     H3 --> O((Output))
-```
+`}/>
 
 <details>
 <summary>Example Code for Deep Learning Model</summary>
@@ -362,12 +362,12 @@ This example demonstrates how AI models can adapt their responses based on the g
 #### The Learning Process
 Training an AI model is like teaching a child to ride a bike. It involves trial and error, with the model learning from its mistakes. During training, the model processes vast amounts of data, adjusting its parameters to minimize errors and improve accuracy. This iterative process is what enables AI models to learn and make predictions.
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     D[Training Data] -->|Batching| B[Forward Pass]
     B -->|Loss Calculation| C[Backward Pass]
     C -->|Update Weights| D
-```
+`}/>
 
 <details>
 <summary>Example Code for Simple Training Loop</summary>
@@ -414,12 +414,12 @@ for epoch in range(100):
 #### Making AI Helpful and Safe
 Fine-tuning and Reinforcement Learning from Human Feedback (RLHF) are like teaching AI models good manners. They refine the model's behavior, ensuring it provides helpful and safe responses. By incorporating human feedback, models learn to prioritize user satisfaction and safety, making them more reliable and user-friendly.
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     M[Base Model] -->|Human Feedback| R[Reward Model]
     R -->|Training| P[Policy Update]
     P -->|Improved| F[Fine-tuned Model]
-```
+`}/>
 
 <details>
 <summary>Example Code for Simple RLHF</summary>
@@ -468,14 +468,14 @@ better_response = rlhf.generate_response(prompt)
 #### From Training to Production
 Deploying an AI model is like launching a rocket. After rigorous testing and fine-tuning, the model is ready to go live and serve users. This involves setting up infrastructure, ensuring scalability, and monitoring performance to maintain reliability and efficiency.
 
-```mermaid
-graph LR
-    C[Client] -->|Request| L[Load Balancer]
-    L -->|Route| S1[Server 1]
-    L -->|Route| S2[Server 2]
-    S1 -->|Response| C
-    S2 -->|Response| C
-```
+<MermaidDiagram diagram={`
+flowchart LR
+    C[Client] --> LB[Load Balancer]
+    LB --> S1[Server 1]
+    LB --> S2[Server 2]
+    S1 --> C
+    S2 --> C
+`}/>
 
 <details>
 <summary>Example Code for API Server Deployment</summary>
@@ -525,14 +525,14 @@ The AI landscape is evolving faster than we update our npm packages. Here are so
    - [Federated learning](https://en.wikipedia.org/wiki/Federated_learning)
    - [Differential privacy](https://en.wikipedia.org/wiki/Differential_privacy)
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     subgraph "Future of AI"
         M[Multimodal] -->|Integration| F[Future Models]
         E[Efficiency] -->|Optimization| F
         P[Privacy] -->|Enhancement| F
     end
-```
+`}/>
 
 ### Conclusion
 

@@ -1,4 +1,5 @@
 import { AnimatedName } from '@/app/components/animated-name';
+import MermaidDiagram from '@/app/components/mermaid'
 
 export const metadata = {
   title: 'Rethinking the Foundations: Towards a Truly Decentralized Internet',
@@ -26,7 +27,7 @@ Despite the promises of **blockchain** and **decentralization**, most digital in
 
 The internet's current architecture resembles a **medieval kingdom** more than a democratic network. Every packet of data flows through centralized checkpoints, each controlled by a handful of corporate giants. This isn't just about market dominance—it's about fundamental architectural vulnerability:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     A[User Request] --> B[DNS Lookup]
     B --> C[Root Servers]
@@ -49,7 +50,7 @@ graph TD
     style C fill:#ff6666
     style D fill:#ff6666
     style E fill:#ff6666
-```
+`}/>
 
 The numbers reveal the true extent of this centralization:
 
@@ -72,7 +73,7 @@ The numbers reveal the true extent of this centralization:
 
 I'm a big fan of **Blockchain**. It frustrates me that we are not using blockchain technology the way it was intended. **Web3** aims to decentralize the internet using blockchain technology. However, several fundamental issues prevent it from fulfilling this promise.
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     subgraph "Web3 Reality"
         A[dApp Frontend] --> B[RPC Provider]
@@ -88,7 +89,7 @@ graph TD
         F[Gateway Access]
         G[Storage Systems]
     end
-```
+`}/>
 
 ### Centralization in Infrastructure
 
@@ -122,7 +123,7 @@ Instead of building another layer on top of broken infrastructure, we're rebuild
 
 Our protocol reimagines internet infrastructure from the ground up, ensuring both decentralization and reliability:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     subgraph "Protocol Layers"
         A[Universal Protocol] --> B[Resource Layer]
@@ -141,13 +142,13 @@ graph TD
         I[Byzantine Consensus]
         J[Reputation Systems]
     end
-```
+`}/>
 
 ### 1. Decentralized Addressing System
 
 Unlike traditional **DNS** controlled by **ICANN**, our system provides cryptographically secure, censorship-resistant addressing with built-in redundancy:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph LR
     A[Domain: mysite.key] --> B[Public Key Hash]
     B --> C[Distributed Ledger]
@@ -160,7 +161,7 @@ graph LR
         H[Geographic Distribution]
         I[Automatic Replication]
     end
-```
+`}/>
 
 This system replaces traditional **DNS**, which is controlled by centralized entities like **ICANN**, with a decentralized, cryptographically secure method of addressing internet resources. By using a distributed ledger to store the association between domain names and their corresponding resources, it ensures that addressing is resistant to censorship and manipulation. Each domain name, such as "mysite.key," is linked to a public key hash, which then points to various network resources like frontend locations, backend services, and database shards.
 
@@ -176,7 +177,7 @@ Reliability is enhanced by storing multiple copies of each resource in different
 
 The protocol provides a unified interface for all digital services while ensuring consistent performance:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     subgraph "Resource Types"
         A[Static Content] --> D[Universal Protocol]
@@ -193,7 +194,7 @@ graph TD
     D --> E
     D --> F
     D --> G
-```
+`}/>
 
 This protocol serves as a unified interface for accessing various types of digital services, including static content, compute tasks, and storage operations. By standardizing how resources are accessed, it simplifies the development of decentralized applications and improves interoperability between different services.
 
@@ -209,7 +210,7 @@ Reliability and performance are key focuses. The protocol incorporates dynamic r
 
 Every resource interaction generates its own trust and verification mechanisms:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     A[Resource Request] --> B[Market Discovery] 
     B --> C[Automatic Escrow]
@@ -234,7 +235,7 @@ graph TD
     D --> I
     E --> J
     D --> K
-```
+`}/>
 
 This component of the protocol is designed to facilitate safe and reliable transactions between unknown parties within the network. It begins with a market discovery process to identify potential service providers. Once a suitable provider is found, an automatic escrow mechanism is used to secure payments until the service is satisfactorily delivered.
 
@@ -255,7 +256,7 @@ Let's examine how existing services migrate and operate on the new protocol stac
 
 Consider how a **YouTube-like service** operates with guaranteed uptime and performance:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     subgraph "Content Flow"
         A[Video Upload] --> B[Content Chunking]
@@ -281,7 +282,7 @@ graph TD
     D --> H
     D --> I
     D --> J
-```
+`}/>
 
 The protocol ensures **24/7 availability** through:
 - Automatic content replication across regions
@@ -295,7 +296,7 @@ A **YouTube-like service** on this new protocol would benefit from a distributed
 
 Secure, high-frequency trading with guaranteed execution:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     A[Trade Order] --> B[Market Discovery]
     B --> C[Multi-Provider Execution]
@@ -319,7 +320,7 @@ graph TD
     C --> H
     C --> I
     C --> J
-```
+`}/>
 
 For financial trading platforms, the protocol ensures secure and fast transactions necessary for high-frequency trading. Trade orders are routed through a market discovery process that selects the best execution paths among multiple providers, minimizing latency and maximizing reliability. Security measures like order validation and fraud prevention are built into the protocol to protect against malicious activities and ensure the integrity of trades. Performance metrics such as latency monitoring and provider ranking help maintain high service standards, crucial for the demands of financial markets.
 
@@ -327,7 +328,7 @@ For financial trading platforms, the protocol ensures secure and fast transactio
 
 Distributed **AI computing** with guaranteed resources:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     A[AI Model] --> B[Resource Discovery]
     B --> C[Distributed Training]
@@ -350,7 +351,7 @@ graph TD
     C --> G
     C --> H
     C --> I
-```
+`}/>
 
 Distributed **AI** and machine learning workloads would utilize the protocol to discover and allocate computational resources like **GPU** and memory across the network. This ensures that **AI models** can be trained efficiently on distributed datasets without central bottlenecks. Resource markets for computing power and memory ensure that resources are allocated based on demand and performance, with reliability systems like hardware redundancy and checkpoint systems providing fault tolerance and continuous operation.
 
@@ -358,7 +359,7 @@ Distributed **AI** and machine learning workloads would utilize the protocol to 
 
 A self-sustaining economy that rewards reliability:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     subgraph "Market Forces"
         A[Resource Demand] --> D[Price Discovery]
@@ -375,7 +376,7 @@ graph TD
     D --> E
     D --> F
     D --> G
-```
+`}/>
 
 The protocol prevents resource monopolization through:
 - Dynamic pricing based on supply and demand
@@ -385,28 +386,11 @@ The protocol prevents resource monopolization through:
 
 The protocol supports a dynamic economic model where resource demand, quality metrics, and reliability scores directly influence pricing and provider incentives. This setup prevents monopolization, encourages competition, and ensures that smaller providers can compete fairly. Service providers earn based on performance, promoting a high-quality, reliable service delivery across the network.
 
-### Economic Benefits
-
-| Stakeholders        | Benefits                                           | Notes                          |
-|---------------------|----------------------------------------------------|--------------------------------|
-| **Service Providers**| - Guaranteed payment for quality service           | Ensures fair compensation      |
-|                     | - Performance-based revenue multipliers            | Encourages high-quality service |
-|                     | - Automatic market discovery                        | Simplifies provider selection   |
-|                     | - Fair competition mechanisms                       | Promotes a healthy market      |
-| **Users**           | - Lower costs through competition                  | Benefits from market dynamics   |
-|                     | - Guaranteed service quality                        | Increases trust in services     |
-|                     | - Multiple provider options                         | Enhances choice and flexibility |
-|                     | - Transparent pricing                              | Builds user confidence          |
-| **Developers**      | - Simplified deployment                            | Reduces time to market          |
-|                     | - Automatic scaling                                 | Adapts to demand fluctuations   |
-|                     | - Built-in redundancy                               | Increases reliability           |
-|                     | - Pay-for-quality model                             | Aligns incentives with quality  |
-
 ## Migration Strategy
 
 Seamless transition without service disruption:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph LR
     A[Current System] --> B[Hybrid Phase]
     B --> C[Protocol Native]
@@ -422,7 +406,7 @@ graph LR
         H[Legacy Support]
         I[Optimization]
     end
-```
+`}/>
 
 The transition to this new protocol would be phased to minimize disruptions. Initially, existing services would operate in a hybrid mode, maintaining compatibility with legacy systems while gradually integrating with the new protocol. Over time, services would fully migrate to become protocol-native, optimizing their operations to leverage the full benefits of the decentralized infrastructure.
 

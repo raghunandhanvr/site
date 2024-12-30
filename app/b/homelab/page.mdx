@@ -1,4 +1,5 @@
 import { AnimatedName } from '@/app/components/animated-name';
+import MermaidDiagram from '@/app/components/mermaid'
 
 export const metadata = {
   title: 'From a Gaming Laptop to a Family-Managed Server',
@@ -32,7 +33,7 @@ Yes, I can finally SSH into my own server and deploy or do whatever I want.
 
 Let's see what we're building here:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     Internet((Internet)) --> CF[Cloudflare DNS]
     CF --> Router[Home Router]
@@ -47,7 +48,7 @@ graph TD
     Dev --> CI[CI/CD Pipeline]
     AI --> LLM[Local LLMs]
     AI --> Code[Code Assistants]
-```
+`}/>
 
 ### Running a Server Remotely
 
@@ -59,11 +60,20 @@ Running a server remotely adds a whole new dimension to the concept of **distrib
 
 Our version of **high availability** relies more on human reliability than system redundancy:
 
-| Family Member | Primary Role | Backup Role | Special Skills |
-|--------------|--------------|-------------|----------------|
-| **Amma** | Power Management | Basic Restarts | UPS beep interpreter |
-| **Appa** | Electricity Monitor | Backup Power | Power cut predictor |
-| **Thangachi** | Service Monitoring | Cable Management | Grafana dashboard reader |
+- **Amma**: 
+  - **Primary Role**: Power Management 
+  - **Backup Role**: Basic Restarts 
+  - **Special Skills**: UPS beep interpreter
+
+- **Appa**: 
+  - **Primary Role**: Electricity Monitor 
+  - **Backup Role**: Backup Power 
+  - **Special Skills**: Power cut predictor
+
+- **Thangachi**: 
+  - **Primary Role**: Service Monitoring 
+  - **Backup Role**: Cable Management 
+  - **Special Skills**: Grafana dashboard reader
 
 ## Technical Foundation
 
@@ -198,7 +208,7 @@ Add to crontab to run every 5 minutes:
 
 Here's our complete setup:
 
-```mermaid
+<MermaidDiagram diagram={`
 graph TD
     Internet((Internet)) --> CF[Cloudflare]
     CF --> Router[Home Router]
@@ -221,7 +231,7 @@ graph TD
     end
 
     Services --> Recovery
-```
+`}/>
 
 ### Core Services Setup
 
@@ -243,12 +253,21 @@ Facilitates trading and crypto mining with a dedicated trading bot and a mining 
 
 ### Visual Status Indicators
 
-| Indicator | Meaning | Action Required | Family Member |
-|-----------|---------|----------------|---------------|
-| **🟢 Green LED** | All Systems Normal | None | Anyone |
-| **🟡 Yellow LED** | Check Required | Call if persists | Thangachi |
-| **🔴 Red LED** | Immediate Action | Call Immediately | Amma |
-| **📱 Trading Alert** | Price Target Hit | Check Dashboard | Appa |
+- **Green LED**: All Systems Normal🟢 
+  - **Action Required**: None 
+  - **Family Member**: Anyone
+
+- **Yellow LED**: Check Required 🟡
+  - **Action Required**: Call if persists 
+  - **Family Member**: Thangachi
+
+- **Red LED**: Immediate Action 🔴
+  - **Action Required**: Call Immediately 
+  - **Family Member**: Amma
+
+- **Trading Alert**: Price Target Hit 📊
+  - **Action Required**: Check Dashboard 
+  - **Family Member**: Appa
 
 ## Monitoring Dashboard
 
@@ -258,12 +277,25 @@ Try installing Grafana and Prometheus on your server. These tools can provide va
 
 ### Alert System
 
-| Alert Type | Message | Action | Family Member |
-|-----------|---------|--------|---------------|
-| **Disk Space Low** | "Storage running low!" | Delete old movies | Thangachi |
-| **High CPU** | "Server needs rest" | Wait 30 minutes | Anyone |
-| **Power Issue** | "Check UPS" | Verify power | Amma |
-| **Trading Alert** | "Price target hit!" | Check trading dashboard | Appa |
+- **Disk Space Low**: 
+  - **Message**: "Storage running low!" 
+  - **Action**: Delete old movies 
+  - **Family Member**: Thangachi
+
+- **High CPU**: 
+  - **Message**: "Server needs rest" 
+  - **Action**: Wait 30 minutes 
+  - **Family Member**: Anyone
+
+- **Power Issue**: 
+  - **Message**: "Check UPS" 
+  - **Action**: Verify power 
+  - **Family Member**: Amma
+
+- **Trading Alert**: 
+  - **Message**: "Price target hit!" 
+  - **Action**: Check trading dashboard 
+  - **Family Member**: Appa
 
 ```bash
 #!/bin/bash
@@ -286,11 +318,23 @@ done
 
 ## Future Plans
 
-| Category | Planned Improvements | Priority | Status |
-|----------|---------------------|----------|--------|
-| **Hardware Upgrades** | • Better UPS system<br />• 4G backup internet<br />• External storage array<br />• Mining optimization | High<br />Medium<br />Low<br />Low | In Progress<br />Pending<br />Planned<br />Completed |
-| **Services to Add** | • Home automation hub<br />• Network-wide ad blocking<br />• Advanced trading algorithms<br />• ML-based prediction models | Medium<br />High<br />Low<br />Medium | Pending<br />In Progress<br />Planned<br />Planned |
-| **Family Training** | • Basic Docker commands<br />• Grafana dashboard reading<br />• Trading dashboard monitoring<br />• Basic security protocols | High<br />Medium<br />Low<br />High | Completed<br />In Progress<br />Pending<br />In Progress |
+### Hardware Upgrades
+- **Better UPS system**: High priority
+- **4G backup internet**: Medium priority
+- **External storage array**: Low priority
+- **Mining optimization**: Low priority
+
+### Services to Add
+- **Home automation hub**: Medium priority
+- **Network-wide ad blocking**: High priority
+- **Advanced trading algorithms**: Low priority
+- **ML-based prediction models**: Medium priority
+
+### Family Training
+- **Basic Docker commands**: High priority
+- **Grafana dashboard reading**: Medium priority
+- **Trading dashboard monitoring**: Low priority
+- **Basic security protocols**: High priority
 
 ## Lessons Learned
 
