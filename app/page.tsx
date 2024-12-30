@@ -3,7 +3,6 @@ import { socialLinks } from "@/app/config";
 import { SiGoland, SiTypescript, SiPhp, SiJavascript, SiTerraform, SiAmazon, SiMicrosoftazure, SiPython, SiBitcoin, SiEthereum, SiSolidity, SiGit, SiPostgresql, SiMysql, SiMongodb, SiBurpsuite, SiWireshark, SiLinux } from 'react-icons/si';
 import dynamic from 'next/dynamic';
 
-const AgeCounter = dynamic(() => import('@/components/age-counter'), { ssr: false });
 const WavingHand = dynamic(() => import('@/components/waving-hand'), { ssr: false });
 
 export default function Page() {
@@ -14,7 +13,7 @@ export default function Page() {
           <Image
             src="/profile.jpg"
             alt="Profile photo"
-            className="rounded-full bg-gray-100 block lg:mt-5 mt-0 lg:mb-5 mb-10 mx-auto sm:float-right sm:ml-5 sm:mb-5 grayscale hover:grayscale-0"
+            className="rounded-full bg-gray-100 block lg:mt-8 mt-10 lg:mb-5 mb-10 mx-auto sm:float-right sm:ml-5 sm:mb-5 grayscale hover:grayscale-0"
             unoptimized
             width={160}
             height={160}
@@ -29,13 +28,13 @@ export default function Page() {
         </p>
         <h3>About</h3>
         <p>
-          {' '} <AgeCounter />{' '} old human developer, security researcher, and <strong>deeply passionate about web2 and web3</strong> from India.
+          I'm a software engineer at <a href="https://www.freightify.com/" target="_blank" rel="noopener noreferrer">Freightify</a>. I'm originally from <a href="https://www.google.com/maps/place/Udumalpet" target="_blank" rel="noopener noreferrer">Udumalpet, Tamil Nadu, India</a>. I've owe much of my carrer to the WWW and Security Research.
         </p>
         <p>
           I hold a <strong>B.Tech in Information Technology</strong> from <a href="https://sece.ac.in/" target="_blank" rel="noopener noreferrer">Sri Eshwar College of Engineering</a>.
         </p>
         <p>
-          Sometimes, I'm into blockchain and GenAI. I write code in both statically and dynamically typed languages, I like deploying on <strong>self-hosted bare metal</strong> instead of just cloud infrastructure. Not anti-cloud, but <strong>homelab supremacy</strong> ⌐■_■
+          Sometimes, I'm into blockchain and GenAI. I like deploying on <strong>self-hosted bare metal</strong> instead of just cloud infrastructure. Not anti-cloud, but <strong>homelab supremacy</strong> ⌐■_■.
         </p>
 
 

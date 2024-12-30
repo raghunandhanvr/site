@@ -11,6 +11,7 @@ import { formatDate } from '@/lib/date-utils';
 import { metaData } from '@/app/config';
 import { ViewCounter } from '@/components/blog/view-counter';
 import dynamic from 'next/dynamic';
+import { cache } from 'react';
 
 const Code = dynamic(() => import('@/components/mdx/code'), { ssr: false });
 const Tokenization = dynamic(() => import('@/components/blog/ai/tokenization'), { ssr: false });
@@ -121,15 +122,19 @@ const components = {
   SelfAttention,
 };
 
+const getCachedBlogPosts = cache(async () => {
+  return await getBlogPosts();
+});
+
 export async function generateStaticParams() {
-  const posts = await getBlogPosts();
+  const posts = await getCachedBlogPosts();
   return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
 export async function generateMetadata({ params }) {
-  const posts = await getBlogPosts();
+  const posts = await getCachedBlogPosts();
   const post = posts.find((post) => post.slug === params.slug);
   
   if (!post) {
@@ -159,8 +164,10 @@ export async function generateMetadata({ params }) {
   };
 }
 
+export const revalidate = 3600;
+
 export default async function BlogPost({ params }) {
-  const posts = await getBlogPosts();
+  const posts = await getCachedBlogPosts();
   const post = posts.find((post) => post.slug === params.slug);
 
   if (!post) {
@@ -191,7 +198,7 @@ export default async function BlogPost({ params }) {
           }),
         }}
       />
-      <h1 className="title mb-3 font-medium text-2xl tracking-tight">
+      <h1 className="title mb-3 font-medium text-2xl tracking-tight mt-5">
             {post.metadata.title}
       </h1>
       <div className="flex flex-wrap items-center mt-2 text-medium">

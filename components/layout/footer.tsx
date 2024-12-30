@@ -1,4 +1,7 @@
 import { socialLinks } from '@/app/config';
+import dynamic from 'next/dynamic';
+
+const AgeCounter = dynamic(() => import('@/components/age-counter'), { ssr: false });
 
 function Footer() {
   const links = [
@@ -11,19 +14,20 @@ function Footer() {
 
   return (
     <footer className="mt-12 text-center">
-      <div className="flex justify-center space-x-4 tracking-tight">
+      <div className="flex justify-center space-x-4 tracking-tight mb-2">
         {links.map((link) => (
           <a
-            key={link.name}
-            href={link.url}
-            target={link.name === 'rss' ? '_self' : '_blank'}
-            rel={link.name === 'rss' ? undefined : 'noopener noreferrer'}
-            className="text-gray-400 hover:text-blue-500 transition-colors duration-200"
+          key={link.name}
+          href={link.url}
+          target={link.name === 'rss' ? '_self' : '_blank'}
+          rel={link.name === 'rss' ? undefined : 'noopener noreferrer'}
+          className="text-gray-400 hover:text-blue-500 transition-colors duration-200"
           >
             {link.name}
           </a>
         ))}
       </div>
+      <AgeCounter/>
     </footer>
   );
 }

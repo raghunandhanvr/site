@@ -1,18 +1,22 @@
 import { Suspense } from 'react';
 import { Loader } from 'lucide-react';
 import BlogSearch from '@/components/blog/blog-search';
-import { fetchBlogPosts } from '@/app/actions/blog';
+import { getBlogPosts } from '@/lib/posts';
 
 export const metadata = {
   title: "Blog",
   description: "My Blog",
 };
 
+
+export const revalidate = 3600;
+
 export default async function Page() {
-  const initialPosts = await fetchBlogPosts();
+  const posts = await getBlogPosts();
+
   const allTags = Array.from(
     new Set(
-      initialPosts.flatMap((post) =>
+      posts.flatMap((post) =>
         post.metadata.tags.split(",").map((tag) => tag.trim())
       )
     )
@@ -20,7 +24,7 @@ export default async function Page() {
 
   return (
     <section>
-      <h1 className="mb-8 text-xl font-medium tracking-tight">
+      <h1 className="mb-8 text-xl font-medium tracking-tight mt-5">
         Thoughts, Opinions, Ideas
       </h1>
       <Suspense fallback={
@@ -29,8 +33,9 @@ export default async function Page() {
           <p>Loading posts...</p>
         </div>
       }>
-        <BlogSearch initialPosts={initialPosts} allTags={allTags} />
+        <BlogSearch initialPosts={posts} allTags={allTags} />
       </Suspense>
     </section>
   );
 }
+

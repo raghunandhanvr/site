@@ -1,9 +1,9 @@
-'use server'
-
 import fs from "fs";
 import path from "path";
+import { cache } from 'react'
+import { getAllViews } from "@/app/actions/blog";
 
-type Metadata = {
+export type Metadata = {
   title: string;
   publishedAt: string;
   summary: string;
@@ -11,7 +11,14 @@ type Metadata = {
   image?: string;
 };
 
-async function parseFrontmatter(fileContent: string) {
+export type BlogPost = {
+  metadata: Metadata;
+  slug: string;
+  content: string;
+  views: number;
+};
+
+const parseFrontmatter = cache(async (fileContent: string) => {
   let frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
   let match = frontmatterRegex.exec(fileContent);
   let frontMatterBlock = match![1];
@@ -27,19 +34,21 @@ async function parseFrontmatter(fileContent: string) {
   });
 
   return { metadata: metadata as Metadata, content };
-}
+})
 
-async function getMDXFiles(dir: string) {
+const getMDXFiles = cache(async (dir: string) => {
   return fs.readdirSync(dir).filter((file) => path.extname(file) === ".mdx");
-}
+})
 
-async function readMDXFile(filePath: string) {
+const readMDXFile = cache(async (filePath: string) => {
   let rawContent = fs.readFileSync(filePath, "utf-8");
   return parseFrontmatter(rawContent);
-}
+})
 
-async function getMDXData(dir: string) {
+const getMDXData = cache(async (dir: string): Promise<BlogPost[]> => {
   let mdxFiles = await getMDXFiles(dir);
+  const allViews = await getAllViews();
+
   return Promise.all(mdxFiles.map(async (file) => {
     let { metadata, content } = await readMDXFile(path.join(dir, file));
     let slug = path.basename(file, path.extname(file));
@@ -48,11 +57,12 @@ async function getMDXData(dir: string) {
       metadata,
       slug,
       content,
+      views: allViews[slug] || 0,
     };
   }));
-}
+})
 
-export async function getBlogPosts() {
+export const getBlogPosts = cache(async (): Promise<BlogPost[]> => {
   return getMDXData(path.join(process.cwd(), "./app/content"));
-}
+})
 

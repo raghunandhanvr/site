@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Search } from 'lucide-react';
-import { fetchBlogPosts } from '@/app/actions/blog';
 import debounce from 'lodash/debounce';
 import BlogPosts from './blog-posts';
+import { BlogPost } from '@/lib/posts';
 
 interface BlogSearchProps {
-  initialPosts: Awaited<ReturnType<typeof import("@/app/actions/blog").fetchBlogPosts>>;
+  initialPosts: BlogPost[];
   allTags: string[];
 }
 
@@ -17,12 +17,27 @@ export default function BlogSearch({ initialPosts, allTags }: BlogSearchProps) {
   const [showTags, setShowTags] = useState(false);
   const [posts, setPosts] = useState(initialPosts);
 
+  const filterPosts = useCallback((q: string, tags: string[]) => {
+    return initialPosts.filter(post => {
+      const matchesQuery = q.length >= 3
+        ? post.metadata.title.toLowerCase().includes(q.toLowerCase()) ||
+          post.content.toLowerCase().includes(q.toLowerCase())
+        : true;
+
+      const matchesTags = tags.length
+        ? tags.some(tag => post.metadata.tags.toLowerCase().includes(tag.toLowerCase()))
+        : true;
+
+      return matchesQuery && matchesTags;
+    });
+  }, [initialPosts]);
+
   const debouncedSearch = useCallback(
-    debounce(async (q: string, tags: string[]) => {
-      const searchedPosts = await fetchBlogPosts(q, tags);
-      setPosts(searchedPosts);
+    debounce((q: string, tags: string[]) => {
+      const filteredPosts = filterPosts(q, tags);
+      setPosts(filteredPosts);
     }, 300),
-    []
+    [filterPosts]
   );
 
   useEffect(() => {
@@ -101,3 +116,4 @@ export default function BlogSearch({ initialPosts, allTags }: BlogSearchProps) {
     </>
   );
 }
+

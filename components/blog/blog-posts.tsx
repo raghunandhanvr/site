@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { formatDate } from "@/lib/date-utils";
+import { BlogPost } from "@/lib/posts";
 
 interface BlogPostsProps {
-  posts: Awaited<ReturnType<typeof import("@/app/actions/blog").fetchBlogPosts>>;
+  posts: BlogPost[];
 }
 
 export default function BlogPosts({ posts }: BlogPostsProps) {

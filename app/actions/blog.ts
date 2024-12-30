@@ -1,40 +1,28 @@
 'use server'
 
-import { getBlogPosts } from '@/lib/posts'
 import { Redis } from '@upstash/redis'
+import { cache } from 'react'
 
 const redis = Redis.fromEnv()
-
-export async function fetchBlogPosts(query?: string, tags?: string[]) {
-  const posts = await getBlogPosts()
-  
-  const postsWithViews = await Promise.all(
-    posts.map(async (post) => {
-      const views = await redis.get<number>(`pageviews:${post.slug}`) || 0
-      return { ...post, views }
-    })
-  )
-
-  return postsWithViews.filter(post => {
-    const matchesQuery = query && query.length >= 3
-      ? post.metadata.title.toLowerCase().includes(query.toLowerCase()) ||
-        post.content.toLowerCase().includes(query.toLowerCase())
-      : true;
-
-    const matchesTags = tags && tags.length
-      ? tags.some(tag => post.metadata.tags.toLowerCase().includes(tag.toLowerCase()))
-      : true;
-
-    return matchesQuery && matchesTags;
-  });
-}
 
 export async function trackView(slug: string) {
   const views = await redis.incr(`pageviews:${slug}`)
   return views
 }
 
-export async function getViews(slug: string) {
+export const getViews = cache(async (slug: string) => {
   const views = await redis.get<number>(`pageviews:${slug}`) || 0
   return views
-}
+})
+
+export const getAllViews = cache(async () => {
+  const keys = await redis.keys('pageviews:*')
+  const views = await Promise.all(
+    keys.map(async (key) => {
+      const count = await redis.get<number>(key)
+      return { slug: key.replace('pageviews:', ''), views: count || 0 }
+    })
+  )
+  return Object.fromEntries(views.map(({ slug, views }) => [slug, views]))
+})
+

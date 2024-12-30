@@ -8,12 +8,12 @@ const navItems = {
 
 export function NavItems() {
   return (
-    <div className="flex flex-row gap-4 mt-6 md:mt-0 md:ml-auto items-center">
+    <div className="grow justify-end items-center flex gap-1 md:gap-3">
       {Object.entries(navItems).map(([path, { name }]) => (
         <Link
           key={path}
           href={path}
-          className="transition-all hover:text-neutral-800 dark:hover:text-neutral-200 flex align-middle relative"
+          className="inline-flex hover:bg-gray-200 dark:hover:bg-[#313131] active:bg-gray-300 dark:active:bg-[#242424] rounded-sm p-2 transition-[background-color]"
         >
           {name}
         </Link>

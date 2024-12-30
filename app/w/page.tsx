@@ -31,8 +31,7 @@ const CurrentTag: React.FC = () => (
 
 export default function Works() {
   return (
-    <section>
-      <h1 className="mb-8 text-xl font-medium tracking-tight">I love to build!</h1>
+    <section className="mt-5">
       <div className="space-y-8">
         {works.map((work, index) => (
           <a
