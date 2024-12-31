@@ -45,6 +45,7 @@ To set up the project locally, follow these steps:
    - **`/app/globals.css`**: Update the name in `.transition-element`, `::view-transition-old`, `::view-transition-new`
    - Remove `@vercel/analytics/react` and `@vercel/speed-insights/next` from `app/layout.tsx` if you don't need analytics or speed insights from vercel
    - Add `NEXT_PUBLIC_GA_ID` to `.env`  if you want to use Google Analytics
+   - Change the birthday in `app/components/ui/age-counter.tsx` to your birthday
 
 #### Deployment
 

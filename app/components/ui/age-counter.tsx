@@ -28,7 +28,7 @@ export default function AgeCounter() {
   }, []);
 
   return (
-      <span className="text-gray-400 transition-colors text-sm">
+      <span className="text-gray-400 transition-colors text-xs font-mono">
           {age.years}y {age.days}d {age.hours}h {age.minutes}m {age.seconds}s
       </span>
   );

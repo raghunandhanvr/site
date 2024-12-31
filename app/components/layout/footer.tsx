@@ -11,7 +11,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="mt-12 text-center">
+    <footer className="mt-12 text-center text-sm">
       <div className="flex justify-center space-x-4 tracking-tight mb-2">
         {links.map((link) => (
           <a
