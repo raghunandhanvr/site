@@ -1,44 +1,39 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ViewTransitions } from 'next-view-transitions';
-import { Analytics } from '@vercel/analytics/react';
-import Footer from './components/layout/footer';
-import { metaData, structuredData } from "@/app/config";
-import Script from "next/script";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import './globals.css'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import { ViewTransitions } from 'next-view-transitions'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import Footer from './components/layout/footer'
+import { siteConfig, getStructuredData } from "./config"
+import Script from "next/script"
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(metaData.baseUrl),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: metaData.title,
-    template: `%s | ${metaData.title}`,
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: metaData.description,
-  keywords: metaData.alternateNames.concat([
-    "Software Engineer",
-    "Tech Blog",
-    "Web Development",
-    "Distributed Systems"
-  ]),
+  description: siteConfig.description,
+  keywords: [...siteConfig.keywords],
+  openGraph: {
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    images: siteConfig.image,
+    locale: "en_US",
+    type: "website",
+  },
   alternates: {
-    canonical: metaData.baseUrl,
+    canonical: siteConfig.url,
     types: {
       'application/rss+xml': '/rss.xml',
       'application/atom+xml': '/atom.xml',
       'application/feed+json': '/feed.json',
     },
-  },
-  openGraph: {
-    images: metaData.ogImage,
-    title: metaData.title,
-    description: metaData.description,
-    url: metaData.baseUrl,
-    siteName: metaData.name,
-    locale: "en_US",
-    type: "website",
   },
   robots: {
     index: true,
@@ -52,70 +47,52 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: metaData.name,
+    title: siteConfig.name,
     card: "summary_large_image",
   },
   icons: {
     icon: "/favicon.ico",
   },
-};
-
-function StructuredData() {
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(structuredData)
-      }}
-    />
-  );
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID
+
   return (
     <ViewTransitions>
-      <html lang="en" className={`${inter.className}`}>
+      <html lang="en" className={inter.className}>
         <head>
+          {gaId && (
             <Script
-              async 
-              src="https://www.googletagmanager.com/gtag/js?id=G-8E3Y6STYEC"
+              id="ga-script"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${gaId}');
+                `
+              }}
             />
-            <Script id="google-analytics">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-8E3Y6STYEC');
-              `}
-            </Script>
-            <StructuredData />
-            <meta name="author" content={metaData.name} />
-            <link rel="canonical" href={metaData.baseUrl} />
-            <link
-              rel="alternate"
-              type="application/rss+xml"
-              href="/rss.xml"
-              title="RSS Feed"
-            />
-            <link
-              rel="alternate"
-              type="application/atom+xml"
-              href="/atom.xml"
-              title="Atom Feed"
-            />
-            <link
-              rel="alternate"
-              type="application/feed+json"
-              href="/feed.json"
-              title="JSON Feed"
-            />
+          )}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(getStructuredData())
+            }}
+          />
+          <link rel="canonical" href={siteConfig.url} />
+          <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="RSS" />
+          <link rel="alternate" type="application/atom+xml" href="/atom.xml" title="Atom" />
+          <link rel="alternate" type="application/feed+json" href="/feed.json" title="JSON" />
         </head>
         <body className="antialiased tracking-tight">
-          <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
+        <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
             <main className="max-w-[60ch] mx-auto w-full space-y-6">
               {children}
               <Footer />
@@ -126,5 +103,6 @@ export default function RootLayout({
         </body>
       </html>
     </ViewTransitions>
-  );
+  )
 }
+

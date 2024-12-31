@@ -1,12 +1,12 @@
-import { metaData } from "@/app/config";
+import { siteConfig } from "@/app/config";
 
 export function NameTransition() {
   return (
     <h1 className="font-medium pt-12 transition-element">
-      <span className="sr-only">{metaData.name}</span>
+      <span className="sr-only">{siteConfig.name}</span>
       <span aria-hidden="true" className="block overflow-hidden group relative">
         <span className="inline-block transition-all duration-300 ease-in-out group-hover:-translate-y-full">
-          {metaData.name.split('').map((letter, index) => (
+          {siteConfig.name.split('').map((letter, index) => (
             <span
               key={index}
               className="inline-block"

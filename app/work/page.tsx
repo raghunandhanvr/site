@@ -1,7 +1,7 @@
 import { works } from "./work-data";
 import { CategoryBadge, CurrentTag } from "./work-data";
 import type { Metadata } from "next";
-import { AnimatedName } from "../components/animated-name";
+import { AnimatedName } from "../components/ui/animated-name";
 import { Link } from 'next-view-transitions';
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [
       {
-        url: `/api/og?title=My+Works`,
+        url: `/api/og?title=Work+Experience`,
         width: 1200,
         height: 630,
       },

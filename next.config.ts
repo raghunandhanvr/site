@@ -10,31 +10,31 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/rss.xml",
-        destination: "/feed/rss.xml",
+        destination: "/api/feed/rss.xml",
       },
       {
         source: "/atom.xml",
-        destination: "/feed/atom.xml",
+        destination: "/api/feed/atom.xml",
       },
       {
         source: "/feed.json",
-        destination: "/feed/feed.json",
+        destination: "/api/feed/feed.json",
       },
       {
         source: "/rss",
-        destination: "/feed/rss.xml",
+        destination: "/api/feed/rss.xml",
       },
       {
         source: "/feed",
-        destination: "/feed/rss.xml",
+        destination: "/api/feed/rss.xml",
       },
       {
         source: "/atom",
-        destination: "/feed/atom.xml",
+        destination: "/api/feed/atom.xml",
       },
       {
         source: "/json",
-        destination: "/feed/feed.json",
+        destination: "/api/feed/feed.json",
       },
     ];
   },

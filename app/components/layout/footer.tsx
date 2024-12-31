@@ -1,12 +1,12 @@
-import { socialLinks } from '@/app/config';
-import AgeCounter from '@/app/components/age-counter';
+import { siteConfig } from '@/app/config';
+import AgeCounter from '@/app/components/ui/age-counter';
 
 function Footer() {
   const links = [
-    { name: 'twitter', url: socialLinks.twitter },
-    { name: 'github', url: socialLinks.github },
-    { name: 'instagram', url: socialLinks.instagram },
-    { name: 'linkedin', url: socialLinks.linkedin },
+    { name: 'twitter', url: siteConfig.social.twitter },
+    { name: 'github', url: siteConfig.social.github },
+    { name: 'instagram', url: siteConfig.social.instagram },
+    { name: 'linkedin', url: siteConfig.social.linkedin },
     { name: 'rss', url: '/rss.xml' },
   ];
 

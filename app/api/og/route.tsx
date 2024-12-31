@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { metaData } from "@/app/config";
+import { siteConfig } from "@/app/config";
 
 export const runtime = 'edge';
 
@@ -19,7 +19,7 @@ function generatePixelArt() {
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const title = url.searchParams.get("title") || metaData.title;
+  const title = url.searchParams.get("title") || siteConfig.name;
   
   const pixelArt = generatePixelArt();
   const pixelSize = 8;

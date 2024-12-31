@@ -1,6 +1,7 @@
 import { Feed } from "feed";
-import { metaData, socialLinks } from "@/app/config";
+import { siteConfig } from "@/app/config";
 import { type NextRequest } from "next/server";
+import { BaseUrl, getBlogs } from "@/app/lib/utils";
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -42,58 +43,53 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const BaseUrl = metaData.baseUrl.endsWith("/")
-    ? metaData.baseUrl
-    : `${metaData.baseUrl}/`;
-
   const feed = new Feed({
-    title: metaData.title,
-    description: metaData.description,
+    title: siteConfig.name,
+    description: siteConfig.description,
     id: BaseUrl,
     link: BaseUrl,
     language: "en",
     author: {
-      name: metaData.name,
-      email: socialLinks.email.replace("mailto:", ""),
+      name: siteConfig.name,
+      email: siteConfig.email.replace("mailto:", ""),
       link: BaseUrl
     },
-    copyright: `All rights reserved ${new Date().getFullYear()}, ${metaData.name}`,
+    copyright: `All rights reserved ${new Date().getFullYear()}, ${siteConfig.name}`,
     generator: "Feed for Node.js",
     feedLinks: {
       json: `${BaseUrl}feed.json`,
       atom: `${BaseUrl}atom.xml`,
       rss: `${BaseUrl}rss.xml`,
     },
-    image: `${BaseUrl}${metaData.ogImage}`,
+    image: `${BaseUrl}${siteConfig.image}`,
     favicon: `${BaseUrl}favicon.ico`
   });
 
-  const { getPosts } = await import('@/app/lib/utils');
-  const posts = await getPosts();
+  const blogs = await getBlogs();
 
-  posts.forEach((post) => {
-    const postUrl = `${BaseUrl}b/${post.slug}`;
-    const categories = post.metadata.tags
-      ? post.metadata.tags.split(",").map((tag: string) => tag.trim())
+  blogs.forEach((blog) => {
+    const blogUrl = `${BaseUrl}b/${blog.slug}`;
+    const categories = blog.metadata.tags
+      ? blog.metadata.tags.split(",").map((tag: string) => tag.trim())
       : [];
 
     feed.addItem({
-      title: post.metadata.title,
-      id: postUrl,
-      link: postUrl,
-      description: post.metadata.summary,
-      content: post.content,
+      title: blog.metadata.title,
+      id: blogUrl,
+      link: blogUrl,
+      description: blog.metadata.summary,
+      content: blog.content,
       category: categories.map((tag: string) => ({
         name: tag,
         term: tag,
       })),
-      date: new Date(post.metadata.publishedAt),
+      date: new Date(blog.metadata.publishedAt),
       author: [{
-        name: metaData.name,
-        email: socialLinks.email.replace("mailto:", ""),
+        name: siteConfig.name,
+        email: siteConfig.email.replace("mailto:", ""),
         link: BaseUrl
       }],
-      image: post.metadata.image ? `${BaseUrl}${post.metadata.image}` : undefined,
+      image: blog.metadata.image ? `${BaseUrl}${blog.metadata.image}` : undefined,
     });
   });
 
