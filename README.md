@@ -39,7 +39,7 @@ To set up the project locally, follow these steps:
    Update the configuration in the following files according to your requirements:
 
    - **`/app/config.ts`**: Modify the metadata such as `baseUrl`, `title`, `description`, and social links
-   - **`/app/n/*`**: Update the content of your blog posts or pages as needed
+   - **`/app/b/*`**: Update the content of your blog posts or pages as needed
    - **`/app/page.mdx`**: Make changes to the main page content to reflect your personal information and projects
    - **`/app/components/ui/name-transition.tsx`**: Update the name with your own name
    - **`/app/globals.css`**: Update the name in `.transition-element`, `::view-transition-old`, `::view-transition-new`
