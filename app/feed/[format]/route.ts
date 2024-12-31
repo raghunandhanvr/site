@@ -5,15 +5,35 @@ import { type NextRequest } from "next/server";
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const validFormats = ["rss.xml", "atom.xml", "feed.json"] as const;
+const validFormats = ["rss.xml", "atom.xml", "feed.json", "rss", "atom", "json"] as const;
 type FeedFormat = typeof validFormats[number];
 
 function isValidFormat(format: string): format is FeedFormat {
   return validFormats.includes(format as FeedFormat);
 }
 
+function normalizeFormat(format: string): FeedFormat {
+  switch (format) {
+    case "rss":
+    case "feed":
+      return "rss.xml";
+    case "atom":
+      return "atom.xml";
+    case "json":
+      return "feed.json";
+    default:
+      return format as FeedFormat;
+  }
+}
+
 export async function GET(request: NextRequest) {
-  const format = request.nextUrl.pathname.split('/').pop() || '';
+  let format = request.nextUrl.pathname.split('/').pop() || '';
+
+  if (!format || format === 'feed') {
+    format = 'rss.xml';
+  }
+
+  format = normalizeFormat(format);
 
   if (!isValidFormat(format)) {
     return Response.json(
@@ -81,6 +101,9 @@ export async function GET(request: NextRequest) {
     "rss.xml": { content: feed.rss2(), contentType: "application/xml" },
     "atom.xml": { content: feed.atom1(), contentType: "application/xml" },
     "feed.json": { content: feed.json1(), contentType: "application/json" },
+    "rss": { content: feed.rss2(), contentType: "application/xml" },
+    "atom": { content: feed.atom1(), contentType: "application/xml" },
+    "json": { content: feed.json1(), contentType: "application/json" }
   };
 
   const response = responseMap[format];
@@ -92,3 +115,4 @@ export async function GET(request: NextRequest) {
     },
   });
 }
+
