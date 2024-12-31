@@ -53,4 +53,4 @@ Once you are satisfied with your changes, you can deploy your site using Vercel 
 
 #### License
 
-This project is open-source and available under the [MIT License](LICENSE).
+You are free to use this code.
