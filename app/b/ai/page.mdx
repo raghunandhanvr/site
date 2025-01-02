@@ -6,12 +6,13 @@ import NeuralNetwork from './neural-network';
 import ContextAwareResponse from './context-aware-response';
 import Transformer from './transformer';
 import MermaidDiagram from '@/app/components/md/mermaid'
+import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
 
 export const metadata = {
   title: 'Understanding AI Models',
   description: 'A comprehensive guide to understanding how modern AI models work, from data collection to deployment, with practical insights for developers.',
   alternates: {
-    canonical: '/n/ai',
+    canonical: '/b/ai',
   },
   openGraph: {
     images: [
@@ -26,6 +27,7 @@ export const metadata = {
 
 # Understanding AI Models: A Developer's Guide
 <AnimatedName />
+<BlogViewCounter slug="/b/ai" createdAt={new Date('2024-11-29')} />
 
 ### Before We Start
 **Bro**, this AI knows if you search for the best place to eat **Dosa, Vada, and Filter Coffee** at 8AM, it’ll guide you to the top-notch tiffin shop. But if you ask the same question at 10PM? It might suggest, “**Vada and filter coffee at night? Bro, it might duck your sleep, how about I suggest something else, or are you feeling like a Dosa Night special?**” And no, this isn’t just a if-else, it’s a **billion trillions zillions** of if-else conditions, powered by complex **neural networks** and **deep learning** algorithms.
