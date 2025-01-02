@@ -337,7 +337,7 @@ const NeuralNetwork: React.FC = () => {
         <div className="scale-90 h-[250px] w-full flex items-center justify-center">
           <AnimatePresence mode="wait">{renderNetwork()}</AnimatePresence>
         </div>
-        <div className="text-sm text-gray-600 self-start">
+        <div className="text-sm text-gray-600 text-center mb-10">
           Output: {sentence.length > 0 ? sentence.join(' ') : ''}
         </div>
       </div>

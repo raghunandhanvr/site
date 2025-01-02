@@ -194,12 +194,12 @@ const Tokenization: React.FC = () => {
   return (
     <div className="w-full max-w-[60ch] mx-auto p-4 sm:p-8 relative bg-white border border-gray-200 rounded-md">
       <div className="flex flex-col items-center space-y-12">
-        <div className="h-48 flex items-center justify-center">
+        <div className="h-48 flex items-center justify-center mb-5 mt-10">
           <AnimatePresence mode="wait">{renderStep()}</AnimatePresence>
         </div>
       </div>
 
-      <div className="absolute bottom-4 left-4">
+      <div className="bottom-4 left-4 text-center mb-15 mt-5">
         <motion.div
           key={currentStep}
           initial={{ opacity: 0 }}
