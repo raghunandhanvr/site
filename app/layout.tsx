@@ -60,26 +60,23 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID
 
   return (
     <ViewTransitions>
       <html lang="en" className={inter.className}>
         <head>
-          {gaId && (
-            <Script
-              id="ga-script"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${gaId}');
-                `
-              }}
-            />
-          )}
+          <Script
+            id="ga-script"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-8E3Y6STYEC');
+              `
+            }}
+          />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
