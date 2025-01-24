@@ -1,0 +1,83 @@
+import { AnimatedName } from '@/app/components/ui/animated-name';
+import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
+
+export const metadata = {
+  title: 'On Developer Experience',
+  description: 'Some thoughts on what makes a great DX',
+  alternates: {
+    canonical: '/b/mantras',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=On+Developer+Mantras`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# On Developer Experience
+<AnimatedName />
+<BlogViewCounter slug='/b/mantras' createdAt={new Date('2025-01-24')} />
+
+This blog isn't about the technical or programming tricks to optimize code; it's about the developer experience (DX).
+
+Here's my perspective on what creates a good developer experience:
+
+## Efficient Deployment
+
+- Deploy often, reflect your progress.
+- Your last deploy defines us.
+
+I mean, who doesn't love seeing their code live ASAP? Frequent deployments can improve the developer experience, but balance speed with quality. Deploy previews are handy for showcasing changes, but use them with a robust CI/CD pipeline that includes automated tests and code quality checks.
+
+Push for regular deployments, but do so in a controlled manner. Strike a balance between speed and stability, and focus on testing and practicality. This approach ensures the long-term success and reliability of your software while keeping developers engaged and productive.
+
+I've been playing with [Vercel](https://www.vercel.com/) lately, and bro, their deploy preview feature is like *next level*. Have a internal deployment CI/CD pipeline like them? You would also enjoy deploying your code and seeing the changes in real-time with shadow traffics.
+
+## Good Commits
+
+- Obsess over code, not just concepts.
+- Elevate every commit.
+
+I used to think I was done once the code worked. Now? I'm all about those clean commits. Have you tried [Conventional Commits](https://www.conventionalcommits.org/)? Game changer for me.
+
+It's not just about getting the code to run; it's about making it understandable and maintainable for yourself and others. Each commit should tell a story, reflecting the thought process behind your changes. This practice not only helps in tracking progress but also fosters a culture of clarity and collaboration within the team. When everyone commits to this level of excellence, it elevates the entire project and makes future development smoother.
+
+## Active Collaboration
+
+- Code together, better than meeting.
+- Build with code, not just words.
+
+Seriously, why sit in a meeting when you can pair program? 
+
+The energy of collaborating in real-time not only accelerates problem-solving but also fosters a deeper understanding of each other's thought processes. When you share a keyboard, you share knowledge, and that synergy can lead to innovative solutions that might not emerge in a traditional meeting setting. Plus, it's a great way to build camaraderie and trust within the team, making the work environment more fun and techy.
+
+## Strategic Autonomy
+
+- Navigate your path, execute precisely.
+- When stuck, smart questions are your best tool.
+
+This one's tough. I'm still learning to ask better questions. The [Stack Overflow guide](https://stackoverflow.com/help/how-to-ask) has been super helpful. It's all about framing your thoughts clearly and providing context. When you articulate your challenges well, not only do you get better answers, but you also empower others to learn from your experience. Embracing this mindset can transform obstacles into opportunities for growth, both individually and as a team.
+
+## Innovative Drive
+
+- Innovate where others iterate.
+- Challenge the code, change the game.
+
+I'm really trying to level up here. Instead of just using tools, I'm getting into the nitty-gritty of how they actually work. You know, build your own stuff and roll with it, just like [zalando](https://github.com/zalando) does. It's all about taking control and making things that fit your vibe. But make sure this helps your entire tech, not a over-engineering one.
+
+## Openness
+
+- Echo expertise, not ego.
+- Integrate feedback, maintain your code's character.
+
+Ego can be a double-edged sword in the tech world. While a healthy sense of self-confidence is essential, letting ego dictate your actions can lead to defensiveness and a reluctance to accept constructive criticism. It's crucial to remember that feedback is a tool for growth, not a personal attack. By fostering an environment where ideas can be shared openly, we can create a culture that values collaboration over competition. This shift not only enhances our work but also strengthens our relationships within the team, allowing everyone to thrive.
+
+## Security
+
+Always we think about the security at the end. 
+
+This is a work in progress for me. I'm learning to take feedback better. The [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow) has been great for structuring this in my projects and team.
