@@ -1,0 +1,307 @@
+import { AnimatedName } from '@/app/components/ui/animated-name';
+import MermaidDiagram from '@/app/components/md/mermaid'
+import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
+
+export const metadata = {
+  title: 'Inside a High-Performance Reverse Proxy',
+  description: 'About Zalando Skipper architecture, performance optimizations, and unique features.',
+  alternates: {
+    canonical: '/b/skipper',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=Inside+a+High-Performance+Reverse+Proxy`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# Inside a High-Performance Reverse Proxy
+<AnimatedName />
+<BlogViewCounter slug="/b/skipper" createdAt={new Date('2024-02-02')} />
+
+We recently switched to [Zalando Skipper](https://github.com/zalando/skipper) for our reverse proxy needs after trying out Nginx, HAProxy, Traefik, etc,.
+
+I'm writing this blog because I spent weeks evaluating different reverse proxies for our infrastructure, and Skipper's approach to solving common proxy challenges really stood out. While digging through their source code, I found several interesting implementation details that I think are worth sharing - especially if you're building networked services in Go. 
+
+Looking at their codebase, PRs, it's clear that Zalando properly follows the principles of good [dx](/b/dx) - the code is well-structured, thoroughly documented, and designed with extensibility in mind. Whether you're evaluating reverse proxies or just interested in high-performance Go code, there's a lot to learn from their approach.
+
+Skipper's Go-based architecture, extensibility, and performance in high-concurrency scenarios made it stand out. I've been learning from their codebase on how they do memeory management, goroutine handling, and routing.
+
+<MermaidDiagram diagram={`
+graph TD
+    A[Incoming Request] --> B[Parsing]
+    B --> C{Routing}
+    C -->|Match| D[Filters]
+    C -.->|No Match| Z[404]
+    D --> E[Backend]
+    E --> F[Response Processing]
+    F --> G[Response to Client]
+
+    H[Memory Management] -.-> B
+    H -.-> E
+    I[Concurrency Model] -.-> C
+    I -.-> D
+    J[Routing Engine] -.-> C
+    K[Load Balancing] -.-> E
+    L[Observability] -.-> F
+`} />
+
+## 1. Memory Management and Concurrency
+
+Skipper manages memory pretty efficiently. Here are some interesting techniques they use:
+
+### Object Pooling
+
+They're using object pooling for request contexts. Here's a simplified version:
+
+```go
+import (
+    "net/http"
+    "sync"
+    "time"
+)
+
+type proxyContext struct {
+    Request        *http.Request
+    Response       http.ResponseWriter
+    roundTripStart time.Time
+    filters        []filters.Filter
+}
+
+var proxyContextPool = sync.Pool{
+    New: func() interface{} {
+        return &proxyContext{
+            filters: make([]filters.Filter, 0, 10),
+        }
+    },
+}
+
+func acquireContext(w http.ResponseWriter, r *http.Request) *proxyContext {
+    ctx := proxyContextPool.Get().(*proxyContext)
+    ctx.reset(w, r)
+    return ctx
+}
+
+func releaseContext(ctx *proxyContext) {
+    ctx.Request = nil
+    ctx.Response = nil
+    proxyContextPool.Put(ctx)
+}
+```
+
+What's cool here is they pre-allocate the `filters` slice. This avoids allocations during request processing, which is crucial for low latency under high load. The time complexity for acquiring and releasing contexts is O(1), which is great for performance.
+
+### Request Handling
+
+Here's how Skipper handles requests:
+
+```go
+func (p *proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    ctx := acquireContext(w, r)
+    defer releaseContext(ctx)
+
+    if err := p.process(ctx); err != nil {
+        p.errorHandler(ctx, err)
+    }
+}
+```
+
+This setup allows Skipper to handle a large number of concurrent connections efficiently. Each request gets its own goroutine, leveraging Go's concurrency model.
+
+## 2. Filter Chain Execution
+
+Skipper's filter chain is both flexible and fast. Here's how they process it:
+
+```go
+func (p *proxy) process(ctx *proxyContext) error {
+    for _, f := range ctx.filters {
+        if err := f.Request(ctx); err != nil {
+            return err
+        }
+    }
+
+    if err := p.forward(ctx); err != nil {
+        return err
+    }
+
+    for i := len(ctx.filters) - 1; i >= 0; i-- {
+        if err := ctx.filters[i].Response(ctx); err != nil {
+            return err
+        }
+    }
+
+    return nil
+}
+```
+
+The time complexity here is O(n), where n is the number of filters. But what's clever is that by keeping the filter functions small and simple, they're allowing the Go compiler to inline these calls, reducing function call overhead.
+
+I'm still exploring their filter implementations, but I've been working on a custom rate limiting filter. Below's just a very basic example:
+
+```go
+type rateLimitFilter struct {
+    limit rate.Limit
+    burst int
+    limiter *rate.Limiter
+}
+
+func (f *rateLimitFilter) Request(ctx filters.FilterContext) {
+    if !f.limiter.Allow() {
+        ctx.Serve(&http.Response{
+            StatusCode: http.StatusTooManyRequests,
+            Body:       ioutil.NopCloser(strings.NewReader("Rate limit exceeded")),
+        })
+    }
+}
+```
+
+This filter integrates seamlessly with Skipper's existing chain. I'm impressed by how easy it is to extend Skipper's functionality.
+
+## 3. Routing and Load Balancing
+
+Skipper's routing engine is pretty smart. They use a trie for static routes and regex for dynamic ones.
+
+### Trie-based Route Matching
+
+Here's a simplified version of their trie-based route matching:
+
+```go
+type trieNode struct {
+    children map[string]*trieNode
+    route    *Route
+}
+
+func (t *trie) lookup(path string) *Route {
+    node := t.root
+    segments := strings.Split(path, "/")
+    for _, segment := range segments {
+        child, exists := node.children[segment]
+        if !exists {
+            return nil
+        }
+        node = child
+    }
+    return node.route
+}
+```
+
+This gives O(k) lookup time for static routes, where k is the path length. It's much faster than iterating through a list of routes for each request.
+
+<MermaidDiagram diagram={`
+graph TD
+    A[Root] --> B[api]
+    A --> C[static]
+    B --> D[v1]
+    B --> E[v2]
+    D --> F[users]
+    D --> G[products]
+    E --> H[auth]
+    C --> I[css]
+    C --> J[js]
+`} />
+
+### Load Balancing
+
+Their weighted round-robin load balancing is interesting:
+
+```go
+type WeightedRoundRobinLB struct {
+    endpoints []*Endpoint
+    weights   []int
+    current   int
+    mu        sync.Mutex
+}
+
+func (lb *WeightedRoundRobinLB) Next() *Endpoint {
+    lb.mu.Lock()
+    defer lb.mu.Unlock()
+
+    totalWeight := 0
+    for _, w := range lb.weights {
+        totalWeight += w
+    }
+
+    for {
+        lb.current = (lb.current + 1) % len(lb.endpoints)
+        if lb.current == 0 {
+            totalWeight--
+            if totalWeight < 0 {
+                totalWeight = 0
+                for _, w := range lb.weights {
+                    totalWeight += w
+                }
+            }
+        }
+        if totalWeight == 0 || lb.weights[lb.current] > totalWeight {
+            return lb.endpoints[lb.current]
+        }
+    }
+}
+```
+
+This allows for fine-grained control over traffic distribution. The time complexity is O(n) in the worst case, where n is the number of endpoints, but in practice, it's often much better.
+
+## 4. Dynamic Configuration
+
+One thing that really stands out is Skipper's ability to update routing configuration on the fly. This is super useful in Kubernetes environments. Here's a snippet from their Kubernetes ingress controller:
+
+```go
+func (c *Client) LoadAll() ([]*eskip.Route, error) {
+    ingresses, err := c.getIngresses()
+    if err != nil {
+        return nil, err
+    }
+
+    routes := make([]*eskip.Route, 0, len(ingresses))
+    for _, ing := range ingresses {
+        rs, err := c.ingressToRoutes(ing)
+        if err != nil {
+            klog.Errorf("error converting ingress %v/%v to routes: %v", ing.Namespace, ing.Name, err)
+            continue
+        }
+        routes = append(routes, rs...)
+    }
+
+    return routes, nil
+}
+```
+
+This function is part of a loop that periodically checks for changes in Kubernetes Ingress resources and updates Skipper's routing table. The time complexity here is O(n * m), where n is the number of ingresses and m is the average number of routes per ingress.
+
+## 5. Observability
+
+I'm still exploring their observability features, but Skipper integrates well with Prometheus for metrics collection. Here's a basic example of how they set up a histogram for request durations:
+
+```go
+var (
+    requestDuration = prometheus.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "skipper_serve_route_duration_seconds",
+            Help:    "The duration in seconds of serving requests.",
+            Buckets: []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10},
+        },
+        []string{"route"},
+    )
+)
+
+func init() {
+    prometheus.MustRegister(requestDuration)
+}
+```
+
+This allows for detailed monitoring of request latencies across different routes.
+
+---
+
+I'm still digging into their codebase, but I'm impressed by what I've seen so far. The attention to performance optimization, from low-level memory management to high-level routing strategies, is evident throughout.
+
+While Nginx and HAProxy are solid, Skipper's Go-based architecture and focus on dynamic configuration make it a great fit for our container-based setup. Its extensibility has allowed us to implement custom logic that would have been tricky with other solutions.
+ If you're dealing with high-traffic scenarios or complex routing needs, Skipper is definitely worth a look.
+
+The code is [well-documented](https://opensource.zalando.com/skipper/reference/architecture/), and the community seems pretty active in slack.
+
+Peace.
