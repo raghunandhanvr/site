@@ -7,8 +7,12 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import Footer from './components/layout/footer'
 import { siteConfig, getStructuredData } from "./config"
 import Script from "next/script"
+import clsx from "clsx"
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -57,13 +61,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
 
   return (
     <ViewTransitions>
-      <html lang="en" className={inter.className}>
+        <html lang="en" className={clsx(inter.className)} suppressHydrationWarning>
         <head>
           <Script
             id="ga-script"
