@@ -2,7 +2,7 @@ export const siteConfig = {
   url: "https://raghu.app/",
   name: "Raghunandhan VR",
   shortName: "Raghu",
-  description: "Software Engineer focused on coding and technical writing",
+  description: "I own a computer and I like to develop things with it.",
   location: "Chennai, India",
   jobTitle: "Software Engineer",
   image: "/opengraph-image.png",
