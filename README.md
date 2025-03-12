@@ -8,10 +8,12 @@ This is a clean, fast, and lightweight site built with Next.js, Vercel, and Tail
 - RSS/Atom feeds
 - SEO optimizations
 - Google Analytics integration if in case you dont need vercel analytics
+- Super fast and lightweight
 
 #### Getting Started
 
 To set up the project locally, follow these steps:
+(btw, I just use [pnpm](https://pnpm.io/).)
 
 1. **Install Dependencies**  
    Run the following command to install the necessary packages:
@@ -44,12 +46,13 @@ To set up the project locally, follow these steps:
    - **`/app/components/ui/name-transition.tsx`**: Update the name with your own name
    - **`/app/globals.css`**: Update the name in `.transition-element`, `::view-transition-old`, `::view-transition-new`
    - Remove `@vercel/analytics/react` and `@vercel/speed-insights/next` from `app/layout.tsx` if you don't need analytics or speed insights from vercel
-   - Add `NEXT_PUBLIC_GA_ID` to `.env`  if you want to use Google Analytics
+   - Change the Google Analytics ID in `app/layout.tsx` to your own
    - Change the birthday in `app/components/ui/age-counter.tsx` to your birthday
+   - Create your .env.local with .env.example
 
 #### Deployment
 
-Once you are satisfied with your changes, you can deploy your site using Vercel or any other hosting service of your choice.
+Once you are satisfied with your changes, you can deploy your site using [Vercel](https://vercel.com/) or any other hosting service of your choice. This is NextJS guys, so we need servers, it requires time to deploy and manage on our own. So just go with [Vercel](https://vercel.com/) and you're good to go.
 
 #### License
 
