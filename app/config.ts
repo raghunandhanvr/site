@@ -1,5 +1,5 @@
 export const siteConfig = {
-  url: "https://www.raghu.app/",
+  url: "https://raghu.app/",
   name: "Raghunandhan VR",
   shortName: "Raghu",
   description: "I own a computer and I like to develop things with it.",
