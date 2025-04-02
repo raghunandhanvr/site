@@ -1,11 +1,25 @@
 import type { NextConfig } from 'next';
 import createMDX from '@next/mdx';
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 const nextConfig: NextConfig = {
   pageExtensions: ['mdx', 'ts', 'tsx'],
   experimental: {
     mdxRs: true,
+    optimizeCss: true,
   },
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    dangerouslyAllowSVG: true,
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  reactStrictMode: true,
+  poweredByHeader: false,
   async rewrites() {
     return [
       {
@@ -42,5 +56,5 @@ const nextConfig: NextConfig = {
 
 const withMDX = createMDX({});
 
-export default withMDX(nextConfig);
+export default withBundleAnalyzer(withMDX(nextConfig));
 
