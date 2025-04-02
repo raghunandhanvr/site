@@ -40,7 +40,7 @@ const components = {
     const className = 'text-blue-500 hover:text-blue-700';
     if (href?.startsWith('/')) {
       return (
-        <Link href={href} className={className} prefetch={true} {...props}>
+        <Link href={href} className={className} {...props}>
           {children}
         </Link>
       );

@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { ViewTransitions } from 'next-view-transitions'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Footer from './components/layout/footer'
@@ -65,7 +66,8 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="en" className={clsx(inter.className)} suppressHydrationWarning>
+    <ViewTransitions>
+        <html lang="en" className={clsx(inter.className)} suppressHydrationWarning>
         <head>
           <Script
             id="ga-script"
@@ -101,6 +103,7 @@ export default function RootLayout({
           </div>
         </body>
       </html>
+    </ViewTransitions>
   )
 }
 
