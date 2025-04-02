@@ -15,6 +15,7 @@
     "@vercel/speed-insights": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "critters": "^0.0.25",
     "date-fns": "^4.1.0",
     "feed": "^4.2.2",
     "framer-motion": "^11.15.0",
@@ -32,6 +33,7 @@
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.2.4",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
