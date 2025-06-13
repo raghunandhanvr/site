@@ -73,9 +73,10 @@ const blogPosts: BlogPost[] = [
 export default async function WritingsPage({
   searchParams,
 }: {
-  searchParams: { sort?: string }
+  searchParams: Promise<{ sort?: string }>
 }) {
-  const sortBy = searchParams.sort || "date"
+  const params = await searchParams
+  const sortBy = params.sort || "date"
 
   const sortedPosts = [...blogPosts]
   if (sortBy === "title") {
@@ -98,7 +99,7 @@ export default async function WritingsPage({
       <p className="text-sm text-gray-500 mb-8">Some of my writings on tech, and other random stuffs</p>
 
       <div className="w-full">
-        <table className="w-full border-collapse text-sm" style={{ maxWidth: '100%', display: 'table' }}>
+        <table className="w-full border-collapse text-sm writings-table" style={{ maxWidth: '100%', display: 'table' }}>
           <thead>
             <tr className="text-left">
               <th className="pb-2 font-normal text-gray-500 w-[15%]">

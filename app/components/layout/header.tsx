@@ -15,15 +15,15 @@ export default function Header() {
 
   const generateBreadcrumbs = () => {
     const paths = pathname.split('/').filter(Boolean)
-    const breadcrumbs = [{ name: 'Home', path: '/' }]
+    const breadcrumbs = [{ name: 'home', path: '/' }]
     
     paths.forEach((path, index) => {
       const fullPath = '/' + paths.slice(0, index + 1).join('/')
       let name = path
       
-      if (path === 'work') name = 'Works'
-      else if (path === 'writings') name = 'Writings'
-      else name = path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ')
+      if (path === 'work') name = 'works'
+      else if (path === 'writings') name = 'writings'
+      else name = path.replace(/-/g, ' ')
       
       breadcrumbs.push({ name, path: fullPath })
     })
@@ -69,7 +69,7 @@ export default function Header() {
         </header>
 
         {showBreadcrumb && (
-          <nav className="text-[11px] text-gray-400 mb-3 -mt-7">
+          <nav className="text-[11px] text-gray-400 mb-3 -mt-4">
             <ol className="flex items-center">
               {breadcrumbs.map((crumb, index) => (
                 <li key={crumb.path} className="flex items-center">

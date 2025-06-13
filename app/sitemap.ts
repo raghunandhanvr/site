@@ -4,7 +4,7 @@ export default async function sitemap() {
   const slugs = await getBlogSlugs();
 
   const blogs = slugs.map((slug) => ({
-    url: `${BaseUrl}b/${slug}`,
+    url: `${BaseUrl}writings/${slug}`,
     lastModified: new Date().toISOString(),
   }));
 

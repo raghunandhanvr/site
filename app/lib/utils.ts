@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export const blogsDirectory = path.join(process.cwd(), 'app', 'b');
+export const blogsDirectory = path.join(process.cwd(), 'app', 'writings');
 
 export const BaseUrl = siteConfig.url.endsWith("/")
   ? siteConfig.url

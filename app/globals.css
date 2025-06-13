@@ -221,3 +221,41 @@ a:not(.work-link, .fade-in):hover {
 *:hover > .anchor {
   @apply visible;
 }
+
+/* Override global table styles for writings table */
+.writings-table {
+  display: table !important;
+  max-width: 100% !important;
+  overflow-x: visible !important;
+  white-space: normal !important;
+}
+
+.writings-table td:nth-child(2) {
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Mobile responsive for writings table */
+@media (max-width: 640px) {
+  .writings-table {
+    table-layout: fixed;
+  }
+  
+  .writings-table th:first-child,
+  .writings-table td:first-child {
+    width: 60px !important;
+    padding-right: 8px;
+  }
+  
+  .writings-table th:last-child,
+  .writings-table td:last-child {
+    width: 50px !important;
+    padding-left: 8px;
+  }
+  
+  .writings-table th:nth-child(2),
+  .writings-table td:nth-child(2) {
+    width: auto;
+    padding-right: 8px;
+  }
+}

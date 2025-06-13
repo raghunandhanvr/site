@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
   const blogs = await getBlogs();
 
   blogs.forEach((blog) => {
-    const blogUrl = `${BaseUrl}b/${blog.slug}`;
+    const blogUrl = `${BaseUrl}writings/${blog.slug}`;
     const categories = blog.metadata.tags
       ? blog.metadata.tags.split(",").map((tag: string) => tag.trim())
       : [];
