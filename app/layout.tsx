@@ -1,10 +1,12 @@
-import './globals.css'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { ViewTransitions } from 'next-view-transitions'
-import { Analytics } from '@vercel/analytics/react'
+import type React from "react"
+import "./globals.css"
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import { ViewTransitions } from "next-view-transitions"
+import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import Footer from './components/layout/footer'
+import Footer from "./components/layout/footer"
+import Header from "./components/layout/header"
 import { siteConfig, getStructuredData } from "./config"
 import Script from "next/script"
 import clsx from "clsx"
@@ -12,7 +14,7 @@ import clsx from "clsx"
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-});
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -34,9 +36,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteConfig.url,
     types: {
-      'application/rss+xml': '/rss.xml',
-      'application/atom+xml': '/atom.xml',
-      'application/feed+json': '/feed.json',
+      "application/rss+xml": "/rss.xml",
+      "application/atom+xml": "/atom.xml",
+      "application/feed+json": "/feed.json",
     },
   },
   robots: {
@@ -62,12 +64,11 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
-
   return (
     <ViewTransitions>
-        <html lang="en" className={clsx(inter.className)} suppressHydrationWarning>
+      <html lang="en" className={clsx(inter.className)} suppressHydrationWarning>
         <head>
           <Script
             id="ga-script"
@@ -78,13 +79,13 @@ export default function RootLayout({
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', 'G-8E3Y6STYEC');
-              `
+              `,
             }}
           />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify(getStructuredData())
+              __html: JSON.stringify(getStructuredData()),
             }}
           />
           <link rel="canonical" href={siteConfig.url} />
@@ -93,8 +94,9 @@ export default function RootLayout({
           <link rel="alternate" type="application/feed+json" href="/feed.json" title="JSON" />
         </head>
         <body className="antialiased tracking-tight">
-        <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
+          <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
             <main className="max-w-[60ch] mx-auto w-full space-y-6">
+              <Header />
               {children}
               <Footer />
             </main>
@@ -106,4 +108,3 @@ export default function RootLayout({
     </ViewTransitions>
   )
 }
-

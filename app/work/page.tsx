@@ -1,12 +1,11 @@
 import { works } from "./work-data";
 import { CategoryBadge, CurrentTag } from "./work-data";
 import type { Metadata } from "next";
-import { AnimatedName } from "../components/ui/animated-name";
-import { Link } from 'next-view-transitions';
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Work",
-  description: "My Works",
+  description: "Some of my works",
   openGraph: {
     images: [
       {
@@ -24,9 +23,10 @@ export const metadata: Metadata = {
 export default function Works() {
   return (
     <section className="max-w-2xl mx-auto">
-      <h1 className="font-medium pt-12 mb-0 fade-in">Works</h1>
-      <AnimatedName />
-      <div className="space-y-8 mt-8">
+      <h1 className="font-medium mb-1">Works</h1>
+      <p className="text-sm text-gray-500 mb-8">Some of my works and industry experience</p>
+      
+      <div className="space-y-8">
         {works.map((work, index) => (
           <div key={index} className="group">
             <Link
@@ -62,4 +62,3 @@ export default function Works() {
     </section>
   );
 }
-

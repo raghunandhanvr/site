@@ -1,4 +1,3 @@
-import { AnimatedName } from '@/app/components/ui/animated-name';
 import MermaidDiagram from '@/app/components/md/mermaid'
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
 
@@ -6,7 +5,7 @@ export const metadata = {
   title: 'Inside a High-Performance Reverse Proxy',
   description: 'About Zalando Skipper architecture, performance optimizations, and unique features.',
   alternates: {
-    canonical: '/b/skipper',
+    canonical: '/writings/skipper',
   },
   openGraph: {
     images: [
@@ -20,14 +19,13 @@ export const metadata = {
 };
 
 # Inside a High-Performance Reverse Proxy
-<AnimatedName />
-<BlogViewCounter slug="/b/skipper" createdAt={new Date('2024-02-02')} />
+<BlogViewCounter slug="/writings/skipper" createdAt={new Date('2025-02-02')} />
 
 We recently switched to [Zalando Skipper](https://github.com/zalando/skipper) for our reverse proxy needs after trying out Nginx, HAProxy, Traefik, etc,.
 
 I'm writing this blog because I spent weeks evaluating different reverse proxies for our infrastructure, and Skipper's approach to solving common proxy challenges really stood out. While digging through their source code, I found several interesting implementation details that I think are worth sharing - especially if you're building networked services in Go. 
 
-Looking at their codebase, PRs, it's clear that Zalando properly follows the principles of good [dx](/b/dx) - the code is well-structured, thoroughly documented, and designed with extensibility in mind. Whether you're evaluating reverse proxies or just interested in high-performance Go code, there's a lot to learn from their approach.
+Looking at their codebase, PRs, it's clear that Zalando properly follows the principles of good [dx](/writings/dx) - the code is well-structured, thoroughly documented, and designed with extensibility in mind. Whether you're evaluating reverse proxies or just interested in high-performance Go code, there's a lot to learn from their approach.
 
 Skipper's Go-based architecture, extensibility, and performance in high-concurrency scenarios made it stand out. I've been learning from their codebase on how they do memeory management, goroutine handling, and routing.
 

@@ -37,6 +37,6 @@
 , "app/page.tsx", "app/work/page.mdx"  ],
   "exclude": [
     "node_modules",
-    "app/b/ai/*.tsx"
+    "app/writings/ai/*.tsx"
   ]
 }
