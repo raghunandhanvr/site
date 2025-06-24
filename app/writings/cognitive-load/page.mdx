@@ -1,0 +1,618 @@
+import MermaidDiagram from '@/app/components/md/mermaid'
+import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
+
+export const metadata = {
+  title: 'The Cognitive Load: Why Code Makes Your Brain Hurt',
+  description: 'How to write code that doesn\'t make people want to rage quit',
+  alternates: {
+    canonical: '/writings/cognitive-load',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=The+Cognitive+Load:+Why+Code+Makes+Your+Brain+Hurt`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# The Cognitive Load: Why Code Makes Your Brain Hurt    
+<BlogViewCounter slug="/writings/cognitive-load" createdAt={new Date('2025-06-24')} />
+
+Ever spent 3 hours debugging what should've been a 5-minute fix? The code worked perfectly, but understanding it felt impossible and the code structure was... complex. Very complex.
+
+
+It has a name: **cognitive load**.
+
+## What Actually Is Cognitive Load?
+
+> Cognitive load is how much a developer needs to think in order to complete a task.
+
+When you're reading code, you're juggling things like:
+- Variable values and their states
+- Control flow logic  
+- Function call sequences
+- Business rules and constraints
+
+The average person can hold roughly **4 such chunks** in working memory. Once you cross that threshold, everything becomes exponentially harder.
+
+*Picture this: You've been asked to fix a bug in a completely unfamiliar Go project. The codebase uses many design patterns, abstractions, and modern technologies. While well-intentioned, **this creates a significant cognitive load challenge.***
+
+<MermaidDiagram diagram={`
+graph TD
+    A["🧠 Fresh Brain"] --> B["🧠+ One Thing"]
+    B --> C["🧠++ Two Things"]  
+    C --> D["🧠+++ Three Things"]
+    D --> E["🤯 brain.exe has stopped working"]
+    
+    style A fill:transparent,stroke:#4CAF50,stroke-width:2px
+    style B fill:transparent,stroke:#FFC107,stroke-width:2px
+    style C fill:transparent,stroke:#FF9800,stroke-width:2px
+    style D fill:transparent,stroke:#FF5722,stroke-width:2px
+    style E fill:transparent,stroke:#F44336,stroke-width:3px
+`} />
+
+We should reduce cognitive load as much as possible, because **time spent understanding is time not spent solving**.
+
+## The Two Flavors of Mental Torture
+
+**Intrinsic load** - The unavoidable complexity of the problem you're solving. Building a payment system? Some complexity is inherent to financial transactions. Can't reduce this much.
+
+**Extraneous load** - Unnecessary complexity created by how the information is presented. Poor variable names, confusing abstractions, showing off with "clever" code. This is what kills productivity and can be massively reduced.
+
+---
+
+For the rest of this post, I'll use these cognitive load indicators:  
+`🧠` - Fresh working memory, zero cognitive load  
+`🧠+` - One fact in our working memory  
+`🧠++` - Two facts, getting harder  
+`🧠+++` - Three facts, approaching limit  
+`🤯` - Cognitive overload, more than 4 facts
+
+*Our brains are way more complex than this, but this simple model works great for understanding code complexity.*
+
+## Complex Conditionals That Melt Your Brain
+
+Let me show you some real pain:
+
+```go
+// This makes your brain work overtime 🧠+++ then 🤯
+if user.Age > 18 && 
+   (user.HasLicense || user.HasPermit) && 
+   (user.IsActive && !user.IsBanned) && 
+   (user.Subscription == "premium" || user.TrialDays > 0) && 
+   time.Since(user.LastLogin) < 30*24*time.Hour {
+    // By now you've forgotten what the first condition was
+    processUserAction(user)
+}
+```
+
+By the time you reach `processUserAction()`, your brain is tracking:
+- Age check `🧠+`
+- License/permit logic `🧠++` 
+- Active status AND ban status `🧠+++`
+- Subscription OR trial logic `🧠++++`
+- Time calculation `🤯`
+
+**Cognitive overload achieved!** Your brain can't hold all this.
+
+Much better approach:
+
+```go
+// Your brain can actually relax now 🧠
+isAdult := user.Age > 18
+canDrive := user.HasLicense || user.HasPermit  
+isActiveUser := user.IsActive && !user.IsBanned
+hasValidSubscription := user.Subscription == "premium" || user.TrialDays > 0
+isRecentlyActive := time.Since(user.LastLogin) < 30*24*time.Hour
+
+if isAdult && canDrive && isActiveUser && hasValidSubscription && isRecentlyActive {
+    processUserAction(user) // Crystal clear what's happening
+}
+```
+
+Each variable name tells a story. Your brain doesn't need to rebuild the logic every single time.
+
+## Nested Hell That Makes You Want to Quit
+
+```go
+func processOrder(order Order) error {
+    if order.User.IsValid { // 🧠+, okay valid users only
+        if order.Payment.IsSuccessful { // 🧠++, payment worked
+            if order.Inventory.IsAvailable { // 🧠+++, items in stock  
+                if order.Shipping.AddressValid { // 🤯, what were we checking again?
+                    return createOrder(order)
+                }
+            }
+        }
+    }
+    return errors.New("order processing failed")
+}
+```
+
+Each nested `if` adds another layer to your mental stack. By the fourth condition, you've completely lost track of what needs to be true for the order to succeed.
+
+Early returns save your sanity:
+
+```go
+// Much easier to follow 🧠
+func processOrder(order Order) error {
+    if !order.User.IsValid {
+        return errors.New("invalid user")
+    }
+    
+    if !order.Payment.IsSuccessful {
+        return errors.New("payment failed") 
+    }
+    
+    if !order.Inventory.IsAvailable {
+        return errors.New("out of stock")
+    }
+    
+    if !order.Shipping.AddressValid {
+        return errors.New("invalid shipping address")
+    }
+    
+    // If we're here, everything's good! 🧠
+    return createOrder(order)
+}
+```
+
+Each check is independent. Your brain doesn't need to keep track of nested conditions. **Linear thinking is natural for humans** - embrace it!
+
+## Too Many Shallow Modules (The Microservice Challenge)
+
+Here's a story that illustrates the problem perfectly. I once consulted for a startup where a team of **5 developers** had created **17 microservices**! 🤦‍♂️
+
+Every "simple" feature required changes across 4+ services. Want to add a new user field? You need to:
+1. Update the user service `🧠+`
+2. Modify the auth service `🧠++`  
+3. Change the notification service `🧠+++`
+4. Update the analytics service `🧠++++`
+5. Pray nothing breaks `🤯`
+
+They were 10 months behind schedule because they spent more time managing service interactions than building features.
+
+<MermaidDiagram diagram={`
+graph LR
+    %% Main Event
+    UserRegistration[["User Registration"]]
+
+    %% Auth Flow
+    UserRegistration --> AuthService(["Auth Service"])
+    AuthService --> DatabaseCheck[("Database Check")]
+
+    %% User Flow
+    UserRegistration --> UserService(["User Service"])
+    UserService --> ProfileCreation[("Profile Creation")]
+
+    %% Email Flow
+    UserRegistration --> EmailService(["Email Service"])
+    EmailService --> WelcomeEmail[("Welcome Email")]
+
+    %% Analytics Flow
+    UserRegistration --> AnalyticsService(["Analytics Service"])
+    AnalyticsService --> TrackEvent[("Track Event")]
+
+    %% Notification Flow
+    UserRegistration --> NotificationService(["Notification Service"])
+    NotificationService --> PushNotification[("Push Notification")]
+
+    %% Billing Flow
+    UserRegistration --> BillingService(["Billing Service"])
+    BillingService --> SetupBilling[("Setup Billing")]
+
+    %% Styling
+    classDef main stroke:#E91E63,stroke-width:3px,fill:#fff5f8
+    classDef auth stroke:#9C27B0,stroke-width:2px,fill:#f9f0fb
+    classDef user stroke:#3F51B5,stroke-width:2px,fill:#f0f3fb
+    classDef email stroke:#2196F3,stroke-width:2px,fill:#f0f8ff
+    classDef analytics stroke:#00BCD4,stroke-width:2px,fill:#e8fbfd
+    classDef notification stroke:#009688,stroke-width:2px,fill:#e8f7f5
+    classDef billing stroke:#4CAF50,stroke-width:2px,fill:#edf9ee
+    classDef action fill:#ffffff,stroke:#cccccc,stroke-width:1px
+
+    class UserRegistration main
+    class AuthService auth
+    class UserService user
+    class EmailService email
+    class AnalyticsService analytics
+    class NotificationService notification
+    class BillingService billing
+    class DatabaseCheck,ProfileCreation,WelcomeEmail,TrackEvent,PushNotification,SetupBilling action
+`} />
+
+This is what we call **shallow modules** - the interface complexity is huge compared to the tiny functionality each provides. **You have to keep in mind each module's responsibilities AND all their interactions.**
+
+Compare this to **deep modules** - simple interface, complex functionality hidden inside.
+
+Think about the Unix I/O interface in Go:
+
+```go
+// Simple interface, massive complexity hidden underneath
+file, err := os.Open("data.txt")     // 🧠+
+defer file.Close()
+buffer := make([]byte, 1024)
+n, err := file.Read(buffer)          // 🧠+
+```
+
+This simple interface has **hundreds of thousands of lines** of complexity hidden under the hood - filesystems, hardware drivers, memory management, buffering. But you don't need to think about any of that! `🧠+`
+
+> The best components provide powerful functionality yet have a simple interface.
+
+**Reality check**: If your team is smaller than a cricket team, you probably don't need microservices yet.
+
+## When Being "Smart" Backfires
+
+We've all encountered code that tries to be too clever. Here's an example:
+
+```go
+// Look how clever I am! 🤯
+result := users.Filter(func(u User) bool { 
+    return u.Active && u.Verified 
+}).Map(func(u User) UserScore { 
+    return UserScore{User: u, Score: calculateComplexScore(u)} 
+}).Filter(func(us UserScore) bool { 
+    return us.Score > threshold 
+}).Map(func(us UserScore) ProcessedUser { 
+    return transformUserData(us.User) 
+}).Sort(func(a, b ProcessedUser) bool { 
+    return a.Priority > b.Priority 
+}).Take(limit)
+```
+
+vs. the version that won't make your teammates hate you:
+
+```go
+// Your future self will thank you 🙏🧠
+var activeUsers []User
+for _, user := range users {
+    if user.Active && user.Verified {
+        activeUsers = append(activeUsers, user)
+    }
+}
+
+var usersWithScores []UserScore  
+for _, user := range activeUsers {
+    score := calculateComplexScore(user)
+    usersWithScores = append(usersWithScores, UserScore{
+        User: user, 
+        Score: score,
+    })
+}
+
+var qualifiedUsers []ProcessedUser
+for _, userScore := range usersWithScores {
+    if userScore.Score > threshold {
+        processed := transformUserData(userScore.User)
+        qualifiedUsers = append(qualifiedUsers, processed)
+    }
+}
+
+sort.Slice(qualifiedUsers, func(i, j int) bool {
+    return qualifiedUsers[i].Priority > qualifiedUsers[j].Priority
+})
+
+if len(qualifiedUsers) > limit {
+    qualifiedUsers = qualifiedUsers[:limit]
+}
+```
+
+Yeah, it's more lines. But at 2 AM when something breaks, you'll actually understand what's happening. **Clever code is tomorrow's debugging nightmare.**
+
+## Business Logic Lost in HTTP Status Codes
+
+Picture this conversation:
+
+**Backend team**: "We return 401 for expired JWT tokens, 403 for insufficient access, and 418 for banned users."
+
+**Frontend devs**: "Wait, what was 418 again?" `🧠+`
+
+**QA team**: "I got a 403, is that expired token or insufficient access?" `🧠++`
+
+**New intern**: "Why 418? Isn't that for teapots?" `🧠+++`
+
+**Everyone**: *cognitive overload* `🤯`
+
+Engineers on the frontend need to temporarily hold this mapping in their brains:
+- `401` = expired JWT token `🧠+`
+- `403` = insufficient access `🧠++`  
+- `418` = banned users `🧠+++`
+
+Then QA engineers come along: "Hey, I got `403` status, is that expired token or insufficient access?" **QA can't jump straight to testing - they have to recreate the backend team's mental model first.**
+
+Why hold this custom mapping in working memory? Better to abstract away from HTTP protocol details:
+
+```go
+type APIResponse struct {
+    Success bool   `json:"success"`
+    Code    string `json:"code"`
+    Message string `json:"message"`
+}
+
+// Much clearer 🧠
+response := APIResponse{
+    Success: false,
+    Code:    "jwt_expired", 
+    Message: "Your session has expired, please log in again",
+}
+```
+
+Cognitive load on frontend: `🧠` (fresh)  
+Cognitive load on QA: `🧠` (fresh)
+
+Same applies to numeric status codes in databases - **prefer self-describing strings**. We're not in the 640K RAM era anymore!
+
+## Inheritance Nightmare That Makes You Want to Scream
+
+Here's what happened when I had to change admin user functionality:
+
+```
+AdminController → UserController → GuestController → BaseController
+```
+
+To understand what an admin can do: `🧠`
+- First, check `BaseController` for basic functionality `🧠+`
+- Then `GuestController` for guest-specific logic `🧠++`  
+- Next `UserController` for user modifications `🧠+++`
+- Finally `AdminController` for admin features `🧠++++`
+
+But wait! There's `SuperAdminController` that extends `AdminController`. By changing `AdminController`, I might break superadmin functionality, so let me check that too: `🤯`
+
+**Five levels deep** just to understand what happens when an admin clicks a button.
+
+You know how family recipes work? Your grandmother's base recipe, your mother's modifications, then your own tweaks. That's manageable because each person adds something meaningful. But imagine if you had to check 5 generations of recipe modifications just to know if you need to add salt! 
+
+Better approach - **prefer composition over inheritance**:
+
+```go
+// Much clearer structure 🧠
+type AdminUser struct {
+    permissions    *PermissionManager
+    authentication *AuthService  
+    userManagement *UserManager
+}
+
+func (a *AdminUser) BanUser(userID string) error {
+    if !a.permissions.CanBanUsers() {
+        return errors.New("insufficient permissions")
+    }
+    return a.userManagement.Ban(userID)
+}
+```
+
+Now when something breaks, you know exactly where to look.
+
+## Testing Your Code's Brain Damage Level
+
+Want to know if your code has cognitive load problems? Here's my **30-minute rule**:
+
+1. Grab someone new to your codebase
+2. Ask them to make a "simple" change  
+3. Count how many files they need to open
+4. Time how long they're confused
+
+If they're scratching their head for more than **30 minutes** on a simple change, your code has serious cognitive load issues. `🤯`
+
+I once saw someone spend **6 hours** figuring out how to add a single validation rule because the logic was split across 12 different "clean" abstractions. The validation itself took 5 minutes to write.
+
+## Abusing DRY (Don't Repeat Yourself) Principle
+
+**Here's where good intentions go wrong.** We're so obsessed with not repeating code that we create tight coupling between unrelated components.
+
+I consulted for a company where they extracted a "common validation utility" used by 8 different services. Sounds good, right? Wrong. When they needed to change validation logic for **one specific use case**, they couldn't because it would break the other 7 services. `🤯`
+
+The team ended up spending 2 weeks coordinating changes across 8 services just to add a new field validation. 
+
+**Rob Pike said it best**: *"A little copying is better than a little dependency."*
+
+Sometimes it's better to have 3 similar functions than 1 "flexible" function with 15 parameters and conditional logic everywhere.
+
+```go
+// Bad: Over-abstracted 🤯
+func ValidateUser(user User, mode string, strict bool, legacy bool, skipEmail bool) error {
+    if mode == "login" {
+        if !strict && legacy {
+            // ... complex conditional logic
+        }
+    } else if mode == "registration" {
+        if !skipEmail {
+            // ... more conditionals  
+        }
+    }
+    // ... 50 more lines of conditional madness
+}
+
+// Good: Clear and simple 🧠
+func ValidateUserLogin(user User) error {
+    if user.Email == "" {
+        return errors.New("email required")
+    }
+    if user.Password == "" {
+        return errors.New("password required") 
+    }
+    return nil
+}
+
+func ValidateUserRegistration(user User) error {
+    if err := ValidateUserLogin(user); err != nil {
+        return err
+    }
+    if len(user.Password) < 8 {
+        return errors.New("password too short")
+    }
+    return nil
+}
+```
+
+**All your dependencies are your code.** When some imported library breaks, you're the one debugging 10+ levels of stack traces at 3 AM.
+
+## Cognitive Load in Familiar vs New Projects
+
+Here's something tricky: **familiarity feels like simplicity, but they're different things.**
+
+You might think your 2-year-old codebase is "simple" because you know it well. But watch a new developer try to understand it. If they're confused for more than 40 minutes straight on a simple task, your code has high cognitive load.
+
+<MermaidDiagram diagram={`
+graph TD
+    A["New Developer 🧠"]
+    A --> B["File 1: 🧠+"]
+    B --> C["File 2: 🧠++"] 
+    C --> D["File 3: 🧠+++"]
+    D --> E["File 4: 🤯"]
+    
+    F["Experienced Dev 🧠"]
+    F --> G["Same Files: 🧠"]
+    
+    style A fill:transparent,stroke:#FF5722,stroke-width:2px
+    style B fill:transparent,stroke:#FF9800,stroke-width:2px
+    style C fill:transparent,stroke:#FFC107,stroke-width:2px
+    style D fill:transparent,stroke:#F44336,stroke-width:2px
+    style E fill:transparent,stroke:#D32F2F,stroke-width:3px
+    style F fill:transparent,stroke:#4CAF50,stroke-width:2px
+    style G fill:transparent,stroke:#2E7D32,stroke-width:2px
+`} />
+
+**The more mental models someone needs to learn, the longer it takes them to be productive.**
+
+If you can keep cognitive load low, new people can contribute meaningfully within their first few hours. I've seen this happen - it's beautiful!
+
+## What Actually Works: Practical Rules
+
+### 1. Use Names That Tell Stories
+
+```go
+// Bad 😵🤯
+flag := checkStuff(data)
+if flag {
+    doThing()
+}
+
+// Good ✅🧠  
+isEligibleForDiscount := checkUserEligibility(userData)
+if isEligibleForDiscount {
+    applyDiscount()
+}
+```
+
+### 2. Extract Complex Logic Into Named Functions
+
+```go
+// Bad 😵🤯
+if user.Subscription.Type == "premium" && 
+   user.Subscription.ValidUntil.After(time.Now()) && 
+   contains(user.Features, "advanced_analytics") {
+    // do premium stuff
+}
+
+// Good ✅🧠
+func canAccessAdvancedFeatures(user User) bool {
+    return user.Subscription.Type == "premium" &&
+           user.Subscription.ValidUntil.After(time.Now()) &&
+           contains(user.Features, "advanced_analytics")
+}
+
+if canAccessAdvancedFeatures(user) {
+    // do premium stuff  
+}
+```
+
+### 3. Keep Related Code Together
+
+Don't make people hunt through 10 files to understand one feature. **If it changes together, it should live together.**
+
+### 4. Write Comments for "Why", Not "What"
+
+```go
+// Bad 😵
+// Increment counter by 1
+counter++
+
+// Good ✅
+// Track failed login attempts for rate limiting
+failedLoginCounter++
+```
+
+### 5. Prefer Boring, Obvious Solutions
+
+Your code will be read 10x more than it's written. Make it boring and obvious.
+
+## Tight Coupling with Framework Magic
+
+There's a lot of "magic" in frameworks. By relying too heavily on framework quirks, **you force all future developers to learn that magic first.** It can take months.
+
+I've seen teams spend more time debugging framework internals than solving business problems. Keep your core logic separate from framework magic.
+
+```go
+// Business logic shouldn't be tied to framework
+type UserService struct {
+    db Database
+}
+
+func (s *UserService) CreateUser(userData UserData) (*User, error) {
+    // Pure business logic here 🧠
+    if err := s.validateUserData(userData); err != nil {
+        return nil, err
+    }
+    return s.db.CreateUser(userData)
+}
+
+// Framework adapter  
+type GinUserController struct {
+    userService *UserService
+}
+
+func (c *GinUserController) CreateUser(ctx *gin.Context) {
+    var userData UserData
+    if err := ctx.ShouldBindJSON(&userData); err != nil {
+        ctx.JSON(400, gin.H{"error": err.Error()})
+        return
+    }
+    
+    user, err := c.userService.CreateUser(userData)
+    if err != nil {
+        ctx.JSON(400, gin.H{"error": err.Error()})
+        return
+    }
+    
+    ctx.JSON(201, user)
+}
+```
+
+**By no means am I saying avoid frameworks!** Just don't let framework magic leak into your business logic. Use frameworks like libraries, not like religion.
+
+## A Simple Analogy 🌶️
+
+Good code is like a **well-organized spice rack**. Each compartment has a clear purpose, everything has its place, and you don't need to search through the whole rack to find what you need during the dinner rush.
+
+When code is poorly organized, it's like dumping all your spices in one container - technically everything's there, but good luck finding the right one when you're cooking for a crowd!
+
+## Quick Wins to Reduce Brain Burn
+
+1. **Use descriptive variable names** - `isEligibleForDiscount` beats `flag` any day
+2. **Extract complex conditions** - Give them meaningful names  
+3. **Prefer early returns** - Reduce nesting levels
+4. **Keep related code together** - Don't make people hunt across files
+5. **Use consistent patterns** - Once someone learns your style, they shouldn't have to relearn it
+6. **Write boring, obvious code** - Clever code is tomorrow's debugging nightmare
+7. **Test with new team members** - If they're confused for >40 minutes, fix it
+
+## The Bottom Line (Don't Ignore This!)
+
+Your code will be read **10x more times** than it's written. Every confusing pattern, every "clever" trick, every unnecessarily complex structure adds to the mental burden of everyone who comes after you (including future you).
+
+I can't tell you how many times I've looked at my own code from six months ago and thought, "What was I thinking when I wrote this?" (Spoiler: I clearly wasn't thinking clearly)
+
+The goal isn't to show off how smart you are - it's to solve problems without making people's brains hurt.
+
+**Ask yourself**: "Will a developer understand this quickly, or will they need to rebuild my entire thought process?"
+
+If it's the latter, time to refactor! 🔧
+
+---
+
+**Here's the thing**: The best code feels boring to read. There are no surprises, no mental gymnastics, no "aha! moments" required.
+
+Boring code is beautiful code - it gets the job done without making your brain work overtime.

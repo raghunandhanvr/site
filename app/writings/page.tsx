@@ -27,6 +27,12 @@ interface BlogPost {
 
 const blogPosts: BlogPost[] = [
   {
+    title: "The Cognitive Load: Why code makes your brain hurt",
+    slug: "/writings/cognitive-load",
+    date: "2025-06-24",
+    year: "2025",
+  },
+  {
     title: "Bloom Filters: Lightning-fast username lookups",
     slug: "/writings/bloom-filter",
     date: "2025-04-11",
