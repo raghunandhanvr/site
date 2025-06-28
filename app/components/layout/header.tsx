@@ -63,13 +63,23 @@ export default function Header() {
                     </li>
                   )
                 })}
+                <li>
+                  <a
+                    href="https://dub.sh/raghu-resume"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="work-link transition-colors hover:text-blue-600 font-normal text-gray-600"
+                  >
+                    resume
+                  </a>
+                </li>
               </ul>
             </nav>
           </div>
         </header>
 
         {showBreadcrumb && (
-          <nav className="text-[11px] text-gray-400 mb-3 -mt-4">
+          <nav className="text-[11px] text-gray-400 -mt-4">
             <ol className="flex items-center">
               {breadcrumbs.map((crumb, index) => (
                 <li key={crumb.path} className="flex items-center">

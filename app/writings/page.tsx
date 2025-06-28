@@ -101,7 +101,6 @@ export default async function WritingsPage({
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="font-medium mb-1">Writings</h1>
       <p className="text-sm text-gray-500 mb-8">Some of my writings on tech, and other random stuffs</p>
 
       <div className="w-full">
