@@ -18,6 +18,8 @@ const badgeVariants = cva(
         'Freelancing': 'bg-orange-100 text-orange-800',
         'Side Project': 'bg-green-100 text-green-800',
         'Publication': 'bg-red-100 text-red-800',
+        'Security Research': 'bg-indigo-100 text-indigo-800',
+        'Leadership': 'bg-amber-100 text-amber-800',
         current: 'bg-yellow-100 text-yellow-800',
       },
     },

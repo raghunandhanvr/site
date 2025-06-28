@@ -21,42 +21,69 @@ export const metadata: Metadata = {
 };
 
 export default function Works() {
+  const groupedWorks = works.reduce((acc, work) => {
+    if (!acc[work.category]) {
+      acc[work.category] = []
+    }
+    acc[work.category].push(work)
+    return acc
+  }, {} as Record<string, typeof works>)
+
+  const categoryOrder = [
+    'Publication', 
+    'Work Experience',
+    'Internship',
+    'Security Research',
+    'Leadership',
+    'Side Project',
+    'Freelancing'
+  ]
+
   return (
     <section className="max-w-2xl mx-auto">
-      <p className="text-sm text-gray-500 mb-8">Some of my works and industry experience</p>
-      
       <div className="space-y-8">
-        {works.map((work, index) => (
-          <div key={index} className="group">
-            <Link
-              href={work.url}
-              className="block hover:opacity-80 transition-opacity duration-200 work-link"
-            >
-              <div className="flex flex-col space-y-2">
-                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
-                  <div className="flex flex-col sm:flex-row sm:items-center">
-                    <h2 className="text-gray-800 font-medium mb-1 sm:mb-0">
-                      {work.title}
-                    </h2>
-                    <div className="flex items-center sm:ml-2">
-                      <CategoryBadge category={work.category} />
-                      {work.current && <CurrentTag />}
-                    </div>
+        {categoryOrder.map((category) => {
+          const categoryWorks = groupedWorks[category]
+          if (!categoryWorks || categoryWorks.length === 0) return null
+
+          return (
+            <div key={category}>
+              <h2 className="text-base font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
+                {category}
+              </h2>
+              <div className="space-y-6">
+                {categoryWorks.map((work, index) => (
+                  <div key={index}>
+                    <Link
+                      href={work.url}
+                      className="block hover:opacity-80 transition-opacity duration-200 work-link"
+                    >
+                      <div className="flex justify-between items-baseline mb-1">
+                        <h3 className="text-gray-900 font-medium text-sm">
+                          {work.title}
+                        </h3>
+                        <span className="text-xs text-gray-500 font-medium ml-4">
+                          {work.year}
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-3">
+                        {work.techStack}
+                      </div>
+                      <ul className="text-gray-700 text-sm space-y-1 ml-4">
+                        {work.description.map((item, idx) => (
+                          <li key={idx} className="relative">
+                            <span className="absolute -left-4">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </Link>
                   </div>
-                  <span className="text-sm text-gray-600 mt-1 sm:mt-0">
-                    {work.year}
-                  </span>
-                </div>
-                <p className="text-neutral-700 text-sm">
-                  {work.description}
-                </p>
-                <p className="text-xs text-gray-600">
-                  <span className="font-medium">Tech Stack:</span> {work.techStack}
-                </p>
+                ))}
               </div>
-            </Link>
-          </div>
-        ))}
+            </div>
+          )
+        })}
       </div>
     </section>
   );

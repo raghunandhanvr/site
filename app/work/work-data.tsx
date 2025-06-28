@@ -1,73 +1,193 @@
 import { Badge } from "@/app/components/ui/badge"; 
-import { Briefcase, GraduationCap, Laptop, Rocket, BookOpen, Star } from 'lucide-react';    
+import { Briefcase, GraduationCap, Laptop, Rocket, BookOpen, Star, Shield, Trophy } from 'lucide-react';    
 
 export interface Work {
     title: string;
     year: string;
-    description: string;
+    description: string[];
     url: string;
     techStack: string;
-    category: 'Work Experience' | 'Internship' | 'Freelancing' | 'Side Project' | 'Publication';
+    category: 'Work Experience' | 'Internship' | 'Freelancing' | 'Side Project' | 'Publication' | 'Security Research' | 'Leadership';
     current?: boolean;
+    highlight?: boolean;
 }
   
 export const works: Work[] = [
   {
-    title: "Freightify",
-    year: "2021 - Present",
-    description: "Breaking monolithic architecture to microservices. Building an IAM Service in GoLang that functions as an authentication and authorization system for Freightify Services, with features like User management, SSO, MFA, and OAuth2 end-to-end. Utilizing Zalando's Skipper project, a reverse proxy that routes traffic using custom filters (middlewares) in GoLang. Developing features requested by customers. Using Kafka to transfer data from NoSQL and SQL databases to Parquet files in HDFS, assisting the analytics team.",
+    title: "IAM Service",
+    year: "July 2023 - Present",
+    description: [
+      "Built a central AuthN/AuthZ micro-service; cut authentication latency by ~50% and serving 100K+ daily users",
+      "Implements SSO and OAuth 2.0 (all grant types)"
+    ],
     url: "https://www.freightify.com",
-    techStack: "GoLang, TypeScript, AngularJS, React, Angular, PHP",
+    techStack: "Go, MySQL, PHP, K8s, Redis",
+    category: "Work Experience",
+    current: true,
+    highlight: true
+  },
+  {
+    title: "Reverse Proxy",
+    year: "July 2023 - Present",
+    description: [
+      "Developed a reverse proxy on top of zalando skipper, lowered average API latency by ~60% and routes 1M+ requests per day",
+      "Created a bespoke micro-service to function as a dynamic routing table"
+    ],
+    url: "https://www.freightify.com",
+    techStack: "Go, MongoDB, K8s, Redis",
     category: "Work Experience",
     current: true
   },
   {
-    title: "CNN-Based Technique for Detecting Fake Face Images",
+    title: "Business Logic Development",
+    year: "July 2023 - Present",
+    description: [
+      "Delivered new rate-search and booking flow; maintaining 99.5% uptime"
+    ],
+    url: "https://www.freightify.com",
+    techStack: "PHP, AngularJS, React.js, K8s, MySQL, MongoDB, Redis, Node.js, GoLang",
+    category: "Work Experience",
+    current: true
+  },
+  {
+    title: "Freightbro (Now Freightify)",
+    year: "July 2022 - July 2023",
+    description: [
+      "Developed internal dashboards and automation tools used by 150+ employees of Freightify",
+      "Ran org-wide SADT/DAST, driving rapid remediation of high-risk issues"
+    ],
+    url: "https://www.freightify.com",
+    techStack: "Golang, Node.js, React, AngularJS, K8s",
+    category: "Internship"
+  },
+  {
+    title: "Gurguram Police",
+    year: "March 2021 - June 2021",
+    description: [
+      "Analysed 25+ cybercrime cases, including ransomware attacks, identity theft, and cyber blackmail"
+    ],
+    url: "#",
+    techStack: "OSINT, Python, C, C++",
+    category: "Internship"
+  },
+  {
+    title: "CNN-Based Fake Face Detection Research",
     year: "2023",
-    description: "Published a research article proposing a Convolutional Neural Network (CNN) based technique to detect fake face photos produced by state-of-the-art methods. The study achieved an average accuracy of over 87.5% in detecting fake faces, surpassing previous benchmarks. The research also explored variations in CNN architecture, including high bypass filters, layer group variations, and activation functions to further validate the proposed method.",
+    description: [
+      "Published IEEE research paper on AI-generated fake face detection",
+      "Achieved 87.5% accuracy surpassing previous benchmarks",
+      "Explored CNN architecture variations and activation functions"
+    ],
     url: "https://ieeexplore.ieee.org/document/10046797",
-    techStack: "Deep Learning, CNN, GAN, Python, TensorFlow/PyTorch",
-    category: "Publication"
+    techStack: "Python, TensorFlow, PyTorch, CNN, GAN",
+    category: "Publication",
+    highlight: true
+  },
+  {
+    title: "Security Research & Bug Bounty",
+    year: "2021 - Present",
+    description: [
+      "Earned rewards from McAfee, Uber, and other platforms",
+      "Fixed XSS and SQL injection vulnerabilities at Freightify"
+    ],
+    url: "#",
+    techStack: "Burp Suite, Wireshark, Linux, Web Security, OWASP",
+    category: "Security Research",
+    current: true
   },
   {
     title: "DataAtmos",
-    year: "2024 (In Development)",
-    description: "We thought everyone needs a single place to manage all of your data-related activities like database, data analytics, data for your AI/ML models. So we built DataAtmos. This is not fully functional yet. But we are working on it. Ping me if you want to join us.",
+    year: "2024",
+    description: [
+      "Building unified platform for data management and analytics",
+      "Single source of truth for all data-related activities"
+    ],
     url: "https://dataatmos.ai",
-    techStack: "Next.js, Terraform",
+    techStack: "Next.js, Terraform, AWS, PostgreSQL",
+    category: "Side Project",
+    current: true
+  },
+  {
+    title: "President, Cyberspace Club",
+    year: "2019 - 2023",
+    description: [
+      "Led cybersecurity education for 4 years",
+      "Organized CTFs and workshops for hundreds of students weekly",
+      "Mentored on web security and networking fundamentals"
+    ],
+    url: "https://sece.ac.in/",
+    techStack: "Leadership, Cybersecurity Education, CTF Challenges",
+    category: "Leadership",
+    highlight: true
+  },
+  {
+    title: "Smart India Hackathon",
+    year: "2022",
+    description: [
+      "Led 5-member team to top 50 finalists",
+      "Developed scalable solutions for real-world problems"
+    ],
+    url: "#",
+    techStack: "Full-stack Development, Team Leadership, Problem Solving",
+    category: "Leadership"
+  },
+  {
+    title: "KG Hospital Network Infrastructure",
+    year: "2022",
+    description: [
+      "Designed enterprise network for 500+ concurrent users",
+      "Deployed VLAN segmentation and VoIP integration",
+      "Achieved 99.99% uptime with secure VPN access"
+    ],
+    url: "https://www.kghospital.com/",
+    techStack: "Cisco Catalyst 9000, ISR 4000, Network Security, VoIP",
+    category: "Freelancing"
+  },
+  {
+    title: "College Social Media Platform",
+    year: "2020",
+    description: [
+      "Built Instagram-like platform for college events",
+      "Served 500+ active students with real-time features"
+    ],
+    url: "https://sece.ac.in/",
+    techStack: "Node.js, React.js, MySQL, Socket.io",
     category: "Side Project"
   },
   {
-    title: "Network Infrastructure for KG Hospital",
-    year: "2022",
-    description: "Designed and implemented enterprise-level network infrastructure for KG Hospital using Cisco Catalyst 9000 switches and ISR 4000 series routers. Deployed VLAN segmentation for department isolation, configured VoIP integration, and implemented redundant fiber optic connections. Established secure remote access through Cisco AnyConnect VPN and implemented Cisco ISE for network access control. The solution supported 500+ concurrent users across multiple buildings with 99.99% uptime.",
-    url: "https://www.kghospital.com/",
-    techStack: "Networking hardware, Network protocols, Security implementations",
+    title: "Micro-Finance Portfolio Website",
+    year: "2019",
+    description: [
+      "First freelance project using WordPress",
+      "Implemented SEO and Google My Business maintenance"
+    ],
+    url: "#",
+    techStack: "WordPress, SEO, Google My Business",
     category: "Freelancing"
   },
   {
     title: "ERC-4337 Account Abstraction",
-    year: "2024 (In Development)",
-    description: "With the goal of making blockchain technology easily accessible to everyone, I am working on a project that utilizes ERC-4337 to build a user-friendly solution on top of account abstraction. By leveraging this tech, we aim to simplify the interaction with blockchain networks, removing the complexities and barriers that often deter mainstream adoption. Stay tuned as we prepare to bring this revolutionary solution to the world, empowering individuals and businesses to seamlessly integrate blockchain into their daily lives and operations.",
+    year: "2024",
+    description: [
+      "Developing user-friendly blockchain solutions",
+      "Removing barriers to mainstream blockchain adoption"
+    ],
     url: "https://www.erc4337.io/",
-    techStack: "TypeScript, Solidity",
-    category: "Side Project"
+    techStack: "TypeScript, Solidity, Ethereum, Web3",
+    category: "Side Project",
+    current: true
   },
   {
-    title: "Social Media Web Application",
-    year: "2020",
-    description: "Developed a customized version of Instagram with mandatory features of social media, used for college events. The application was actively used by 500+ students for posting their moments during events. This project was completed as part of the college curriculum at Sri Eshwar College of Engineering.",
-    url: "https://sece.ac.in/",
-    techStack: "Node.js, React.js, MySQL",
-    category: "Side Project"
-  },
-  {
-    title: "Custom Computer Building",
+    title: "Custom PC Building Service",
     year: "2018 - Present",
-    description: "Assembled and provided custom-built computers for 20+ individuals, specializing in high-performance builds using Intel i7/i9 and AMD Ryzen processors, NVIDIA RTX series GPUs, and custom liquid cooling solutions. Implemented overclocking optimization, M.2 NVMe storage configurations, and RGB synchronization across components. Each build was tailored to client requirements, ranging from gaming rigs with RTX 3080s to workstations with DDR5 RAM and PCIe Gen 4 capabilities.",
+    description: [
+      "Assembled 20+ high-performance computers",
+      "Specialized in gaming rigs and workstations with custom cooling"
+    ],
     url: "#",
-    techStack: "Various hardware components, OS installation, Performance tuning",
-    category: "Freelancing"
+    techStack: "Hardware Assembly, Performance Tuning, Custom Cooling",
+    category: "Freelancing",
+    current: true
   }
 ];
 
@@ -76,7 +196,9 @@ const categoryIcons = {
   "Internship": GraduationCap, 
   "Freelancing": Laptop, 
   "Side Project": Rocket, 
-  "Publication": BookOpen, 
+  "Publication": BookOpen,
+  "Security Research": Shield,
+  "Leadership": Trophy,
 };  
 
 export const CategoryBadge: React.FC<{ category: Work['category'] }> = ({ category }) => ( 
