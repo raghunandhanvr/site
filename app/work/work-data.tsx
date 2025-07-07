@@ -14,40 +14,32 @@ export interface Work {
   
 export const works: Work[] = [
   {
-    title: "IAM Service",
-    year: "July 2023 - Present",
+    title: "Lumel",
+    year: "July 2025 - Present",
     description: [
-      "Built a central AuthN/AuthZ micro-service; cut authentication latency by ~50% and serving 100K+ daily users",
-      "Implements SSO and OAuth 2.0 (all grant types)"
+      "Building systems designed to handle very high volumes of data"
     ],
-    url: "https://www.freightify.com",
-    techStack: "Go, MySQL, PHP, K8s, Redis",
+    url: "https://lumel.com/",
+    techStack: "Go, React, .NET, Azure",
     category: "Work Experience",
     current: true,
     highlight: true
   },
   {
-    title: "Reverse Proxy",
-    year: "July 2023 - Present",
+    title: "Freightify",
+    year: "July 2023 - July 2025",
     description: [
-      "Developed a reverse proxy on top of zalando skipper, lowered average API latency by ~60% and routes 1M+ requests per day",
-      "Created a bespoke micro-service to function as a dynamic routing table"
+      "Built central AuthN/AuthZ microservice; reduced authentication latency by ~50%, handling 100K+ daily users",
+      "Implemented comprehensive SSO and OAuth 2.0 flows (all grant types)",
+      "Developed a high-performance reverse proxy using Zalando Skipper; reduced average API latency by ~60%, routing 1M+ daily requests",
+      "Engineered custom microservice for dynamic API route management",
+      "Delivered critical rate-search and booking workflows, ensuring 99.5% uptime across services"
     ],
     url: "https://www.freightify.com",
-    techStack: "Go, MongoDB, K8s, Redis",
+    techStack: "Go, PHP, AngularJS, React.js, Kubernetes, MySQL, MongoDB, Redis, Node.js",
     category: "Work Experience",
-    current: true
-  },
-  {
-    title: "Business Logic Development",
-    year: "July 2023 - Present",
-    description: [
-      "Delivered new rate-search and booking flow; maintaining 99.5% uptime"
-    ],
-    url: "https://www.freightify.com",
-    techStack: "PHP, AngularJS, React.js, K8s, MySQL, MongoDB, Redis, Node.js, GoLang",
-    category: "Work Experience",
-    current: true
+    current: false,
+    highlight: true
   },
   {
     title: "Freightbro (Now Freightify)",
