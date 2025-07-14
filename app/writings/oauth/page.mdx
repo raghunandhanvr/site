@@ -1,0 +1,916 @@
+import MermaidDiagram from "@/app/components/md/mermaid";
+import { BlogViewCounter } from "@/app/components/ui/blog-view-counter";
+
+export const metadata = {
+  title: "How OAuth Works?",
+  description:
+    "Understanding OAuth flows, tokens, and security. A practical guide to implementing OAuth in your applications.",
+  alternates: {
+    canonical: "/writings/oauth",
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=How+OAuth+Works`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# How OAuth Works?
+
+<BlogViewCounter slug="/writings/oauth" createdAt={new Date("2025-01-16")} />
+
+### Understanding OAuth Implementation
+
+When I was working at **[Freightify](https://freightify.com)**, I built an IAM service that handles around 25K+ active users daily. OAuth was one of those concepts that appeared complex initially, but the implementation becomes straightforward once you understand the core principles.
+
+Let me explain what happens behind those "Login with Google" buttons.
+
+## The Problem OAuth Solves
+
+Consider this scenario - your application needs to access user data from another service. The traditional approach involves asking users for their username and password of that service. This approach has several critical issues:
+
+1. Your application stores and manages credentials that don't belong to you
+2. Users must trust you with their passwords
+3. If your system gets compromised, all user credentials are exposed
+4. You get complete access to user accounts, not just what you need
+5. Users cannot revoke access without changing their passwords everywhere
+
+OAuth addresses these issues by implementing a token-based system where users can grant limited access to applications without sharing their actual credentials.
+
+<MermaidDiagram
+  diagram={`
+graph TD
+    A[User Requests Access] --> B[App Redirects to OAuth Provider]
+    B --> C[User Login & Consent]
+    C --> D[Authorization Code Returned]
+    D --> E[App Exchanges Code for Token]
+    E --> F[Access Token Received]
+    F --> G[API Calls with Token]
+    G --> H[Protected Data Access]
+`}
+/>
+
+## Core OAuth Components
+
+The OAuth system involves several key components:
+
+**Resource Owner**: The user who owns the data. This is your end user.
+
+**Client**: Your application that wants to access user resources. This can be your web app, mobile app, or any service.
+
+**Authorization Server**: The server that authenticates users and issues access tokens. Examples include Google, Facebook, GitHub.
+
+**Resource Server**: The server hosting the protected resources. This may be the same as the authorization server or a separate service.
+
+**Access Token**: A string representing the authorization granted to the client. This acts as a temporary access key.
+
+**Refresh Token**: A token used to obtain new access tokens when the current one expires.
+
+## OAuth Authorization Code Flow
+
+The Authorization Code Flow is the most commonly used OAuth flow. Here's the step-by-step process:
+
+### Step 1: Discovery and Initial Request
+
+Most services provide OAuth endpoint information at a well-known location. This eliminates the need to hardcode URLs.
+
+```go
+type AuthorizationServerMetadata struct {
+    Issuer                string   `json:"issuer"`
+    AuthorizationEndpoint string   `json:"authorization_endpoint"`
+    TokenEndpoint         string   `json:"token_endpoint"`
+    ScopesSupported       []string `json:"scopes_supported"`
+}
+
+func discoverAuthServer(baseURL string) (*AuthorizationServerMetadata, error) {
+    resp, err := http.Get(baseURL + "/.well-known/oauth-authorization-server")
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    var metadata AuthorizationServerMetadata
+    if err := json.NewDecoder(resp.Body).Decode(&metadata); err != nil {
+        return nil, err
+    }
+
+    return &metadata, nil
+}
+```
+
+### Step 2: Redirect User to Authorization Server
+
+Your application redirects the user to the authorization server with specific parameters:
+
+```go
+func buildAuthorizationURL(authEndpoint, clientID, redirectURI, state string, scopes []string) string {
+    params := url.Values{
+        "response_type": {"code"},
+        "client_id":     {clientID},
+        "redirect_uri":  {redirectURI},
+        "scope":         {strings.Join(scopes, " ")},
+        "state":         {state},
+    }
+
+    return authEndpoint + "?" + params.Encode()
+}
+
+// Usage
+authURL := buildAuthorizationURL(
+    "https://auth.raghu.app/oauth/authorize",
+    "your-client-id",
+    "https://yourapp.com/callback",
+    "random-state-value",
+    []string{"read:profile", "write:posts"},
+)
+```
+
+The parameters are:
+
+- `response_type=code`: Specifies the authorization code flow
+- `client_id`: Your application identifier
+- `redirect_uri`: Where to send the user after authorization
+- `scope`: The permissions you're requesting
+- `state`: Random value for security (prevents CSRF attacks)
+
+### Step 3: User Authorization
+
+The user gets redirected to the authorization server where they see a consent screen. If they approve, they are sent back to your application with an authorization code.
+
+The redirect looks like:
+
+```
+https://yourapp.com/callback?code=abc123def456&state=random-state-value
+```
+
+### Step 4: Exchange Code for Token
+
+Your application takes this authorization code and exchanges it for an access token:
+
+```go
+type TokenResponse struct {
+    AccessToken  string `json:"access_token"`
+    TokenType    string `json:"token_type"`
+    ExpiresIn    int    `json:"expires_in"`
+    RefreshToken string `json:"refresh_token"`
+    Scope        string `json:"scope"`
+}
+
+func exchangeCodeForToken(tokenEndpoint, clientID, clientSecret, code, redirectURI string) (*TokenResponse, error) {
+    data := url.Values{
+        "grant_type":    {"authorization_code"},
+        "code":          {code},
+        "redirect_uri":  {redirectURI},
+        "client_id":     {clientID},
+        "client_secret": {clientSecret},
+    }
+
+    resp, err := http.PostForm(tokenEndpoint, data)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        return nil, fmt.Errorf("token exchange failed: %s", resp.Status)
+    }
+
+    var token TokenResponse
+    if err := json.NewDecoder(resp.Body).Decode(&token); err != nil {
+        return nil, err
+    }
+
+    return &token, nil
+}
+```
+
+### Step 5: Use Access Token
+
+Now you can make requests to the resource server using the access token:
+
+```go
+func makeAuthenticatedRequest(resourceURL, accessToken string) (*http.Response, error) {
+    req, err := http.NewRequest("GET", resourceURL, nil)
+    if err != nil {
+        return nil, err
+    }
+
+    req.Header.Set("Authorization", "Bearer "+accessToken)
+
+    client := &http.Client{}
+    return client.Do(req)
+}
+
+// Example usage
+resp, err := makeAuthenticatedRequest("https://api.raghu.app/user/profile", accessToken)
+```
+
+## Handling Token Refresh
+
+Access tokens expire for security reasons. When they expire, you use the refresh token to obtain a new one:
+
+```go
+func refreshAccessToken(tokenEndpoint, clientID, clientSecret, refreshToken string) (*TokenResponse, error) {
+    data := url.Values{
+        "grant_type":    {"refresh_token"},
+        "refresh_token": {refreshToken},
+        "client_id":     {clientID},
+        "client_secret": {clientSecret},
+    }
+
+    resp, err := http.PostForm(tokenEndpoint, data)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    var token TokenResponse
+    if err := json.NewDecoder(resp.Body).Decode(&token); err != nil {
+        return nil, err
+    }
+
+    return &token, nil
+}
+```
+
+## PKCE - For Public Clients
+
+When building mobile apps or SPAs, you cannot securely store client secrets. PKCE (Proof Key for Code Exchange) solves this problem:
+
+```go
+import (
+    "crypto/rand"
+    "crypto/sha256"
+    "encoding/base64"
+)
+
+func generatePKCEChallenge() (verifier, challenge string, err error) {
+    // Generate code verifier
+    bytes := make([]byte, 32)
+    if _, err := rand.Read(bytes); err != nil {
+        return "", "", err
+    }
+    verifier = base64.RawURLEncoding.EncodeToString(bytes)
+
+    // Generate code challenge
+    hash := sha256.Sum256([]byte(verifier))
+    challenge = base64.RawURLEncoding.EncodeToString(hash[:])
+
+    return verifier, challenge, nil
+}
+
+func buildPKCEAuthURL(authEndpoint, clientID, redirectURI, state, codeChallenge string, scopes []string) string {
+    params := url.Values{
+        "response_type":         {"code"},
+        "client_id":             {clientID},
+        "redirect_uri":          {redirectURI},
+        "scope":                 {strings.Join(scopes, " ")},
+        "state":                 {state},
+        "code_challenge":        {codeChallenge},
+        "code_challenge_method": {"S256"},
+    }
+
+    return authEndpoint + "?" + params.Encode()
+}
+
+func exchangeCodeWithPKCE(tokenEndpoint, clientID, code, redirectURI, codeVerifier string) (*TokenResponse, error) {
+    data := url.Values{
+        "grant_type":    {"authorization_code"},
+        "code":          {code},
+        "redirect_uri":  {redirectURI},
+        "client_id":     {clientID},
+        "code_verifier": {codeVerifier},
+    }
+
+    resp, err := http.PostForm(tokenEndpoint, data)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    var token TokenResponse
+    if err := json.NewDecoder(resp.Body).Decode(&token); err != nil {
+        return nil, err
+    }
+
+    return &token, nil
+}
+```
+
+## OAuth Scopes: The Permission System
+
+Scopes define what permissions you are requesting. Follow the principle of least privilege - only request what you actually need.
+
+Common scope patterns:
+
+- `read:profile` - Read user profile information
+- `write:posts` - Create posts on behalf of user
+- `admin:users` - Administrative access to user management
+
+```go
+type ScopeManager struct {
+    requestedScopes []string
+    grantedScopes   []string
+}
+
+func (s *ScopeManager) HasScope(scope string) bool {
+    for _, granted := range s.grantedScopes {
+        if granted == scope {
+            return true
+        }
+    }
+    return false
+}
+
+func (s *ScopeManager) ValidateRequest(requiredScope string) error {
+    if !s.HasScope(requiredScope) {
+        return fmt.Errorf("insufficient scope: required %s", requiredScope)
+    }
+    return nil
+}
+```
+
+## Token Storage and Security
+
+Proper token storage is critical for security:
+
+```go
+type TokenStore struct {
+    tokens map[string]*TokenResponse
+    mutex  sync.RWMutex
+}
+
+func NewTokenStore() *TokenStore {
+    return &TokenStore{
+        tokens: make(map[string]*TokenResponse),
+    }
+}
+
+func (ts *TokenStore) StoreToken(userID string, token *TokenResponse) {
+    ts.mutex.Lock()
+    defer ts.mutex.Unlock()
+    ts.tokens[userID] = token
+}
+
+func (ts *TokenStore) GetToken(userID string) (*TokenResponse, bool) {
+    ts.mutex.RLock()
+    defer ts.mutex.RUnlock()
+    token, exists := ts.tokens[userID]
+    return token, exists
+}
+
+func (ts *TokenStore) DeleteToken(userID string) {
+    ts.mutex.Lock()
+    defer ts.mutex.Unlock()
+    delete(ts.tokens, userID)
+}
+```
+
+## Common OAuth Issues and Solutions
+
+### Token Expiration
+
+Always check token expiry and refresh when needed:
+
+```go
+func (ts *TokenStore) GetValidToken(userID string) (*TokenResponse, error) {
+    token, exists := ts.GetToken(userID)
+    if !exists {
+        return nil, fmt.Errorf("no token found for user")
+    }
+
+    // Check if token is expired (simplified)
+    if time.Now().Unix() > token.ExpiresIn {
+        // Refresh token
+        newToken, err := refreshAccessToken(
+            tokenEndpoint,
+            clientID,
+            clientSecret,
+            token.RefreshToken,
+        )
+        if err != nil {
+            return nil, err
+        }
+
+        ts.StoreToken(userID, newToken)
+        return newToken, nil
+    }
+
+    return token, nil
+}
+```
+
+### State Parameter Validation
+
+Always validate the state parameter to prevent CSRF attacks:
+
+```go
+func validateState(receivedState, expectedState string) error {
+    if receivedState != expectedState {
+        return fmt.Errorf("state mismatch: possible CSRF attack")
+    }
+    return nil
+}
+```
+
+## OpenID Connect (OIDC)
+
+OIDC builds on top of OAuth to provide identity information. When you include the `openid` scope, you receive an ID token along with the access token:
+
+```go
+type OIDCTokenResponse struct {
+    AccessToken  string `json:"access_token"`
+    TokenType    string `json:"token_type"`
+    ExpiresIn    int    `json:"expires_in"`
+    RefreshToken string `json:"refresh_token"`
+    IDToken      string `json:"id_token"`
+    Scope        string `json:"scope"`
+}
+
+// ID Token contains user information
+type IDTokenClaims struct {
+    Subject   string `json:"sub"`
+    Name      string `json:"name"`
+    Email     string `json:"email"`
+    Picture   string `json:"picture"`
+    ExpiresAt int64  `json:"exp"`
+    IssuedAt  int64  `json:"iat"`
+}
+```
+
+## Building Your Own OAuth Server
+
+If you need to build your own OAuth server, here's a basic structure:
+
+```go
+type OAuthServer struct {
+    clients map[string]*Client
+    codes   map[string]*AuthorizationCode
+    tokens  map[string]*AccessToken
+}
+
+type Client struct {
+    ID           string
+    Secret       string
+    RedirectURIs []string
+    Scopes       []string
+}
+
+type AuthorizationCode struct {
+    Code        string
+    ClientID    string
+    UserID      string
+    Scopes      []string
+    ExpiresAt   time.Time
+    RedirectURI string
+}
+
+func (server *OAuthServer) HandleAuthorization(w http.ResponseWriter, r *http.Request) {
+    clientID := r.URL.Query().Get("client_id")
+    redirectURI := r.URL.Query().Get("redirect_uri")
+    state := r.URL.Query().Get("state")
+
+    // Validate client and redirect URI
+    client, exists := server.clients[clientID]
+    if !exists {
+        http.Error(w, "Invalid client", http.StatusBadRequest)
+        return
+    }
+
+    // Show consent page to user
+    // After user approves, generate authorization code
+    code := generateAuthorizationCode()
+    server.codes[code] = &AuthorizationCode{
+        Code:        code,
+        ClientID:    clientID,
+        UserID:      getCurrentUserID(r),
+        ExpiresAt:   time.Now().Add(10 * time.Minute),
+        RedirectURI: redirectURI,
+    }
+
+    // Redirect back to client
+    redirectURL := fmt.Sprintf("%s?code=%s&state=%s", redirectURI, code, state)
+    http.Redirect(w, r, redirectURL, http.StatusFound)
+}
+```
+
+## JWT Token Validation
+
+Many OAuth providers use JWT tokens. Here's how to validate them properly:
+
+```go
+import (
+    "crypto/rsa"
+    "encoding/json"
+    "fmt"
+    "github.com/dgrijalva/jwt-go"
+    "net/http"
+)
+
+type JWKSResponse struct {
+    Keys []struct {
+        Kid string   `json:"kid"`
+        Kty string   `json:"kty"`
+        Use string   `json:"use"`
+        N   string   `json:"n"`
+        E   string   `json:"e"`
+    } `json:"keys"`
+}
+
+func getPublicKey(jwksURL, kid string) (*rsa.PublicKey, error) {
+    resp, err := http.Get(jwksURL)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    var jwks JWKSResponse
+    if err := json.NewDecoder(resp.Body).Decode(&jwks); err != nil {
+        return nil, err
+    }
+
+    for _, key := range jwks.Keys {
+        if key.Kid == kid {
+            return jwt.ParseRSAPublicKeyFromPEM([]byte(key.N))
+        }
+    }
+    return nil, fmt.Errorf("key not found")
+}
+
+func validateJWTToken(tokenString, jwksURL string) (*jwt.Token, error) {
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+            return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+        }
+
+        kid := token.Header["kid"].(string)
+        return getPublicKey(jwksURL, kid)
+    })
+
+    if err != nil {
+        return nil, err
+    }
+
+    if !token.Valid {
+        return nil, fmt.Errorf("invalid token")
+    }
+
+    return token, nil
+}
+```
+
+## Error Handling
+
+Handle OAuth errors properly to provide good user experience:
+
+```go
+type OAuthError struct {
+    Error            string `json:"error"`
+    ErrorDescription string `json:"error_description"`
+    ErrorURI         string `json:"error_uri"`
+}
+
+func handleOAuthError(resp *http.Response) error {
+    var oauthErr OAuthError
+    if err := json.NewDecoder(resp.Body).Decode(&oauthErr); err != nil {
+        return fmt.Errorf("failed to decode error response: %v", err)
+    }
+
+    switch oauthErr.Error {
+    case "invalid_grant":
+        return fmt.Errorf("authorization code expired or invalid")
+    case "invalid_client":
+        return fmt.Errorf("client authentication failed")
+    case "access_denied":
+        return fmt.Errorf("user denied access")
+    case "invalid_scope":
+        return fmt.Errorf("requested scope is invalid")
+    default:
+        return fmt.Errorf("oauth error: %s - %s", oauthErr.Error, oauthErr.ErrorDescription)
+    }
+}
+
+func exchangeCodeWithErrorHandling(tokenEndpoint, clientID, clientSecret, code, redirectURI string) (*TokenResponse, error) {
+    data := url.Values{
+        "grant_type":    {"authorization_code"},
+        "code":          {code},
+        "redirect_uri":  {redirectURI},
+        "client_id":     {clientID},
+        "client_secret": {clientSecret},
+    }
+
+    resp, err := http.PostForm(tokenEndpoint, data)
+    if err != nil {
+        return nil, fmt.Errorf("token request failed: %v", err)
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        return nil, handleOAuthError(resp)
+    }
+
+    var token TokenResponse
+    if err := json.NewDecoder(resp.Body).Decode(&token); err != nil {
+        return nil, fmt.Errorf("failed to decode token response: %v", err)
+    }
+
+    return &token, nil
+}
+```
+
+## Token Introspection
+
+Check if tokens are still valid with introspection endpoint:
+
+```go
+type IntrospectionResponse struct {
+    Active    bool     `json:"active"`
+    Scope     string   `json:"scope"`
+    ClientID  string   `json:"client_id"`
+    Username  string   `json:"username"`
+    TokenType string   `json:"token_type"`
+    Exp       int64    `json:"exp"`
+    Iat       int64    `json:"iat"`
+    Sub       string   `json:"sub"`
+    Aud       []string `json:"aud"`
+}
+
+func introspectToken(introspectURL, token, clientID, clientSecret string) (*IntrospectionResponse, error) {
+    data := url.Values{
+        "token": {token},
+    }
+
+    req, err := http.NewRequest("POST", introspectURL, strings.NewReader(data.Encode()))
+    if err != nil {
+        return nil, err
+    }
+
+    req.SetBasicAuth(clientID, clientSecret)
+    req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    var introspection IntrospectionResponse
+    if err := json.NewDecoder(resp.Body).Decode(&introspection); err != nil {
+        return nil, err
+    }
+
+    return &introspection, nil
+}
+```
+
+## Production Configuration
+
+Manage OAuth configuration properly:
+
+```go
+type OAuthConfig struct {
+    ClientID          string
+    ClientSecret      string
+    AuthURL           string
+    TokenURL          string
+    IntrospectURL     string
+    JWKSURL           string
+    RedirectURI       string
+    Scopes            []string
+    Timeout           time.Duration
+    RetryAttempts     int
+    TokenCacheTimeout time.Duration
+}
+
+func NewOAuthConfig() *OAuthConfig {
+    return &OAuthConfig{
+        ClientID:          os.Getenv("OAUTH_CLIENT_ID"),
+        ClientSecret:      os.Getenv("OAUTH_CLIENT_SECRET"),
+        AuthURL:           os.Getenv("OAUTH_AUTH_URL"),
+        TokenURL:          os.Getenv("OAUTH_TOKEN_URL"),
+        IntrospectURL:     os.Getenv("OAUTH_INTROSPECT_URL"),
+        JWKSURL:           os.Getenv("OAUTH_JWKS_URL"),
+        RedirectURI:       os.Getenv("OAUTH_REDIRECT_URI"),
+        Scopes:            strings.Split(os.Getenv("OAUTH_SCOPES"), ","),
+        Timeout:           30 * time.Second,
+        RetryAttempts:     3,
+        TokenCacheTimeout: 5 * time.Minute,
+    }
+}
+
+func (c *OAuthConfig) Validate() error {
+    if c.ClientID == "" {
+        return fmt.Errorf("OAUTH_CLIENT_ID is required")
+    }
+    if c.ClientSecret == "" {
+        return fmt.Errorf("OAUTH_CLIENT_SECRET is required")
+    }
+    if c.AuthURL == "" {
+        return fmt.Errorf("OAUTH_AUTH_URL is required")
+    }
+    if c.TokenURL == "" {
+        return fmt.Errorf("OAUTH_TOKEN_URL is required")
+    }
+    return nil
+}
+```
+
+## Retry Logic and Rate Limiting
+
+Handle transient failures and rate limits:
+
+```go
+import (
+    "math"
+    "time"
+)
+
+type HTTPClient struct {
+    client        *http.Client
+    retryAttempts int
+    baseDelay     time.Duration
+}
+
+func NewHTTPClient(timeout time.Duration, retryAttempts int) *HTTPClient {
+    return &HTTPClient{
+        client: &http.Client{
+            Timeout: timeout,
+        },
+        retryAttempts: retryAttempts,
+        baseDelay:     time.Second,
+    }
+}
+
+func (h *HTTPClient) doWithRetry(req *http.Request) (*http.Response, error) {
+    var lastErr error
+
+    for attempt := 0; attempt <= h.retryAttempts; attempt++ {
+        resp, err := h.client.Do(req)
+        if err != nil {
+            lastErr = err
+            if attempt < h.retryAttempts {
+                delay := time.Duration(math.Pow(2, float64(attempt))) * h.baseDelay
+                time.Sleep(delay)
+                continue
+            }
+            return nil, lastErr
+        }
+
+        // Handle rate limiting
+        if resp.StatusCode == 429 {
+            resp.Body.Close()
+            retryAfter := resp.Header.Get("Retry-After")
+            if retryAfter != "" {
+                if delay, err := time.ParseDuration(retryAfter + "s"); err == nil {
+                    time.Sleep(delay)
+                    continue
+                }
+            }
+            time.Sleep(h.baseDelay * time.Duration(attempt+1))
+            continue
+        }
+
+        // Only retry on 5xx errors
+        if resp.StatusCode >= 500 && attempt < h.retryAttempts {
+            resp.Body.Close()
+            delay := time.Duration(math.Pow(2, float64(attempt))) * h.baseDelay
+            time.Sleep(delay)
+            continue
+        }
+
+        return resp, nil
+    }
+
+    return nil, lastErr
+}
+```
+
+## Middleware for API Protection
+
+Protect your APIs with OAuth tokens:
+
+```go
+func OAuthMiddleware(config *OAuthConfig) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            authHeader := r.Header.Get("Authorization")
+            if authHeader == "" {
+                http.Error(w, "Authorization header required", http.StatusUnauthorized)
+                return
+            }
+
+            tokenParts := strings.Split(authHeader, " ")
+            if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
+                http.Error(w, "Invalid authorization header format", http.StatusUnauthorized)
+                return
+            }
+
+            token := tokenParts[1]
+
+            // Validate token
+            introspection, err := introspectToken(config.IntrospectURL, token, config.ClientID, config.ClientSecret)
+            if err != nil {
+                http.Error(w, "Token validation failed", http.StatusUnauthorized)
+                return
+            }
+
+            if !introspection.Active {
+                http.Error(w, "Token is not active", http.StatusUnauthorized)
+                return
+            }
+
+            // Add user info to context
+            ctx := context.WithValue(r.Context(), "user_id", introspection.Sub)
+            ctx = context.WithValue(ctx, "scopes", strings.Split(introspection.Scope, " "))
+
+            next.ServeHTTP(w, r.WithContext(ctx))
+        })
+    }
+}
+```
+
+## Testing OAuth Implementation
+
+Test your OAuth flows properly:
+
+```go
+func TestOAuthFlow(t *testing.T) {
+    // Mock OAuth server
+    mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        switch r.URL.Path {
+        case "/token":
+            response := TokenResponse{
+                AccessToken:  "mock_access_token",
+                TokenType:    "Bearer",
+                ExpiresIn:    3600,
+                RefreshToken: "mock_refresh_token",
+                Scope:        "read write",
+            }
+            json.NewEncoder(w).Encode(response)
+        case "/introspect":
+            response := IntrospectionResponse{
+                Active:   true,
+                Scope:    "read write",
+                ClientID: "test_client",
+                Sub:      "user123",
+                Exp:      time.Now().Add(time.Hour).Unix(),
+            }
+            json.NewEncoder(w).Encode(response)
+        }
+    }))
+    defer mockServer.Close()
+
+    config := &OAuthConfig{
+        ClientID:      "test_client",
+        ClientSecret:  "test_secret",
+        TokenURL:      mockServer.URL + "/token",
+        IntrospectURL: mockServer.URL + "/introspect",
+    }
+
+    // Test token exchange
+    token, err := exchangeCodeWithErrorHandling(
+        config.TokenURL,
+        config.ClientID,
+        config.ClientSecret,
+        "test_code",
+        "http://localhost:8080/callback",
+    )
+
+    assert.NoError(t, err)
+    assert.Equal(t, "mock_access_token", token.AccessToken)
+
+    // Test token introspection
+    introspection, err := introspectToken(
+        config.IntrospectURL,
+        token.AccessToken,
+        config.ClientID,
+        config.ClientSecret,
+    )
+
+    assert.NoError(t, err)
+    assert.True(t, introspection.Active)
+}
+```
+
+## Key Points
+
+1. **OAuth is about delegation of access, not authentication**
+2. **Always use HTTPS** for OAuth flows
+3. **Implement proper state validation** to prevent CSRF attacks
+4. **Use PKCE for public clients** - Mobile apps and SPAs require this
+5. **Store tokens securely** and handle expiration properly
+6. **Follow the principle of least privilege** with scopes
+7. **Validate all parameters** and handle errors gracefully
+
+## Summary
+
+Understanding OAuth is essential when building modern applications that integrate with external services. The concepts may appear complex initially, but the patterns become clear with implementation experience.
+
+These fundamentals helped me build a robust IAM service at Freightify that handles thousands of users daily. OAuth, when implemented correctly, provides a secure and scalable way to handle authorization in distributed systems.
+
+Security should be built from the ground up, not added as an afterthought. OAuth provides the necessary tools for secure implementation.

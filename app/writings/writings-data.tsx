@@ -7,6 +7,12 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    title: "How OAuth Works?",
+    slug: "/writings/oauth",
+    date: "2025-07-14",
+    year: "2025",
+  },
+  {
     title: "The Cognitive Load: Why code makes your brain hurt",
     slug: "/writings/cognitive-load",
     date: "2025-06-24",
