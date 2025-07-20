@@ -96,7 +96,7 @@ export default function RootLayout({
         </head>
         <body className="antialiased tracking-tight">
           <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
-            <main className="max-w-[60ch] mx-auto w-full space-y-6">
+            <main className="container space-y-6">
               <Header />
               <WritingsLayoutWrapper>
                 {children}

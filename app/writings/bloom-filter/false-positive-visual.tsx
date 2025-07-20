@@ -73,7 +73,7 @@ const FalsePositiveVisual: React.FC = () => {
   const showSource = steps[currentStep].showSource
 
   return (
-    <div className="w-full max-w-[60ch] mx-auto p-4 sm:p-8 relative bg-white border border-gray-200 rounded-md">
+    <div className="container p-4 sm:p-8 relative bg-white border border-gray-200 rounded-md">
       <div className="flex flex-col items-center space-y-8">
         <h3 className="text-lg font-semibold text-center">False Positive Example</h3>
 

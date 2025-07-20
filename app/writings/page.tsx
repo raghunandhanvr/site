@@ -69,7 +69,7 @@ export default async function WritingsPage({
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="container">
       <div className="w-full">
         <table className="w-full border-collapse text-sm writings-table" style={{ maxWidth: '100%', display: 'table' }}>
           <thead>

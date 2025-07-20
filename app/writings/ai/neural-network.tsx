@@ -332,7 +332,7 @@ const NeuralNetwork: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 relative bg-white border border-gray-200 rounded-md">
+    <div className="container p-4 relative bg-white border border-gray-200 rounded-md">
       <div className="flex flex-col items-center space-y-4">
         <div className="scale-90 h-[250px] w-full flex items-center justify-center">
           <AnimatePresence mode="wait">{renderNetwork()}</AnimatePresence>

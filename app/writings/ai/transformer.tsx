@@ -92,7 +92,7 @@ const Transformer: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 relative bg-white border border-gray-200 rounded-md">
+    <div className="container p-4 relative bg-white border border-gray-200 rounded-md">
       <div className="text-lg mb-2 text-center text-gray-700">Transformer Architecture</div>
       <div className="w-full h-48 sm:h-56 flex items-center justify-center bg-white border border-gray-200 rounded-md mb-2">
         <AnimatePresence mode="wait">{renderStep()}</AnimatePresence>

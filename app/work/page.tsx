@@ -40,7 +40,7 @@ export default function Works() {
   ]
 
   return (
-    <section className="max-w-2xl mx-auto">
+    <section className="container">
       <div className="space-y-8">
         {categoryOrder.map((category) => {
           const categoryWorks = groupedWorks[category]

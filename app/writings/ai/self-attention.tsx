@@ -95,7 +95,7 @@ const SelfAttention: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 relative bg-white border border-gray-200 rounded-md">
+    <div className="container p-4 relative bg-white border border-gray-200 rounded-md">
       <div className="text-lg mb-2 text-center text-gray-700">Self-Attention Mechanism</div>
       <div className="flex flex-col items-center">
         <div className="h-[200px] w-full flex items-center justify-center">
