@@ -45,3 +45,6 @@ yarn.lock
 .yarn/build-state.yml  
 .pnp.*            
 bun.lockb         
+
+# environment variables
+.env

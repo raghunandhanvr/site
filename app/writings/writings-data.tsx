@@ -7,6 +7,12 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    title: "Fault Tolerance",
+    slug: "/writings/fault-tolerance",
+    date: "2025-07-20",
+    year: "2025",
+  },
+  {
     title: "How OAuth Works?",
     slug: "/writings/oauth",
     date: "2025-07-14",

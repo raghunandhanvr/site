@@ -1,0 +1,173 @@
+import { BlogViewCounter } from "@/app/components/ui/blog-view-counter";
+
+export const metadata = {
+  title: "Fault Tolerance",
+  description:
+    "Understanding fault tolerance patterns, isolation strategies, and operational practices for building resilient distributed systems.",
+  alternates: {
+    canonical: "/writings/fault-tolerance",
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=Fault+Tolerance`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# Fault Tolerance
+
+<BlogViewCounter
+  slug="/writings/fault-tolerance"
+  createdAt={new Date("2025-07-20")}
+/>
+
+## Isolation
+
+- Physical and logical independence between components
+- Failure containment—prevent cascading failures
+- Critical path with minimal dependencies
+- Failures remain localized to origin component
+
+```sql
+-- auth service down..?, queries still execute
+
+select * from orders where user_id = 123;
+```
+
+## Redundancy
+
+- Multiple copies of every critical component
+- Isolated replicas across availability zones
+- Geographic distribution for regional failure protection
+- Eliminate single points of failure
+
+```
+primary: us-east-1a | replica1: us-east-1b | replica2: us-east-1c
+```
+
+## Static Stability
+
+- Maintain last known good state during failures
+- Overprovision capacity for load absorption
+- No configuration changes during incidents
+- Fail to known safe state
+
+```yaml
+# config service fails, use cached configuration
+
+last_known_good: { max_connections: 1000, timeout: 30s }
+```
+
+## Architecture Patterns
+
+### Control Plane vs Data Plane
+
+- Control plane: management, billing, configuration
+- Data plane: serves traffic, stores data, operates independently
+- Unidirectional dependency: data plane never depends on control plane
+
+```
+control plane api down → database continues serving queries
+```
+
+### Multi-Zone/Multi-Region
+
+- Minimum three availability zones per cluster
+- Automatic failover between zones
+- Read replicas across multiple regions
+- Regional promotion capabilities
+
+```
+cluster topology:
+
+primary(us-east) → read_replica(eu-west) → read_replica(ap-south)
+```
+
+## Operational Practices
+
+### Continuous Failover Testing
+
+- Weekly production failover exercises
+- Proactive issue detection
+- Query buffering during transitions
+- Failover as standard operation
+
+```bash
+# scheduled weekly failover
+
+mysql> set global read_only=1; -- demote primary
+mysql> set global read_only=0; -- promote replica
+```
+
+### Progressive Delivery
+
+- Deploy to development environments first
+- Feature flags enable granular rollout control
+- Multi-week validation before production
+- Minimize change impact radius
+
+```json
+{
+  "feature_new_replication": {
+    "dev": true,
+    "staging": true,
+    "prod": false
+  }
+}
+```
+
+### Synchronous Replication
+
+- Commit acknowledgment requires replica confirmation
+- Zero data loss during failovers
+- All replicas maintain promotion readiness
+- MySQL semi-sync, Postgres synchronous commit
+
+```sql
+-- mysql semi-sync: require minimum 1 replica acknowledgment
+
+set global rpl_semi_sync_master_wait_for_slave_count = 1;
+```
+
+## Failure Handling
+
+### Instance Level
+
+- Immediate replica promotion on primary failure
+- Block storage: volume detach/reattach to healthy instances
+- Local storage: provision replacements, decommission failed instances
+
+```bash
+# ebs volume migration
+
+aws ec2 detach-volume --volume-id vol-dead
+aws ec2 attach-volume --volume-id vol-dead --instance-id i-healthy
+```
+
+### Zone Level
+
+- Automatic failover to healthy zone replicas
+- Query routing transparently redirects traffic
+- Zero manual intervention required
+
+```
+proxySQL: us-east-1a (failed) → us-east-1b (new primary)
+
+application connection strings remain unchanged
+```
+
+### Region Level
+
+- Regional clusters operate independently
+- Cross-region failures isolated
+- Manual promotion of read-only regions available
+
+```sql
+-- promote eu-west read replica to primary
+
+alter system promote standby database to primary;
+```

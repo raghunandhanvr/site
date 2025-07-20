@@ -2,6 +2,13 @@ import React, { ComponentPropsWithoutRef } from 'react';
 import { Link } from 'next-view-transitions';
 import { highlight } from 'sugar-high';
 
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
 type HeadingProps = ComponentPropsWithoutRef<'h1'>;
 type ParagraphProps = ComponentPropsWithoutRef<'p'>;
 type ListProps = ComponentPropsWithoutRef<'ul'>;
@@ -10,16 +17,30 @@ type AnchorProps = ComponentPropsWithoutRef<'a'>;
 type BlockquoteProps = ComponentPropsWithoutRef<'blockquote'>;
 
 const components = {
-  h1: (props: HeadingProps) => (
-    <h1 className="font-medium mb-0 fade-in" {...props} />
-  ),
-  h2: (props: HeadingProps) => (
-    <h2 className="text-gray-800 font-medium mt-8 mb-3" {...props} />
-  ),
-  h3: (props: HeadingProps) => (
-    <h3 className="text-gray-800 font-medium mt-8 mb-3" {...props} />
-  ),
-  h4: (props: HeadingProps) => <h4 className="font-medium" {...props} />,
+  h1: (props: HeadingProps) => {
+    const id = props.id || generateSlug(props.children as string);
+    return (
+      <h1 id={id} className="font-medium mb-2 mt-6 pb-2 border-b border-gray-200 fade-in" {...props} />
+    );
+  },
+  h2: (props: HeadingProps) => {
+    const id = props.id || generateSlug(props.children as string);
+    return (
+      <h2 id={id} className="text-gray-900 font-medium mb-4" {...props} />
+    );
+  },
+  h3: (props: HeadingProps) => {
+    const id = props.id || generateSlug(props.children as string);
+    return (
+      <h3 id={id} className="text-gray-700 font-medium mb-3" {...props} />
+    );
+  },
+  h4: (props: HeadingProps) => {
+    const id = props.id || generateSlug(props.children as string);
+    return (
+      <h4 id={id} className="text-gray-600 font-medium mb-2" {...props} />
+    );
+  },
   p: (props: ParagraphProps) => (
     <p className="text-gray-800 leading-snug" {...props} />
   ),

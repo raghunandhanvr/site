@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Footer from "./components/layout/footer"
 import Header from "./components/layout/header"
+import WritingsLayoutWrapper from "./components/ui/writings-layout-wrapper"
 import { siteConfig, getStructuredData } from "./config"
 import Script from "next/script"
 import clsx from "clsx"
@@ -97,7 +98,9 @@ export default function RootLayout({
           <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
             <main className="max-w-[60ch] mx-auto w-full space-y-6">
               <Header />
-              {children}
+              <WritingsLayoutWrapper>
+                {children}
+              </WritingsLayoutWrapper>
               <Footer />
             </main>
             <Analytics />
