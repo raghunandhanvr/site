@@ -1,0 +1,168 @@
+import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
+
+export const metadata = {
+  title: 'Code for Deletion, Not Reuse',
+  description: 'Good code isn\'t reusable; it\'s deletable. Every abstraction is a bet on future requirements you\'ll probably get wrong.',
+  alternates: {
+    canonical: '/writings/deletion-focused',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=Code+for+Deletion%2C+Not+Reuse`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# Code for Deletion, Not Reuse
+<BlogViewCounter slug="/writings/deletion-focused" createdAt={new Date('2025-07-29')} />
+
+**TL;DR**: Good code isn't **reusable**; it's **deletable**. Every abstraction is a bet on future requirements you'll probably get wrong. Write code that's **easy to throw away**.
+
+## Why?
+
+Software requirements **change faster than we can predict them**. The code you write today solving tomorrow's imagined problems becomes the **legacy nightmare you can't remove** next year.
+
+**Key Insights**:
+- **Duplication is cheaper than the wrong abstraction**
+- Tight coupling makes change expensive. **Optimize for disposal** instead
+- **Maintenance cost > Writing cost**
+- Ask **"How do I delete this?"** not "How do I reuse this?"
+
+## The Reusability Trap
+
+Every shared abstraction creates a **web of dependencies**. The more code that depends on your "reusable" component, the more expensive it becomes to change until it's **effectively frozen forever**.
+
+```go
+// What starts as "reusable"
+type AuthService interface {
+    Authenticate(ctx context.Context, opts ...AuthOption) (*User, error)
+}
+
+// Becomes unmaintainable
+func (a *AuthManager) Authenticate(ctx context.Context, opts ...AuthOption) (*User, error) {
+    // 47 microservices depend on this
+    // 15 auth providers
+    // 500 lines of edge cases
+    // Can't change without breaking everything
+}
+```
+
+**Every consumer multiplies the cost of change.**
+
+## But What About DRY?
+
+**The Counterargument**: "Don't Repeat Yourself is a fundamental principle! Duplication leads to bugs when you update one place but forget another. We should abstract early to prevent inconsistencies."
+
+**The Reality**: DRY prevents one type of bug but creates another: **premature abstraction**. Yes, duplication can cause sync issues, but **wrong abstractions cause architectural paralysis**. A duplicated bug is annoying. A wrong abstraction touching 50 files is **a crisis**.
+
+```go
+// The DRY advocate's dream
+type DataProcessor interface {
+    Process(data interface{}) (interface{}, error)
+}
+
+// The reality: each implementation fights the abstraction
+func (p *JSONProcessor) Process(data interface{}) (interface{}, error) {
+    // 40 lines of type assertions and special cases
+}
+```
+
+## Copy-Paste Driven Development
+
+Duplication lets you understand patterns through **experience, not speculation**. It's easier to extract the right abstraction from **three examples** than to guess it from one.
+
+```go
+// Monday: Stripe handler
+func handleStripe(amount int64, token string) error {
+    return stripe.Charge(amount, token)
+}
+
+// Tuesday: PayPal handler (copied)
+func handlePayPal(amount int64, token string) error {
+    return paypal.Process(amount, token)
+}
+
+// Friday: Pattern emerges naturally
+type PaymentHandler interface {
+    Process(amount int64, token string) error
+}
+```
+
+**Abstraction after repetition, not before.**
+
+## "But This Doesn't Scale!"
+
+**The Counterargument**: "In large organizations, we need shared libraries and consistent patterns. Without reusable components, every team reinvents the wheel. This leads to chaos."
+
+**The Reality**: Shared libraries become **dependency nightmares**. That "standard" authentication library? Now you need **6 months and 12 teams** to agree on any change. Meanwhile, teams work around it, creating the **very inconsistency you tried to avoid**.
+
+```go
+// The "shared" library everyone depends on
+import "company/shared/auth" // version locked since 2019
+
+// What teams actually do
+func authenticateUser(token string) (*User, error) {
+    // Call the shared library
+    user, err := auth.Validate(token)
+    
+    // Then work around its limitations
+    if user.Type == "special_case_shared_lib_doesnt_handle" {
+        // 50 lines of workarounds
+    }
+}
+```
+
+## Layer by Volatility
+
+**Business logic changes constantly. Infrastructure rarely does.** Keep them separate: **volatile code at the top, stable code at the bottom**. This way, you **mostly delete from the top**.
+
+```
+┌─────────────────┐
+│ Business Logic  │ ← Changes daily (easy to delete)
+├─────────────────┤
+│ Domain Models   │ ← Changes monthly
+├─────────────────┤
+│ HTTP/Database   │ ← Changes yearly (hard to delete)
+└─────────────────┘
+```
+
+## "What About Code Reviews?"
+
+**The Counterargument**: "Duplicated code makes reviews harder. Reviewers see the same logic repeatedly. Abstractions make code more readable and reviewable."
+
+**The Reality**: Reviewing a **wrong abstraction is worse than reviewing duplication**. With duplication, you **see exactly what code does**. With a bad abstraction, you chase through **layers of indirection** wondering why `AbstractFactoryBuilderStrategy` exists.
+
+```go
+// Easy to review (even if duplicated)
+func calculateTax(amount float64) float64 {
+    return amount * 0.08
+}
+
+// "Abstracted" version
+func calculateTax(amount float64) float64 {
+    return getTaxStrategy().
+        withRegion(getRegion()).
+        withRules(loadRules()).
+        calculate(amount)
+}
+```
+
+**Which would you rather debug at 3 AM?**
+
+## The Deletion Checklist
+
+Before writing code, ask:
+- **Can I delete this without touching other files?**
+- **What breaks when I remove this?**
+- Is this solving **today's problem** or **tomorrow's maybe-problem**?
+- Am I creating an abstraction from **actual patterns** or **imagined ones**?
+
+## The Hard Truth
+
+Yes, this approach has tradeoffs. Yes, you'll have some duplication. Yes, it goes against what you learned in CS class. But here's what the DRY advocates won't tell you: **most production codebases are haunted by abstractions someone created in 2015 that nobody can remove**.
+
+Remember: **Every abstraction is a bet on the future, and the house always wins**. Today's "perfect" reusable component is tomorrow's **legacy bottleneck that three teams are afraid to touch**. Write code that **admits it might be wrong**. Build systems that can evolve by **subtraction, not just addition**. Because in the end, the code that survives isn't the code that does everything. **It's the code that can gracefully disappear when its time is up**. 

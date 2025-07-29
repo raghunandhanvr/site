@@ -7,6 +7,12 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    title: "Code for Deletion, Not Reuse",
+    slug: "/writings/deletion-focused",
+    date: "2025-07-29",
+    year: "2025",
+  },
+  {
     title: "Fault Tolerance",
     slug: "/writings/fault-tolerance",
     date: "2025-07-20",
