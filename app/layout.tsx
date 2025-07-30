@@ -1,21 +1,22 @@
-import type React from "react"
-import "./globals.css"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import { ViewTransitions } from "next-view-transitions"
-import { Analytics } from "@vercel/analytics/react"
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import Footer from "./components/layout/footer"
-import Header from "./components/layout/header"
-import WritingsLayoutWrapper from "./components/ui/writings-layout-wrapper"
-import { siteConfig, getStructuredData } from "./config"
-import Script from "next/script"
-import clsx from "clsx"
+import type React from "react";
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { ViewTransitions } from "next-view-transitions";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import Footer from "./components/layout/footer";
+import Header from "./components/layout/header";
+import WritingsLayoutWrapper from "./components/ui/writings-layout-wrapper";
+import { siteConfig, getStructuredData } from "./config";
+import Script from "next/script";
+import { cn } from "./lib/utils";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-})
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -24,13 +25,22 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  keywords: [...siteConfig.keywords],
+  keywords: siteConfig.keywords,
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
   openGraph: {
     title: siteConfig.name,
     description: siteConfig.description,
     url: siteConfig.url,
     siteName: siteConfig.name,
-    images: siteConfig.image,
+    images: [
+      {
+        url: siteConfig.image,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name,
+      },
+    ],
     locale: "en_US",
     type: "website",
   },
@@ -55,47 +65,61 @@ export const metadata: Metadata = {
   },
   twitter: {
     title: siteConfig.name,
+    description: siteConfig.description,
     card: "summary_large_image",
+    images: [siteConfig.image],
+    creator: "@raghuvrx",
   },
   icons: {
     icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
+  manifest: "/site.webmanifest",
+};
+
+interface RootLayoutProps {
+  children: React.ReactNode;
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <ViewTransitions>
-      <html lang="en" className={clsx(inter.className)} suppressHydrationWarning>
+      <html 
+        lang="en" 
+        className={cn(inter.variable, "font-sans")} 
+        suppressHydrationWarning
+      >
         <head>
           <Script
-            id="ga-script"
+            id="structured-data"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(getStructuredData()),
+            }}
+          />
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=G-8E3Y6STYEC`}
+            strategy="afterInteractive"
+          />
+          <Script
+            id="google-analytics"
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', 'G-8E3Y6STYEC');
+                gtag('config', 'G-8E3Y6STYEC', {
+                  page_title: document.title,
+                  page_location: window.location.href,
+                });
               `,
             }}
           />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(getStructuredData()),
-            }}
-          />
-          <link rel="canonical" href={siteConfig.url} />
-          <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="RSS" />
-          <link rel="alternate" type="application/atom+xml" href="/atom.xml" title="Atom" />
-          <link rel="alternate" type="application/feed+json" href="/feed.json" title="JSON" />
         </head>
-        <body className="antialiased tracking-tight">
-          <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
+        <body className="antialiased tracking-tight bg-white text-gray-900">
+          <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8">
             <main className="container space-y-6">
               <Header />
               <WritingsLayoutWrapper>
@@ -109,5 +133,5 @@ export default function RootLayout({
         </body>
       </html>
     </ViewTransitions>
-  )
+  );
 }

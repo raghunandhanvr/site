@@ -1,0 +1,16 @@
+{
+  "name": "Raghunandhan VR",
+  "short_name": "Raghu",
+  "description": "I own a computer and I like to develop things with it.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

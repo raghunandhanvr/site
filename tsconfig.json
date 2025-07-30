@@ -26,17 +26,8 @@
       "@/*": [
         "./*"
       ],
-      "@/shared/*": [
-        "./src/shared/*"
-      ],
-      "@/core/*": [
-        "./src/core/*"
-      ],
       "@/app/*": [
         "./app/*"
-      ],
-      "@/components/*": [
-        "./src/components/*"
       ]
     }
   },

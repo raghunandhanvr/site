@@ -1,5 +1,9 @@
+const baseUrl = process.env.VERCEL_URL 
+  ? `https://${process.env.VERCEL_URL}` 
+  : "https://raghu.app";
+
 export const siteConfig = {
-  url: "https://raghu.app/",
+  url: baseUrl,
   name: "Raghunandhan VR",
   shortName: "Raghu",
   description: "I own a computer and I like to develop things with it.",
@@ -18,8 +22,18 @@ export const siteConfig = {
     "Software Engineer",
     "Tech Blog",
     "Web Development",
-    "Distributed Systems"
+    "Distributed Systems",
+    "TypeScript",
+    "React",
+    "Next.js"
   ]
+} as const;
+
+export const routes = {
+  home: "/",
+  work: "/work",
+  writings: "/writings",
+  resume: "https://dub.sh/raghu-resume",
 } as const;
 
 export function getStructuredData() {
@@ -31,12 +45,20 @@ export function getStructuredData() {
     jobTitle: siteConfig.jobTitle,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Chennai",
+      addressLocality: siteConfig.location.split(", ")[0],
       addressCountry: "IN"
     },
-    image: siteConfig.image,
+    image: `${siteConfig.url}${siteConfig.image}`,
     sameAs: Object.values(siteConfig.social),
-    knowsAbout: ["Software Development", "Databases", "Distributed Systems", "Web Development"]
-  }
+    knowsAbout: [
+      "Software Development", 
+      "Databases", 
+      "Distributed Systems", 
+      "Web Development",
+      "TypeScript",
+      "React",
+      "Next.js"
+    ]
+  };
 }
 
