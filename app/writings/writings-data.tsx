@@ -7,6 +7,12 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    title: "The Best Coding AI",
+    slug: "/writings/best-coding-ai",
+    date: "2025-09-02",
+    year: "2025",
+  },
+  {
     title: "Code for Deletion, Not Reuse",
     slug: "/writings/deletion-focused",
     date: "2025-07-29",

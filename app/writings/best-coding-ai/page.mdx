@@ -1,0 +1,67 @@
+import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
+
+export const metadata = {
+  title: 'The Best Coding AI',
+  description: 'This blog helps you understand why you shouldn\'t just trust AI model reviews or jump on every new hyped release. Here\'s how to actually evaluate what works.',
+  alternates: {
+    canonical: '/writings/best-coding-ai',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=The+Best+Coding+AI`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+# The Best Coding AI
+<BlogViewCounter slug="/writings/best-coding-ai" createdAt={new Date('2025-09-02')} />
+
+This blog helps you understand why you shouldn't just trust AI model reviews or jump on every new hyped release.
+
+Which model's actually better, *GPT 5* or *Opus 4.1?* Everyone wants a straight answer, but it's not that simple. Some people share opinions really early, while others properly test things before saying anything.
+
+## Who's giving the opinion?
+
+First thing: check **who's talking**. How many years of engineering experience do they have *before the AI era?* Are they using AI models to code daily? People new to AI coding usually form opinions too quickly, and one or two bad experiences throw them off. These models work on probability, so failures are expected. Experienced developers share opinions only after extensive testing across different scenarios.
+
+Get ideas from people who have at least **5 years of coding experience before the AI era**. They understand what good code looks like without AI assistance, so they can better evaluate whether AI's actually helping or just generating noise. These are the people who debugged with *StackOverflow*, read through expert discussions, understood not just what worked but *WHY* it worked. That depth matters when evaluating AI output.
+
+There's a whole generation now that doesn't know what StackOverflow is. They copy-paste errors into chat windows and get instant answers. Sure, the code works. Ask them why it works that way instead of another way? Blank stares. Ask about edge cases? Nothing. They're trading **deep understanding for quick fixes**.
+
+Newer developers often judge models on subjective criteria like design quality. Nothing wrong with that, but it's harder to establish objective benchmarks for aesthetics.
+
+## How're they using it?
+
+Same model gives totally different results based on:
+1. **The platform** (*Cursor*, *Claude Code*, etc.) which have predefined context, instructions, system prompts, tool integrations
+2. **Programming language context** (*TypeScript*, *Python*)
+3. **Codebase size and architectural complexity**
+
+Coding agents combine a model (GPT-5), instructions (system prompts), tools (file I/O operations), all running in execution loops. Sometimes one loop uses *multiple models*. Cursor trains specific models just for codebase search or diff application. It's not always about the base model. Codex has dedicated models for code review workflows.
+
+One developer finds *GPT-5* excellent using it in *Copilot* with *TypeScript* across thousands of files. Another finds it inadequate with a completely different stack. This is *before* considering prompt engineering and context provision strategies. The complexity compounds quickly.
+
+Benchmarks like *SWE-bench*? They're necessary but don't reflect production usage. SWE-bench tests Python exclusively. If you're working in TypeScript, the relevance drops. Models overfit to benchmarks, and popular benchmarks create training data contamination issues.
+
+## The depth problem
+
+AI gives you answers fast, but the knowledge you gain is **shallow**. Back when we had to read multiple *StackOverflow* threads, you came out understanding not just what worked, but *why* it worked. Every great developer got there by understanding systems deeply and understanding other developers' thought processes. That's exactly what we're **losing**.
+
+The acceleration has begun and we can't stop it. But that doesn't mean we let it make us worse developers. The future isn't about whether we use AI, it's about **how we use it**.
+
+## So how to pick?
+
+The only reliable method is **testing multiple models in your actual workflow**. But here's how to do it properly:
+
+1. When AI gives you an answer, **interrogate it**. Ask *why*. Takes longer, but that's the point.
+2. Do code reviews differently. Don't just check if code works. Ask what other approaches were considered. *Why this one*? Make understanding the process as important as the result.
+3. Build things from scratch sometimes. Yes, AI can generate that authentication system. But build one yourself first. You'll write worse code, but you'll **understand every line**.
+4. Find where smart people discuss code. *Reddit*, *Discord*, wherever. That's where you'll find discussions that make you think differently.
+
+Learn from others if you analyze their context: their experience level, tech stack, and use case complexity. This helps filter noise and identify relevant opinions.
+
+If someone's been shipping production code with AI for months, uses your tech stack, and has similar architectural complexity, their opinion carries more weight than someone testing on hobby projects. But remember, even the best AI is just a tool. The developers who'll survive are the ones who understand the **fundamentals underneath**.
