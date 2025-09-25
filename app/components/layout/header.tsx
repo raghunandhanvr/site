@@ -65,7 +65,7 @@ export default function Header() {
                 })}
                 <li>
                   <a
-                    href="https://dub.sh/raghu-resume"
+                    href="https://raghu.app/resume"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="work-link transition-colors hover:text-blue-600 font-normal text-gray-600"
