@@ -54,10 +54,12 @@ html {
 html {
   min-width: 360px;
   scrollbar-gutter: stable;
+  overscroll-behavior: none;
 }
 
 body {
   text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
 }
 
 ::selection {

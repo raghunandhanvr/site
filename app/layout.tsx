@@ -95,8 +95,8 @@ export default function RootLayout({
           <link rel="alternate" type="application/feed+json" href="/feed.json" title="JSON" />
         </head>
         <body className="antialiased tracking-tight">
-          <div className="min-h-screen flex flex-col justify-between pt-0 pl-7 pr-7 p-8 bg-white text-gray-900">
-            <main className="container space-y-6">
+          <div className="min-h-screen flex flex-col justify-between pt-0 px-4 sm:px-7 p-8 bg-white text-gray-900 max-w-full overflow-x-hidden">
+            <main className="container space-y-6 max-w-full">
               <Header />
               <WritingsLayoutWrapper>
                 {children}

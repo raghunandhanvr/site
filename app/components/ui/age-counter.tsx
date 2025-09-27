@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 export default function AgeCounter() {
   const [age, setAge] = useState({ years: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -28,8 +29,14 @@ export default function AgeCounter() {
   }, []);
 
   return (
-      <span className="text-gray-400 transition-colors text-xs font-mono">
+      <motion.span 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        className="text-gray-400 transition-colors text-xs font-mono"
+      >
           {age.years}y {age.days}d {age.hours}h {age.minutes}m {age.seconds}s
-      </span>
+      </motion.span>
   );
 }

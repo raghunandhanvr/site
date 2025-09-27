@@ -20,7 +20,7 @@ const components = {
   h1: (props: HeadingProps) => {
     const id = props.id || generateSlug(props.children as string);
     return (
-      <h1 id={id} className="font-medium mb-2 mt-6 pb-2 border-b border-gray-200 fade-in" {...props} />
+      <h1 id={id} className="font-medium mb-2 mt-6 pb-2 border-b border-gray-200" {...props} />
     );
   },
   h2: (props: HeadingProps) => {
