@@ -33,13 +33,13 @@ const getCategoryOrder = () => {
 
 const categoryOrder = getCategoryOrder()
 
-export default function Works({
+export default async function Works({
   searchParams,
 }: {
   searchParams: Promise<{ tab?: string }>
 }) {
-  const resolvedParams = searchParams
-  const activeTab = (resolvedParams as any).tab || categoryOrder[0] || "Work Experience"
+  const resolvedParams = await searchParams
+  const activeTab = resolvedParams?.tab || categoryOrder[0] || "Work Experience"
 
   const groupedWorks = works.reduce(
     (acc, work) => {
