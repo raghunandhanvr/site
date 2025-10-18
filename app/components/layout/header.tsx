@@ -36,7 +36,7 @@ export default function Header() {
 
   return (
     <>
-    <div className="mb-10">
+    <div className="mb-6">
         <header className={`mb-8 ${showBreadcrumb ? 'pt-2' : 'pt-2'}`}>
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
             <div className="flex-shrink-0 mb-2 sm:mb-0 sm:mr-auto">
@@ -79,7 +79,7 @@ export default function Header() {
         </header>
 
         {showBreadcrumb && (
-          <nav className="text-[11px] text-gray-400 -mt-4">
+          <nav className="text-[11px] text-gray-400 -mt-4 sm:-mt-8">
             <ol className="flex items-center">
               {breadcrumbs.map((crumb, index) => (
                 <li key={crumb.path} className="flex items-center">

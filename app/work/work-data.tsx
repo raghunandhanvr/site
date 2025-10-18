@@ -1,6 +1,3 @@
-import { Badge } from "@/app/components/ui/badge"; 
-import { Briefcase, GraduationCap, Laptop, Rocket, BookOpen, Star, Shield, Trophy } from 'lucide-react';    
-
 export interface Work {
     title: string;
     year: string;
@@ -8,8 +5,6 @@ export interface Work {
     url: string;
     techStack: string;
     category: 'Work Experience' | 'Internship' | 'Freelancing' | 'Side Project' | 'Publication' | 'Security Research' | 'Leadership';
-    current?: boolean;
-    highlight?: boolean;
 }
   
 export const works: Work[] = [
@@ -22,8 +17,6 @@ export const works: Work[] = [
     url: "https://lumel.com/",
     techStack: "Go, React, .NET, Azure",
     category: "Work Experience",
-    current: true,
-    highlight: true
   },
   {
     title: "Freightify",
@@ -38,8 +31,6 @@ export const works: Work[] = [
     url: "https://www.freightify.com",
     techStack: "Go, PHP, AngularJS, React.js, Kubernetes, MySQL, MongoDB, Redis, Node.js",
     category: "Work Experience",
-    current: false,
-    highlight: true
   },
   {
     title: "Freightbro (Now Freightify)",
@@ -73,7 +64,6 @@ export const works: Work[] = [
     url: "https://ieeexplore.ieee.org/document/10046797",
     techStack: "Python, TensorFlow, PyTorch, CNN, GAN",
     category: "Publication",
-    highlight: true
   },
   {
     title: "Security Research & Bug Bounty",
@@ -85,7 +75,6 @@ export const works: Work[] = [
     url: "#",
     techStack: "Burp Suite, Wireshark, Linux, Web Security, OWASP",
     category: "Security Research",
-    current: true
   },
   {
     title: "DataAtmos",
@@ -97,7 +86,6 @@ export const works: Work[] = [
     url: "https://dataatmos.ai",
     techStack: "Next.js, Terraform, AWS, PostgreSQL",
     category: "Side Project",
-    current: true
   },
   {
     title: "President, Cyberspace Club",
@@ -110,7 +98,6 @@ export const works: Work[] = [
     url: "https://sece.ac.in/",
     techStack: "Leadership, Cybersecurity Education, CTF Challenges",
     category: "Leadership",
-    highlight: true
   },
   {
     title: "Smart India Hackathon",
@@ -167,7 +154,6 @@ export const works: Work[] = [
     url: "https://www.erc4337.io/",
     techStack: "TypeScript, Solidity, Ethereum, Web3",
     category: "Side Project",
-    current: true
   },
   {
     title: "Custom PC Building Service",
@@ -179,30 +165,5 @@ export const works: Work[] = [
     url: "#",
     techStack: "Hardware Assembly, Performance Tuning, Custom Cooling",
     category: "Freelancing",
-    current: true
   }
 ];
-
-const categoryIcons = { 
-  "Work Experience": Briefcase, 
-  "Internship": GraduationCap, 
-  "Freelancing": Laptop, 
-  "Side Project": Rocket, 
-  "Publication": BookOpen,
-  "Security Research": Shield,
-  "Leadership": Trophy,
-};  
-
-export const CategoryBadge: React.FC<{ category: Work['category'] }> = ({ category }) => ( 
-  <Badge variant={category} icon={categoryIcons[category]} className="text-xs"> 
-      {category} 
-  </Badge> 
-);  
-
-export const CurrentTag: React.FC = () => ( 
-  <Badge variant="current" icon={Star} className="text-xs ml-2"> 
-      Current 
-  </Badge> 
-);
-  
-  
