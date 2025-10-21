@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "Protocol",
   description: "Just for my reference",
   alternates: {
-    canonical: "/protocol",
+    canonical: "/p",
   },
   openGraph: {
     images: [
