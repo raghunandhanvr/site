@@ -44,7 +44,8 @@ yarn.lock
 .yarn/install-state.gz 
 .yarn/build-state.yml  
 .pnp.*            
-bun.lockb         
+bun.lockb        
+bun.lock 
 
 # environment variables
 .env
