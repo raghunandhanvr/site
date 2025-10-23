@@ -31,18 +31,8 @@ function normalizeFormat(format: string): FeedFormat {
   }
 }
 
-export async function GET(request: NextRequest) {
-  let format = request.nextUrl.pathname.split("/").pop() || "";
-
-  if (!format || format === "feed") {
-    format = "rss.xml";
-  }
-
-  format = normalizeFormat(format);
-
-  if (!isValidFormat(format)) {
-    return Response.json({ error: "Unsupported feed format" }, { status: 404 });
-  }
+async function generateFeed(format: FeedFormat) {
+  "use cache";
 
   const feed = new Feed({
     title: siteConfig.name,
@@ -112,7 +102,23 @@ export async function GET(request: NextRequest) {
     json: { content: feed.json1(), contentType: "application/json" },
   };
 
-  const response = responseMap[format];
+  return responseMap[format];
+}
+
+export async function GET(request: NextRequest) {
+  let format = request.nextUrl.pathname.split("/").pop() || "";
+
+  if (!format || format === "feed") {
+    format = "rss.xml";
+  }
+
+  format = normalizeFormat(format);
+
+  if (!isValidFormat(format)) {
+    return Response.json({ error: "Unsupported feed format" }, { status: 404 });
+  }
+
+  const response = await generateFeed(format);
 
   return new Response(response.content, {
     headers: {

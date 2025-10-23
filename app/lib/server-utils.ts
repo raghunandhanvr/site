@@ -10,6 +10,7 @@ export const BaseUrl = siteConfig.url.endsWith("/")
   : `${siteConfig.url}/`;
 
 export async function getBlogSlugs(dir: string = blogsDirectory) {
+  "use cache";
   const entries = await fs.readdir(dir, {
     recursive: true,
     withFileTypes: true,
@@ -27,6 +28,7 @@ export async function getBlogSlugs(dir: string = blogsDirectory) {
 }
 
 export async function getBlogData(slug: string) {
+  "use cache";
   const fullPath = path.join(blogsDirectory, slug, "page.mdx");
   const fileContents = await fs.readFile(fullPath, "utf8");
   const { data: metadata, content } = matter(fileContents);
@@ -45,6 +47,7 @@ export async function getBlogData(slug: string) {
 }
 
 export async function getAllBlogPosts() {
+  "use cache";
   const slugs = await getBlogSlugs();
   const posts = await Promise.all(
     slugs.map(async (slug) => {
@@ -63,6 +66,7 @@ export async function getAllBlogPosts() {
 }
 
 export async function getBlogs() {
+  "use cache";
   const slugs = await getBlogSlugs();
   const blogs = await Promise.all(slugs.map((slug) => getBlogData(slug)));
 
