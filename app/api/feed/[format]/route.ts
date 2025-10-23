@@ -3,9 +3,6 @@ import { siteConfig } from "@/app/config";
 import { type NextRequest } from "next/server";
 import { BaseUrl, getBlogs } from "@/app/lib/server-utils";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
 const validFormats = [
   "rss.xml",
   "atom.xml",

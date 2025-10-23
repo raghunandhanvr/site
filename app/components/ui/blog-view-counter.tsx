@@ -8,6 +8,8 @@ interface BlogViewCounterProps {
 }
 
 export async function BlogViewCounter({ slug, createdAt }: BlogViewCounterProps) {
+  'use cache'
+  
   const views = await getViewCount(slug)
   await incrementViewCount(slug)
 

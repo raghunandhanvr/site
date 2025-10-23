@@ -1,8 +1,10 @@
 import Image from 'next/image';
+import { Suspense } from 'react';
 import BloomFilterVisual from './bloom-filter-visual';
 import FalsePositiveVisual from './false-positive-visual';
 import MermaidDiagram from '@/app/components/md/mermaid';
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter';
+import PageLoader from '@/app/components/ui/page-loader';
 
 export const metadata = {
   title: 'Bloom Filters: How Systems Check Name Availability in Milliseconds',
@@ -117,7 +119,9 @@ Honestly, I was super skeptical at first. How can something possibly tell you wi
 
 The trick is surprisingly simple. A Bloom filter is basically just an array of bits (zeros and ones) with everything initially set to zero.
 
+<Suspense fallback={<PageLoader />}>
 <BloomFilterVisual />
+</Suspense>
 
 <MermaidDiagram diagram={`
 graph LR
@@ -289,7 +293,9 @@ But here's the wild part - with just 100 bits, I was already getting decent resu
 
 If you've ever been surprised that a seemingly random username was already taken, sometimes it might actually be a false positive!
 
+<Suspense fallback={<PageLoader />}>
 <FalsePositiveVisual />
+</Suspense>
 
 These happen when different usernames end up setting the same bits to 1. It's like a hash collision but visual - all your hash functions just happen to hit positions that were already set by other usernames.
 

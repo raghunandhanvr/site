@@ -13,7 +13,7 @@ This is a clean, fast, and lightweight site built with Next.js, Vercel, and Tail
 #### Getting Started
 
 To set up the project locally, follow these steps:
-(btw, I just use [pnpm](https://pnpm.io/).)
+(btw, I just use [bun](https://bun.com/).)
 
 1. **Install Dependencies**  
    Run the following command to install the necessary packages:

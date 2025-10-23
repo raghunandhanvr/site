@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Suspense } from 'react';
 import Tokenization  from './tokenization';
 import SelfAttention from './self-attention';
 import NeuralNetwork from './neural-network';
@@ -6,6 +7,7 @@ import ContextAwareResponse from './context-aware-response';
 import Transformer from './transformer';
 import MermaidDiagram from '@/app/components/md/mermaid'
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
+import PageLoader from '@/app/components/ui/page-loader'
 
 export const metadata = {
   title: 'Understanding AI Models',
@@ -126,7 +128,9 @@ data = collector.get_data()
 #### Tokenization: Breaking Down Language
 Tokenization is like teaching a child to read by breaking down sentences into words. It's the process of converting text into smaller, manageable pieces called tokens. These tokens are the building blocks that AI models use to understand and generate language. By breaking down language into tokens, models can analyze and learn from vast amounts of text data efficiently.
 
+<Suspense fallback={<PageLoader />}>
 <Tokenization />
+</Suspense>
 
 <details>
 <summary>Example Code for Simple Tokenizer</summary>
@@ -184,7 +188,9 @@ decoded = tokenizer.decode(tokens)  # "hello world of ai"
 #### Basic Building Blocks
 Neural networks are the digital brains of AI models. They mimic the way our brains work, with neurons and synapses, to process information. Each layer of a neural network transforms the input data, allowing the model to learn complex patterns and make predictions. It's like teaching a computer to recognize faces by showing it thousands of pictures until it can identify a face on its own.
 
+<Suspense fallback={<PageLoader />}>
 <NeuralNetwork />
+</Suspense>
 
 <details>
 <summary>Example Code for Simple Neural Network</summary>
@@ -288,7 +294,9 @@ Attention mechanisms revolutionized AI by allowing models to focus on specific p
 #### How Attention Works in Practice
 Attention mechanisms allow models to understand context and relationships between words in a sentence. For example, in the sentence "The dog **chased** the cat because **it** was scared," attention helps the model determine that "it" refers to "cat." This ability to focus on relevant parts of the input makes attention mechanisms crucial for tasks like language translation and text generation.
 
+<Suspense fallback={<PageLoader />}>
 <SelfAttention />
+</Suspense>
 
 ```python
 def example_attention_flow():
@@ -309,7 +317,9 @@ attention_result = example_attention_flow()  # Returns ["cat", 0.8]
 
 Transformers have become the backbone of modern AI, especially in natural language processing tasks. They leverage attention mechanisms to process input data in parallel, making them highly efficient and effective for large-scale data.
 
+<Suspense fallback={<PageLoader />}>
 <Transformer />
+</Suspense>
 
 #### How Transformers Work
 Transformers use a mechanism called self-attention to weigh the importance of different words in a sentence relative to each other. This allows them to capture context and relationships more effectively than previous models.
@@ -353,7 +363,9 @@ Transformers have enabled breakthroughs in AI by allowing models to understand c
 
 AI models can provide different responses based on the context. Let's see how this works with our GOAT (Greatest of All Time) example:
 
+<Suspense fallback={<PageLoader />}>
 <ContextAwareResponse />
+</Suspense>
 
 This example demonstrates how AI models can adapt their responses based on the given context. Whether we're talking about cricket, football, or Tamil cinema, the model understands the context and provides an appropriate answer.
 

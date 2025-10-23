@@ -1,8 +1,6 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/app/config";
 
-export const runtime = 'edge';
-
 function generatePixelArt() {
   const grid = Array(6).fill(0).map(() => 
     Array(6).fill(0).map(() => Math.random() > 0.5)

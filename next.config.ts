@@ -6,6 +6,19 @@ const nextConfig: NextConfig = {
   experimental: {
     mdxRs: true,
   },
+  cacheComponents: true,
+  cacheLife: {
+    static: {
+      stale: 3600, // 1 hour
+      revalidate: 86400, // 1 day
+      expire: 604800, // 1 week
+    },
+    posts: {
+      stale: 900, // 15 minutes
+      revalidate: 1800, // 30 minutes
+      expire: 86400, // 1 day
+    },
+  },
   async rewrites() {
     return [
       {
