@@ -1,10 +1,11 @@
-import type { NextConfig } from 'next';
-import createMDX from '@next/mdx';
+import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
-  pageExtensions: ['mdx', 'ts', 'tsx'],
+  pageExtensions: ["mdx", "ts", "tsx"],
   experimental: {
     mdxRs: true,
+    clientSegmentCache: true,
   },
   cacheComponents: true,
   cacheLife: {
@@ -56,4 +57,3 @@ const nextConfig: NextConfig = {
 const withMDX = createMDX({});
 
 export default withMDX(nextConfig);
-

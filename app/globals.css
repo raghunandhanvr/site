@@ -227,6 +227,15 @@ table {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 @supports (view-transition-name: none) {
   .fade-in {
     animation: fade-in 0.8s ease-in-out forwards;
