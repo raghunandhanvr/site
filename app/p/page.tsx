@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 
+export const experimental_ppr = true
+
 export const metadata: Metadata = {
   title: "Protocol",
   description: "Just for my reference",
@@ -95,29 +97,27 @@ export default function ProtocolPage() {
             <div>
               <h3 className="text-xs font-medium text-gray-900 bg-gray-100 px-2 py-1 rounded">Push</h3>
               <ol className="text-xs text-gray-700 space-y-0 pl-4 list-decimal mt-1">
-                <li>Pushups or Dips for warmup</li>
-                <li>Incline DB Press</li>
-                <li>Pec Dec Flies</li>
-                <li>Cable flies or multi flight machine</li>
-                <li>Overhead DB Press or Military Press</li>
-                <li>Lateral raises</li>
-                <li>Tricep pushdown</li>
-                <li>Close grip bench press</li>
-                <li>Upright row</li>
+                <li>Pushups/Dips for warmup</li>
+                <li>Chest Press Machine</li>
+                <li>Overhead Dumbbell Press</li>
+                <li>Incline Chest Press Machine</li>
+                <li>Cable Flies</li>
+                <li>Lateral Raises</li>
+                <li>Tricep Pushdowns</li>
+                <li>Tricep overhead extension</li>
               </ol>
             </div>
 
             <div>
               <h3 className="text-xs font-medium text-gray-900 bg-gray-100 px-2 py-1 rounded">Pull</h3>
               <ol className="text-xs text-gray-700 space-y-0 pl-4 list-decimal mt-1">
-                <li>Pullups for warmups</li>
-                <li>One hand lat pulldown</li>
-                <li>Lat pulldown wide grip</li>
-                <li>Reverse close grip pulldown</li>
-                <li>Barbell row or T-bar row</li>
-                <li>Barbell curls 21s</li>
-                <li>Incline/Standing Barbell DB curls</li>
-                <li>Reverse Pec Dec</li>
+                <li>Pullups/Chinups for warmup</li>
+                <li>Wide Grip Lat Pulldown</li>
+                <li>Close Reverse Grip Lat Pulldown</li>
+                <li>Barbell Rows</li>
+                <li>Face Pulls</li>
+                <li>Barbell 21s</li>
+                <li>Dumbbell Curls</li>
                 <li>Shrugs</li>
               </ol>
             </div>
@@ -126,7 +126,7 @@ export default function ProtocolPage() {
               <h3 className="text-xs font-medium text-gray-900 bg-gray-100 px-2 py-1 rounded">Legs</h3>
               <ol className="text-xs text-gray-700 space-y-0 pl-4 list-decimal mt-1">
                 <li>Free squats for warmup</li>
-                <li>Hack Squats</li>
+                <li>Hack/Pendulam/Barbell Squats</li>
                 <li>Leg Press</li>
                 <li>Walking Lunges</li>
                 <li>Leg Extension</li>
