@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "dev": "bun run --bun next dev",
-    "build": "bun run --bun next build",
-    "start": "bun run --bun next start"
+    "dev": "bun run next dev",
+    "build": "bun run next build",
+    "start": "bun run next start"
   },
   "dependencies": {
     "@next/mdx": "16.0.0",
