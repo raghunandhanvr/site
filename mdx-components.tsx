@@ -20,25 +20,25 @@ const components = {
   h1: (props: HeadingProps) => {
     const id = props.id || generateSlug(props.children as string);
     return (
-      <h1 id={id} className="font-medium mb-2 mt-6 pb-2 border-b border-gray-200" {...props} />
+      <h1 id={id} className="text-2xl font-bold mb-1 dark:text-gray-100" {...props} />
     );
   },
   h2: (props: HeadingProps) => {
     const id = props.id || generateSlug(props.children as string);
     return (
-      <h2 id={id} className="text-gray-900 font-medium mb-4" {...props} />
+      <h2 id={id} className="group font-bold text-xl my-8 relative" {...props} />
     );
   },
   h3: (props: HeadingProps) => {
     const id = props.id || generateSlug(props.children as string);
     return (
-      <h3 id={id} className="text-gray-700 font-medium mb-3" {...props} />
+      <h3 id={id} className="group font-bold text-lg my-8 relative" {...props} />
     );
   },
   h4: (props: HeadingProps) => {
     const id = props.id || generateSlug(props.children as string);
     return (
-      <h4 id={id} className="text-gray-600 font-medium mb-2" {...props} />
+      <h4 id={id} className="group font-bold text-base my-6 relative" {...props} />
     );
   },
   p: (props: ParagraphProps) => (

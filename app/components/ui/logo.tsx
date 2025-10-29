@@ -1,9 +1,9 @@
 import { siteConfig } from "@/app/config";
 import Link from "next/link";
 
-export function NameTransition() {
+export function Logo() {
   return (
-    <h1 className="font-medium pt-5">
+    <h1 className="text-md md:text-lg font-bold pt-5">
       <Link href="/" className="work-link">
         <span className="sr-only">{siteConfig.name}</span>
         <span aria-hidden="true" className="block overflow-hidden group relative">

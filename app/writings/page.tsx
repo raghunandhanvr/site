@@ -52,45 +52,39 @@ export default async function WritingsPage() {
   'use cache'
   
   const sortedPosts = await getSortedPosts()
-  const displayedYears = new Set<string>()
 
   return (
     <div className="container">
-      <div className="w-full">
-        <table className="w-full border-collapse writings-table" style={{ maxWidth: '100%', display: 'table' }}>
-          <thead>
-            <tr className="text-left">
-              <th className="pb-2 font-normal text-gray-500 text-sm w-[15%]">date</th>
-              <th className="pb-2 font-normal text-gray-500 text-sm">title</th>
-              <th className="pb-2 font-normal text-gray-500 text-sm text-right w-[15%]">views</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedPosts.map((post: BlogPost) => {
-              const isFirstOfYear = !displayedYears.has(post.year)
-              if (isFirstOfYear) {
-                displayedYears.add(post.year)
-              }
+      <ul>
+        {sortedPosts.map((post: BlogPost, i: number) => {
+          const year = post.year
+          const firstOfYear = !sortedPosts[i - 1] || sortedPosts[i - 1].year !== year
 
-              return (
-                <tr key={post.slug} className="border-t border-gray-100">
-                  <td className="py-4 pr-4 text-gray-500 text-sm align-top">{isFirstOfYear ? post.year : ""}</td>
-                  <td className="py-4">
-                    <Link href={post.slug} className="work-link text-gray-900 text-base hover:text-blue-600 transition-colors">
+          return (
+            <li key={post.slug} className="group">
+              <Link href={post.slug} className="work-link">
+                <span className={`flex py-2 items-center ${!firstOfYear ? "ml-10 md:ml-14" : ""}`}>
+                  {firstOfYear && (
+                    <span className="w-10 md:w-14 inline-block shrink-0 text-gray-500 text-xs">
+                      {year}
+                    </span>
+                  )}
+                  <span className="grow text-gray-900">
+                    <span className="group-hover:bg-gray-200 transition-all px-1.5 inline-block">
                       {post.title}
-                    </Link>
-                  </td>
-                  <td className="py-4 text-right text-gray-500 text-sm">
+                    </span>
+                  </span>
+                  <span className="text-gray-500 text-xs ml-2">
                     <Suspense fallback={<ViewCountSkeleton />}>
                       <ViewCount slug={post.slug} />
                     </Suspense>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+                  </span>
+                </span>
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }

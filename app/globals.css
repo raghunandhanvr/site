@@ -1,5 +1,36 @@
 @import 'tailwindcss';
 
+/* Force pure white background everywhere */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Aggressive pure white enforcement */
+html,
+body,
+#__next,
+[id="__next"],
+main,
+div[class*="min-h-screen"] {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  color-scheme: light !important;
+}
+
+/* Prevent any background color inheritance */
+body {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+}
+
+html {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+}
+
 @layer utilities {
   .line-clamp-2 {
     overflow: hidden;
@@ -11,6 +42,7 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: #FFFFFF;
 }
 
 .toc-scrollbar {
@@ -39,6 +71,10 @@ html {
 @theme {
   --font-family-sans: 'Geist', sans-serif;
   --font-family-mono: 'Geist Mono', monospace;
+  --color-white: #FFFFFF;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --background: #FFFFFF;
 }
 
 :root {
@@ -56,11 +92,13 @@ html {
   min-width: 360px;
   scrollbar-gutter: stable;
   overscroll-behavior: none;
+  background-color: #FFFFFF;
 }
 
 body {
   text-rendering: optimizeLegibility;
   overscroll-behavior: none;
+  background-color: #FFFFFF;
 }
 
 ::selection {

@@ -101,12 +101,14 @@ export default function RootLayout({
           <link rel="alternate" type="application/feed+json" href="/feed.json" title="JSON" />
         </head>
         <body className="antialiased tracking-tight font-sans">
-          <div className="min-h-screen flex flex-col justify-between pt-0 px-4 sm:px-7 p-8 bg-white text-gray-900 max-w-full overflow-x-hidden">
-            <main className="container space-y-6 max-w-full">
+          <div className="min-h-screen flex flex-col pt-0 px-4 sm:px-7 p-8 bg-white text-gray-900 max-w-full overflow-x-hidden">
+            <main className="flex-1 container space-y-6 max-w-full">
               <Header />
               {children}
-              <Footer />
             </main>
+            <div className="container max-w-full">
+              <Footer />
+            </div>
             <Analytics />
             <SpeedInsights />
           </div>

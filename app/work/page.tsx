@@ -67,7 +67,7 @@ export default async function Works() {
                   <div key={index} className="mb-6">
                     <Link href={work.url} className="block hover:opacity-80 transition-opacity duration-200 work-link">
                       <div className="flex justify-between items-baseline mb-2">
-                        <h3 className="text-gray-900 font-medium text-base">{work.title}</h3>
+                        <h3 className="text-gray-900 font-bold text-lg">{work.title}</h3>
                         <span className="text-xs text-gray-500 font-medium ml-4 flex-shrink-0">{work.year}</span>
                       </div>
                       <div className="text-sm text-gray-600 mb-3">{work.techStack}</div>

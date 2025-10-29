@@ -8,18 +8,21 @@ export const siteConfig = {
   image: "/opengraph-image.png",
   email: "raghunandhanvr@outlook.com",
   social: {
-    twitter: "https://x.com/raghuvrx",
+    twitter: "https://x.com/raghunandhanvr",
     github: "https://github.com/raghunandhanvr",
     instagram: "https://www.instagram.com/raghuvrx",
     linkedin: "https://www.linkedin.com/in/raghunandhanvr",
     email: "raghunandhanvr@outlook.com",
   },
   keywords: [
-    "Software Engineer",
-    "Tech Blog",
-    "Web Development",
-    "Distributed Systems"
-  ]
+    "raghunandhan",
+    "Raghunandhan",
+    "Raghunandhan VR",
+    "raghunandhan vr",
+    "raghunandhanvr",
+    "raghu",
+    "raghu.app",
+  ],
 } as const;
 
 export function getStructuredData() {
@@ -32,11 +35,15 @@ export function getStructuredData() {
     address: {
       "@type": "PostalAddress",
       addressLocality: "Chennai",
-      addressCountry: "IN"
+      addressCountry: "IN",
     },
     image: siteConfig.image,
     sameAs: Object.values(siteConfig.social),
-    knowsAbout: ["Software Development", "Databases", "Distributed Systems", "Web Development"]
-  }
+    knowsAbout: [
+      "Software Development",
+      "Databases",
+      "Distributed Systems",
+      "Web Development",
+    ],
+  };
 }
-

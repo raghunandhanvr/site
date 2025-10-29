@@ -1,34 +1,22 @@
 import { siteConfig } from '@/app/config';
 import AgeCounter from '@/app/components/ui/age-counter';
 
-function Footer() {
-  const links = [
-    { name: 'twitter', url: siteConfig.social.twitter },
-    { name: 'github', url: siteConfig.social.github },
-    { name: 'instagram', url: siteConfig.social.instagram },
-    { name: 'linkedin', url: siteConfig.social.linkedin },
-    { name: 'rss', url: '/rss.xml' },
-  ];
-
+export default function Footer() {
   return (
-    <footer className="mt-12 text-center text-sm">
-      <div className="flex justify-center space-x-4 tracking-tight mb-2">
-        {links.map((link) => (
-          <a
-          key={link.name}
-          href={link.url}
-          target={link.name === 'rss' ? '_self' : '_blank'}
-          rel={link.name === 'rss' ? undefined : 'noopener noreferrer'}
-          className="text-gray-400 hover:text-blue-500 transition-colors duration-200 work-link"
-          >
-            {link.name}
-          </a>
-        ))}
+    <footer className="pt-6 flex justify-between items-center text-xs dark:text-gray-400 text-gray-500 font-mono">
+      <div>
+        <AgeCounter/>
       </div>
-      <AgeCounter/>
+      <div>
+        <a
+          target="_blank"
+          href={siteConfig.social.github}
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:text-blue-700"
+        >
+          Source
+        </a>
+      </div>
     </footer>
   );
 }
-
-export default Footer;
-
