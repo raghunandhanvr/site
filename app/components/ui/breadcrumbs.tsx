@@ -2,9 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Suspense } from "react"
+import { useEffect, useState } from "react"
 
-export function Breadcrumbs() {
+function BreadcrumbsComponent() {
   const pathname = usePathname()
   
   const generateBreadcrumbs = () => {
@@ -26,29 +26,43 @@ export function Breadcrumbs() {
   }
 
   const breadcrumbs = generateBreadcrumbs()
-  const showBreadcrumb = pathname !== '/'
-
-  if (!showBreadcrumb) return null
 
   return (
-    <Suspense fallback={<div>...</div>}>
-      <nav className="text-[11px] text-gray-400 -mt-4 sm:-mt-8">
-        <ol className="flex items-center">
-          {breadcrumbs.map((crumb, index) => (
-            <li key={crumb.path} className="flex items-center">
-              {index > 0 && <span className="mx-1 opacity-50">/</span>}
-              {index === breadcrumbs.length - 1 ? (
-                <span className="text-gray-600 font-normal">{crumb.name}</span>
-              ) : (
-                <Link href={crumb.path} className="work-link hover:text-gray-700 transition-colors">
-                  {crumb.name}
-                </Link>
-              )}
-            </li>
-          ))}
-        </ol>
-      </nav>
-    </Suspense>
+    <nav className="text-[11px] text-gray-400 -mt-4 sm:-mt-8">
+      <ol className="flex items-center">
+        {breadcrumbs.map((crumb, index) => (
+          <li key={crumb.path} className="flex items-center">
+            {index > 0 && <span className="mx-1 opacity-50">/</span>}
+            {index === breadcrumbs.length - 1 ? (
+              <span className="text-gray-600 font-normal">{crumb.name}</span>
+            ) : (
+              <Link href={crumb.path} className="work-link hover:text-gray-700 transition-colors">
+                {crumb.name}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
   )
+}
+
+export function Breadcrumbs() {
+  const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+
+  if (pathname === '/') {
+    return null
+  }
+
+  return <BreadcrumbsComponent />
 }
 

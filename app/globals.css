@@ -292,11 +292,11 @@ table {
 }
 
 /* Anchor styles */
-a:not(.work-link, .fade-in) {
+a:not(.work-link, .fade-in, .footer-link) {
   @apply underline transition-all decoration-neutral-400 underline-offset-2 decoration-[0.1em] font-medium text-[#333333];
 }
 
-a:not(.work-link, .fade-in):hover {
+a:not(.work-link, .fade-in, .footer-link):hover {
   @apply text-blue-600 decoration-blue-600;
 }
 
@@ -309,6 +309,12 @@ a:not(.work-link, .fade-in):hover {
 .work-link:hover, .fade-in:hover {
   @apply no-underline;
   text-decoration: none !important;
+}
+
+/* Footer link styles */
+.footer-link {
+  @apply underline cursor-pointer text-gray-400 hover:text-gray-600 transition-colors underline-offset-2;
+  text-decoration: underline !important;
 }
 
 /* Your existing anchor-related styles */
