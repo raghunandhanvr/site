@@ -1,6 +1,7 @@
-import { works } from "./work-data";
-import type { Metadata } from "next";
-import Link from "next/link";
+import { works } from "@/app/work/work-data"
+import { Tabs } from "@/app/components/ui/tabs"
+import type { Metadata } from "next"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Work",
@@ -15,13 +16,13 @@ export const metadata: Metadata = {
     ],
   },
   alternates: {
-    canonical: '/work',
+    canonical: "/work",
   },
-};
+}
 
 async function getCategoryOrder() {
-  'use cache'
-  
+  "use cache"
+
   const seen = new Set<string>()
   const order: string[] = []
   works.forEach((work) => {
@@ -34,8 +35,8 @@ async function getCategoryOrder() {
 }
 
 async function getGroupedWorks() {
-  'use cache'
-  
+  "use cache"
+
   return works.reduce(
     (acc, work) => {
       if (!acc[work.category]) {
@@ -49,26 +50,21 @@ async function getGroupedWorks() {
 }
 
 export default async function Works() {
-  'use cache'
-  
+  "use cache"
+
   const categoryOrder = await getCategoryOrder()
   const groupedWorks = await getGroupedWorks()
 
   return (
     <section className="container">
       <div className="space-y-8">
-        {categoryOrder.map((category) => {
-          const categoryWorks = groupedWorks[category] || []
-          if (categoryWorks.length === 0) return null
-          
-          return (
-            <div key={category} className="space-y-6">
-              <div className="pb-2 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">{category}</h2>
-              </div>
-              <div className="space-y-6">
+        <Tabs tabs={categoryOrder}>
+          {categoryOrder.map((category) => {
+            const categoryWorks = groupedWorks[category] || []
+            return (
+              <div key={category}>
                 {categoryWorks.map((work, index) => (
-                  <div key={index}>
+                  <div key={index} className="mb-6">
                     <Link href={work.url} className="block hover:opacity-80 transition-opacity duration-200 work-link">
                       <div className="flex justify-between items-baseline mb-2">
                         <h3 className="text-gray-900 font-medium text-base">{work.title}</h3>
@@ -87,9 +83,9 @@ export default async function Works() {
                   </div>
                 ))}
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </Tabs>
       </div>
     </section>
   )

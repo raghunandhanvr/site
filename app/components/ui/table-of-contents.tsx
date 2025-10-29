@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useState } from "react";
 export const TableOfContents = () => {
   const [headings, setHeadings] = useState<{ id: string; text: string; level: string }[]>([]);
   const [visibleHeadings, setVisibleHeadings] = useState<Set<string>>(new Set());
+  const [shouldShow, setShouldShow] = useState(false);
 
   const getHeadings = useCallback(() => {
     return Array.from(document.querySelectorAll("h1, h2, h3"))
@@ -57,6 +58,37 @@ export const TableOfContents = () => {
     };
   }, [getHeadings, visibleHeadings]);
 
+  useEffect(() => {
+    const checkOverlap = () => {
+      const container = document.querySelector('main.container');
+      if (!container) {
+        setShouldShow(false);
+        return;
+      }
+
+      const containerRect = container.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      
+      const tocWidth = 280;
+      const tocMargin = 96;
+      const tocTotalWidth = tocWidth + tocMargin;
+      
+      const rightSpace = viewportWidth - (containerRect.right);
+      
+      setShouldShow(rightSpace >= tocTotalWidth);
+    };
+
+    checkOverlap();
+    window.addEventListener('resize', checkOverlap);
+    
+    const timer = setTimeout(checkOverlap, 100);
+
+    return () => {
+      window.removeEventListener('resize', checkOverlap);
+      clearTimeout(timer);
+    };
+  }, []);
+
   const scroll = (id: string) => {
     for (const heading of Array.from(document.querySelectorAll("h1, h2, h3"))) {
       heading.setAttribute("data-highlight", "false");
@@ -79,17 +111,18 @@ export const TableOfContents = () => {
     }
   };
 
+  if (!shouldShow) {
+    return null;
+  }
+
   return (
     <React.Fragment>
       <motion.nav
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
+        initial={{ opacity: 0, }}
+        animate={{ opacity: 1, }}
+        exit={{ opacity: 0, }}     
         className={cn(
-          "top-[10rem] right-auto left-[2rem] hidden",
-          "min-[1600px]:top-[6rem] min-[1600px]:right-[6rem] min-[1600px]:left-auto min-[1600px]:block",
-          "fixed mt-10 h-full justify-start space-y-4 transition",
+          "fixed top-[6rem] right-[1.3rem] mt-10 h-full justify-start space-y-4 transition",
           "max-w-xs w-auto z-20",
         )}
       >

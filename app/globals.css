@@ -37,7 +37,8 @@ html {
 }
 
 @theme {
-  --font-family-sans: 'Inter', sans-serif;
+  --font-family-sans: 'Geist', sans-serif;
+  --font-family-mono: 'Geist Mono', monospace;
 }
 
 :root {
@@ -95,6 +96,15 @@ pre::-webkit-scrollbar {
 }
 
 pre {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -328,18 +338,18 @@ a:not(.work-link, .fade-in):hover {
 
 @media (min-width: 768px) {
   .container {
-    max-width: 70ch;
+    max-width: 65ch;
   }
 }
 
 @media (min-width: 1024px) {
   .container {
-    max-width: 75ch;
+    max-width: 68ch;
   }
 }
 
 @media (min-width: 1280px) {
   .container {
-    max-width: 80ch;
+    max-width: 70ch;
   }
 }

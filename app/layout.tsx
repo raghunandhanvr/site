@@ -1,20 +1,24 @@
 import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Geist, Geist_Mono } from "next/font/google"
 import { ViewTransitions } from "next-view-transitions"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Footer from "./components/layout/footer"
 import Header from "./components/layout/header"
-import WritingsLayoutWrapper from "./components/ui/writings-layout-wrapper"
 import { siteConfig, getStructuredData } from "./config"
 import Script from "next/script"
 import clsx from "clsx"
 
-const inter = Inter({
+const geist = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: "swap",
+})
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 })
 
 export const metadata: Metadata = {
@@ -69,20 +73,22 @@ export default function RootLayout({
 }>) {
   return (
     <ViewTransitions>
-      <html lang="en" className={clsx(inter.className)} suppressHydrationWarning>
+      <html lang="en" className={clsx(geist.className, geistMono.className)} suppressHydrationWarning>
         <head>
-          <Script
-            id="ga-script"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-8E3Y6STYEC');
-              `,
-            }}
-          />
+          {process.env.NEXT_PUBLIC_GA_ID && (
+            <Script
+              id="ga-script"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+                `,
+              }}
+            />
+          )}
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
@@ -94,13 +100,11 @@ export default function RootLayout({
           <link rel="alternate" type="application/atom+xml" href="/atom.xml" title="Atom" />
           <link rel="alternate" type="application/feed+json" href="/feed.json" title="JSON" />
         </head>
-        <body className="antialiased tracking-tight">
+        <body className="antialiased tracking-tight font-sans">
           <div className="min-h-screen flex flex-col justify-between pt-0 px-4 sm:px-7 p-8 bg-white text-gray-900 max-w-full overflow-x-hidden">
             <main className="container space-y-6 max-w-full">
               <Header />
-              <WritingsLayoutWrapper>
-                {children}
-              </WritingsLayoutWrapper>
+              {children}
               <Footer />
             </main>
             <Analytics />

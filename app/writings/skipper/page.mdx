@@ -1,5 +1,6 @@
 import MermaidDiagram from '@/app/components/md/mermaid'
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
+import { TableOfContents } from '@/app/components/ui/table-of-contents'
 
 export const metadata = {
   title: 'Inside a High-Performance Reverse Proxy',
@@ -20,6 +21,7 @@ export const metadata = {
 
 # Inside a High-Performance Reverse Proxy
 <BlogViewCounter slug="/writings/skipper" createdAt={new Date('2025-02-02')} />
+<TableOfContents />
 
 We recently switched to [Zalando Skipper](https://github.com/zalando/skipper) for our reverse proxy needs after trying out Nginx, HAProxy, Traefik, etc,.
 

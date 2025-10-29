@@ -1,4 +1,5 @@
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
+import { TableOfContents } from '@/app/components/ui/table-of-contents'
 
 export const metadata = {
   title: 'Code for Deletion, Not Reuse',
@@ -19,6 +20,7 @@ export const metadata = {
 
 # Code for Deletion, Not Reuse
 <BlogViewCounter slug="/writings/deletion-focused" createdAt={new Date('2025-07-29')} />
+<TableOfContents />
 
 **TL;DR**: Good code isn't **reusable**; it's **deletable**. Every abstraction is a bet on future requirements you'll probably get wrong. Write code that's **easy to throw away**.
 
