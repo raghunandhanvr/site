@@ -18,6 +18,7 @@ function generatePixelArt() {
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const title = url.searchParams.get("title") || siteConfig.name;
+  const description = url.searchParams.get("description");
   
   const pixelArt = generatePixelArt();
   const pixelSize = 8;
@@ -67,15 +68,37 @@ export async function GET(request: Request) {
           <div
             style={{
               display: 'flex',
-              fontSize: 48,
-              fontWeight: 'bold',
-              letterSpacing: '-0.025em',
-              color: 'black',
-              textAlign: 'left',
+              flexDirection: 'column',
+              gap: '16px',
               maxWidth: '80%',
             }}
           >
-            {title}
+            <div
+              style={{
+                display: 'flex',
+                fontSize: 48,
+                fontWeight: 'bold',
+                letterSpacing: '-0.025em',
+                color: 'black',
+                textAlign: 'left',
+              }}
+            >
+              {title}
+            </div>
+            {description && (
+              <div
+                style={{
+                  display: 'flex',
+                  fontSize: 24,
+                  fontWeight: 'normal',
+                  letterSpacing: '-0.01em',
+                  color: '#666',
+                  textAlign: 'left',
+                }}
+              >
+                {description}
+              </div>
+            )}
           </div>
         </div>
       </div>
