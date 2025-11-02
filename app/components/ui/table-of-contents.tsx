@@ -4,51 +4,67 @@ import { cn } from "@/app/lib/utils";
 
 import { motion } from "framer-motion";
 import React, { useCallback, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
-export const TableOfContents = () => {
+function TOCInner() {
   const [headings, setHeadings] = useState<{ id: string; text: string; level: string }[]>([]);
   const [visibleHeadings, setVisibleHeadings] = useState<Set<string>>(new Set());
   const [shouldShow, setShouldShow] = useState(false);
 
   const getHeadings = useCallback(() => {
-    return Array.from(document.querySelectorAll("h1, h2, h3"))
-      .filter((heading) => heading.id)
+    const container = document.querySelector('main.container');
+    if (!container) return [];
+
+    const isElementVisible = (el: Element) => {
+      const element = el as HTMLElement;
+      const style = window.getComputedStyle(element);
+      if (style.display === "none" || style.visibility === "hidden") return false;
+      const rect = element.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    };
+
+    const found = Array.from(container.querySelectorAll("h1, h2, h3"))
+      .filter((heading) => heading.id && isElementVisible(heading))
       .map((heading) => ({
         id: heading.id,
         text: heading.textContent || "",
         level: heading.tagName.toLowerCase(),
-        top: (heading as HTMLElement).offsetTop,
       }));
+
+    // Ensure unique by id (defensive against duplicates during transitions)
+    const seen = new Set<string>();
+    return found.filter((h) => {
+      if (seen.has(h.id)) return false;
+      seen.add(h.id);
+      return true;
+    });
   }, []);
 
   useEffect(() => {
     const collectedHeadings = getHeadings();
     setHeadings(collectedHeadings);
+    setVisibleHeadings(new Set());
+  }, [getHeadings]);
 
-    const observerOptions = {
-      root: null,
-      threshold: 0,
-    };
+  useEffect(() => {
+    if (!headings.length) return;
 
+    const observerOptions = { root: null, threshold: 0 } as const;
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-      const visibleSet = new Set(visibleHeadings);
-
-      for (const entry of entries) {
-        const headingId = entry.target.id;
-
-        if (entry.isIntersecting) {
-          visibleSet.add(headingId);
-        } else {
-          visibleSet.delete(headingId);
+      setVisibleHeadings((prev) => {
+        const next = new Set(prev);
+        for (const entry of entries) {
+          const headingId = (entry.target as HTMLElement).id;
+          if (!headingId) continue;
+          if (entry.isIntersecting) next.add(headingId);
+          else next.delete(headingId);
         }
-      }
-
-      setVisibleHeadings(new Set(visibleSet));
+        return next;
+      });
     };
 
     const observer = new IntersectionObserver(handleIntersection, observerOptions);
-
-    for (const heading of collectedHeadings) {
+    for (const heading of headings) {
       const element = document.getElementById(heading.id);
       if (element) observer.observe(element);
     }
@@ -56,7 +72,8 @@ export const TableOfContents = () => {
     return () => {
       observer.disconnect();
     };
-  }, [getHeadings, visibleHeadings]);
+  }, [headings]);
+
 
   useEffect(() => {
     const checkOverlap = () => {
@@ -150,4 +167,9 @@ export const TableOfContents = () => {
       </motion.nav>
     </React.Fragment>
   );
-}; 
+}
+
+export const TableOfContents = () => {
+  const pathname = usePathname();
+  return <TOCInner key={pathname} />;
+};
