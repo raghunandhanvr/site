@@ -9,10 +9,21 @@ export interface Work {
   
 export const works: Work[] = [
   {
-    title: "Lumel",
-    year: "July 2025 - Present",
+    title: "Byzanlink",
+    year: "December 2025 - Present",
     description: [
-      "Building systems designed to handle very high volumes of data"
+      "Developing DeFi platform for creating and managing RWA"
+    ],
+    url: "https://byzanlink.com/",
+    techStack: "Next.js, AWS, Solidity",
+    category: "Work Experience",
+  },
+  {
+    title: "Lumel",
+    year: "July 2025 - December 2025",
+    description: [
+      "Architected multi-tenant systems",
+      "Involved in development of a dynamic query builder that translates DSL into executable SQL"
     ],
     url: "https://lumel.com/",
     techStack: "Go, React, .NET, Azure",
