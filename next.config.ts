@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   pageExtensions: ["mdx", "ts", "tsx"],
   experimental: {
     mdxRs: true,
-    clientSegmentCache: true,
   },
   cacheComponents: true,
   cacheLife: {
