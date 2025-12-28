@@ -12,7 +12,7 @@ export const works: Work[] = [
     title: "Byzanlink",
     year: "December 2025 - Present",
     description: [
-      "Developing DeFi platform for creating and managing RWA"
+      "Working on ERC-3643 and ERC-4626"
     ],
     url: "https://byzanlink.com/",
     techStack: "Next.js, AWS, Solidity",
