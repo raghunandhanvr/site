@@ -49,3 +49,11 @@ bun.lock
 
 # environment variables
 .env
+.dev.vars
+
+.open-next
+.wrangler
+
+# Generated at build time
+app/lib/blog-manifest.json
+app/lib/blog-manifest.ts
