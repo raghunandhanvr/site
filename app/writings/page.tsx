@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { getViewCount } from "@/app/lib/redis"
-import { blogPosts, type BlogPost } from "./writings-data"
+import { getAllBlogPosts } from "@/app/lib/server-utils"
 import { Suspense } from "react"
 
 export const metadata = {
@@ -22,14 +22,14 @@ export const metadata = {
 
 async function getSortedPosts() {
   'use cache'
-  
-  const sortedPosts = [...blogPosts]
-  sortedPosts.sort((a, b) => {
-    const result = new Date(b.date).getTime() - new Date(a.date).getTime()
-    return result
-  })
-  
-  return sortedPosts
+
+  const posts = getAllBlogPosts().map((p) => ({
+    title: p.title,
+    slug: p.slug,
+    date: p.publishedAt.split("T")[0],
+    year: new Date(p.publishedAt).getFullYear().toString(),
+  }))
+  return posts
 }
 
 async function ViewCount({ slug }: { slug: string }) {
@@ -56,7 +56,7 @@ export default async function WritingsPage() {
   return (
     <div className="container">
       <ul>
-        {sortedPosts.map((post: BlogPost, i: number) => {
+        {sortedPosts.map((post, i: number) => {
           const year = post.year
           const firstOfYear = !sortedPosts[i - 1] || sortedPosts[i - 1].year !== year
 

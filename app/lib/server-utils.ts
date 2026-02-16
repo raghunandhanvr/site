@@ -1,79 +1,58 @@
-import { promises as fs } from "fs";
-import path from "path";
-import matter from "gray-matter";
 import { siteConfig } from "@/app/config";
+import { blogManifest } from "@/app/lib/blog-manifest";
 
-export const blogsDirectory = path.join(process.cwd(), "app", "writings");
+export const blogsDirectory = "app/writings";
 
 export const BaseUrl = siteConfig.url.endsWith("/")
   ? siteConfig.url
   : `${siteConfig.url}/`;
 
-export async function getBlogSlugs(dir: string = blogsDirectory) {
-  "use cache";
-  const entries = await fs.readdir(dir, {
-    recursive: true,
-    withFileTypes: true,
-  });
-  return entries
-    .filter((entry) => entry.isFile() && entry.name === "page.mdx")
-    .map((entry) => {
-      const relativePath = path.relative(
-        dir,
-        path.join(entry.parentPath, entry.name)
-      );
-      return path.dirname(relativePath);
-    })
-    .map((slug) => slug.replace(/\\/g, "/"));
+function manifestSlugToShort(slug: string): string {
+  return slug.replace(/^\/writings\//, "");
 }
 
-export async function getBlogData(slug: string) {
-  "use cache";
-  const fullPath = path.join(blogsDirectory, slug, "page.mdx");
-  const fileContents = await fs.readFile(fullPath, "utf8");
-  const { data: metadata, content } = matter(fileContents);
+export function getBlogSlugs(): string[] {
+  return blogManifest.map((e) => manifestSlugToShort(e.slug));
+}
 
+export function getBlogData(slug: string) {
+  const fullSlug = slug.startsWith("/writings/") ? slug : `/writings/${slug}`;
+  const entry = blogManifest.find((e) => e.slug === fullSlug);
+  if (!entry) return null;
   return {
-    slug,
+    slug: manifestSlugToShort(entry.slug),
     metadata: {
-      title: metadata.title || slug,
-      summary: metadata.summary || "",
-      publishedAt: metadata.publishedAt || new Date().toISOString(),
-      tags: metadata.tags || "",
-      image: metadata.image || "",
+      title: entry.title,
+      summary: entry.summary,
+      publishedAt: entry.publishedAt,
+      tags: entry.tags,
+      image: entry.image,
     },
-    content,
+    content: entry.content,
   };
 }
 
-export async function getAllBlogPosts() {
-  "use cache";
-  const slugs = await getBlogSlugs();
-  const posts = await Promise.all(
-    slugs.map(async (slug) => {
-      const { metadata } = await getBlogData(slug);
-      return {
-        slug: `/writings/${slug}`,
-        ...metadata,
-      };
-    })
-  );
-
-  return posts.sort(
-    (a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
+export function getAllBlogPosts() {
+  return blogManifest.map((e) => ({
+    slug: e.slug,
+    title: e.title,
+    summary: e.summary,
+    publishedAt: e.publishedAt,
+    tags: e.tags,
+    image: e.image,
+  }));
 }
 
-export async function getBlogs() {
-  "use cache";
-  const slugs = await getBlogSlugs();
-  const blogs = await Promise.all(slugs.map((slug) => getBlogData(slug)));
-
-  return blogs.sort((a, b) => {
-    return (
-      new Date(b.metadata.publishedAt).getTime() -
-      new Date(a.metadata.publishedAt).getTime()
-    );
-  });
+export function getBlogs() {
+  return blogManifest.map((e) => ({
+    slug: manifestSlugToShort(e.slug),
+    metadata: {
+      title: e.title,
+      summary: e.summary,
+      publishedAt: e.publishedAt,
+      tags: e.tags,
+      image: e.image,
+    },
+    content: e.content,
+  }));
 }
