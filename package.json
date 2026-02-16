@@ -1,12 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "dev": "bun run prebuild && bun --bun next dev",
-    "build": "bun run prebuild && bun --bun next build",
+    "dev": "bun run prebuild && BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=1 bun --bun next dev",
+    "build": "bun run prebuild && BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=1 next build",
     "prebuild": "bun run scripts/generate-blog-manifest.ts",
     "start": "bun --bun next start",
-    "preview": "bun run prebuild && opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "bun run prebuild && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "bun run prebuild && BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=1 opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "bun run prebuild && BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=1 opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
