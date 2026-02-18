@@ -47,6 +47,14 @@ function BreadcrumbsComponent() {
   )
 }
 
+const breadcrumbsPlaceholder = (
+  <nav className="text-[11px] text-gray-400 -mt-4 sm:-mt-8" aria-hidden>
+    <ol className="flex items-center opacity-0">
+      <li>home</li>
+    </ol>
+  </nav>
+)
+
 export function Breadcrumbs() {
   const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
@@ -55,12 +63,8 @@ export function Breadcrumbs() {
     setMounted(true)
   }, [])
 
-  if (!mounted) {
-    return null
-  }
-
-  if (pathname === '/') {
-    return null
+  if (!mounted || pathname === '/') {
+    return breadcrumbsPlaceholder
   }
 
   return <BreadcrumbsComponent />
