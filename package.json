@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "bun --bun next dev",
+    "dev": "env -u NODE_ENV bun --bun next dev",
     "build": "bun --bun next build",
     "start": "bun --bun next start"
   },
