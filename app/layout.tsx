@@ -3,8 +3,7 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { ViewTransitions } from "next-view-transitions"
-import { Analytics } from "@vercel/analytics/react"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { AnalyticsProviders } from "./components/analytics"
 import Footer from "./components/layout/footer"
 import Header from "./components/layout/header"
 import { siteConfig, getStructuredData } from "./config"
@@ -109,8 +108,7 @@ export default function RootLayout({
             <div className="container max-w-full">
               <Footer />
             </div>
-            <Analytics />
-            <SpeedInsights />
+            <AnalyticsProviders />
           </div>
         </body>
       </html>

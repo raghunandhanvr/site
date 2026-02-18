@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   pageExtensions: ["mdx", "ts", "tsx"],
   experimental: {
     mdxRs: true,
+    optimizePackageImports: ["lucide-react", "framer-motion", "react-icons"],
   },
   cacheComponents: true,
   cacheLife: {

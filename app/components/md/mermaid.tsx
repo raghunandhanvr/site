@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useId } from "react";
-import mermaid from "mermaid";
 
 interface SimpleMermaidDiagramProps {
   diagram: string;
@@ -18,6 +17,8 @@ const SimpleMermaidDiagram: React.FC<SimpleMermaidDiagramProps> = ({
       if (mermaidRef.current) {
         // Clear previous content
         mermaidRef.current.innerHTML = "";
+
+        const mermaid = (await import("mermaid")).default;
 
         mermaid.initialize({
           startOnLoad: false,

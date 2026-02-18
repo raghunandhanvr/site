@@ -7,18 +7,23 @@ import React, { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 function TOCInner() {
-  const [headings, setHeadings] = useState<{ id: string; text: string; level: string }[]>([]);
-  const [visibleHeadings, setVisibleHeadings] = useState<Set<string>>(new Set());
+  const [headings, setHeadings] = useState<
+    { id: string; text: string; level: string }[]
+  >([]);
+  const [visibleHeadings, setVisibleHeadings] = useState<Set<string>>(
+    new Set(),
+  );
   const [shouldShow, setShouldShow] = useState(false);
 
   const getHeadings = useCallback(() => {
-    const container = document.querySelector('main.container');
+    const container = document.querySelector("main.container");
     if (!container) return [];
 
     const isElementVisible = (el: Element) => {
       const element = el as HTMLElement;
       const style = window.getComputedStyle(element);
-      if (style.display === "none" || style.visibility === "hidden") return false;
+      if (style.display === "none" || style.visibility === "hidden")
+        return false;
       const rect = element.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
     };
@@ -63,7 +68,10 @@ function TOCInner() {
       });
     };
 
-    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+    const observer = new IntersectionObserver(
+      handleIntersection,
+      observerOptions,
+    );
     for (const heading of headings) {
       const element = document.getElementById(heading.id);
       if (element) observer.observe(element);
@@ -74,10 +82,9 @@ function TOCInner() {
     };
   }, [headings]);
 
-
   useEffect(() => {
     const checkOverlap = () => {
-      const container = document.querySelector('main.container');
+      const container = document.querySelector("main.container");
       if (!container) {
         setShouldShow(false);
         return;
@@ -85,23 +92,23 @@ function TOCInner() {
 
       const containerRect = container.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
-      
+
       const tocWidth = 280;
       const tocMargin = 96;
       const tocTotalWidth = tocWidth + tocMargin;
-      
-      const rightSpace = viewportWidth - (containerRect.right);
-      
+
+      const rightSpace = viewportWidth - containerRect.right;
+
       setShouldShow(rightSpace >= tocTotalWidth);
     };
 
     checkOverlap();
-    window.addEventListener('resize', checkOverlap);
-    
+    window.addEventListener("resize", checkOverlap);
+
     const timer = setTimeout(checkOverlap, 100);
 
     return () => {
-      window.removeEventListener('resize', checkOverlap);
+      window.removeEventListener("resize", checkOverlap);
       clearTimeout(timer);
     };
   }, []);
@@ -135,11 +142,11 @@ function TOCInner() {
   return (
     <React.Fragment>
       <motion.nav
-        initial={{ opacity: 0, }}
-        animate={{ opacity: 1, }}
-        exit={{ opacity: 0, }}     
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         className={cn(
-          "fixed top-[6rem] right-[1.3rem] mt-10 h-full justify-start space-y-4 transition",
+          "fixed top-24 right-[1.3rem] mt-10 h-full justify-start space-y-4 transition",
           "max-w-xs w-auto z-20",
         )}
       >
