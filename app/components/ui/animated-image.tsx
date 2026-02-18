@@ -1,6 +1,3 @@
-'use client'
-
-import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 interface AnimatedImageProps {
@@ -23,12 +20,7 @@ export default function AnimatedImage({
   priority,
 }: AnimatedImageProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
-    >
+    <div className="image-fade-in">
       <Image
         src={src}
         alt={alt}
@@ -38,6 +30,6 @@ export default function AnimatedImage({
         unoptimized={unoptimized}
         priority={priority}
       />
-    </motion.div>
+    </div>
   );
 }

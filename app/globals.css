@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+.image-fade-in {
+  animation: image-fade-in 0.25s ease-out;
+}
+
+@keyframes image-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 [data-highlight="true"] {
   animation: heading-highlight 2s ease-out;
 }

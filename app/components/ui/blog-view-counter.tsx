@@ -10,8 +10,10 @@ interface BlogViewCounterProps {
 export async function BlogViewCounter({ slug, createdAt }: BlogViewCounterProps) {
   'use cache'
   
-  const views = await getViewCount(slug)
-  await incrementViewCount(slug)
+  const [views] = await Promise.all([
+    getViewCount(slug),
+    incrementViewCount(slug),
+  ])
 
   return (
     <div className="flex items-center space-x-3 text-xs text-muted-foreground text-gray-400">
