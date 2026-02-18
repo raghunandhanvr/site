@@ -102,37 +102,29 @@ function TOCInner() {
       setShouldShow(rightSpace >= tocTotalWidth);
     };
 
+    const container = document.querySelector("main.container");
+    const resizeObserver = new ResizeObserver(checkOverlap);
+    if (container) resizeObserver.observe(container);
+
     checkOverlap();
     window.addEventListener("resize", checkOverlap);
 
-    const timer = setTimeout(checkOverlap, 100);
-
     return () => {
       window.removeEventListener("resize", checkOverlap);
-      clearTimeout(timer);
+      resizeObserver.disconnect();
     };
   }, []);
 
   const scroll = (id: string) => {
-    for (const heading of Array.from(document.querySelectorAll("h1, h2, h3"))) {
-      heading.setAttribute("data-highlight", "false");
-    }
-
     const element = document.getElementById(id);
+    if (!element) return;
 
-    if (element) {
-      const top = element.offsetTop - 20;
-      window.scrollTo({
-        top: top,
-        behavior: "smooth",
-      });
+    element.setAttribute("data-highlight", "false");
+    void element.offsetWidth;
+    element.setAttribute("data-highlight", "true");
 
-      element.setAttribute("data-highlight", "true");
-
-      setTimeout(() => {
-        element.setAttribute("data-highlight", "false");
-      }, 2000);
-    }
+    const top = element.offsetTop - 20;
+    window.scrollTo({ top, behavior: "smooth" });
   };
 
   if (!shouldShow) {
