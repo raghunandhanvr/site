@@ -42,13 +42,13 @@ const components = {
     );
   },
   p: (props: ParagraphProps) => (
-    <p className="text-gray-800 leading-snug" {...props} />
+    <p className="leading-snug text-[var(--color-text-muted)]" {...props} />
   ),
   ol: (props: ListProps) => (
-    <ol className="text-gray-800 list-decimal pl-5 space-y-2" {...props} />
+    <ol className="list-decimal space-y-2 pl-5 text-[var(--color-text-muted)]" {...props} />
   ),
   ul: (props: ListProps) => (
-    <ul className="text-gray-800 list-disc pl-5 space-y-1" {...props} />
+    <ul className="list-disc space-y-1 pl-5 text-[var(--color-text-muted)]" {...props} />
   ),
   li: (props: ListItemProps) => <li className="pl-1" {...props} />,
   em: (props: ComponentPropsWithoutRef<'em'>) => (
@@ -58,7 +58,7 @@ const components = {
     <strong className="font-medium" {...props} />
   ),
   a: ({ href, children, ...props }: AnchorProps) => {
-    const className = 'text-blue-500 hover:text-blue-700';
+    const className = 'transition-colors text-[var(--color-link)] hover:text-[var(--color-link-hover)]';
     if (href?.startsWith('/')) {
       return (
         <Link href={href} className={className} {...props}>
@@ -90,7 +90,7 @@ const components = {
     return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
   },
   Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
-    <table>
+    <table className="my-6">
       <thead>
         <tr>
           {data.headers.map((header, index) => (
@@ -111,7 +111,7 @@ const components = {
   ),
   blockquote: (props: BlockquoteProps) => (
     <blockquote
-      className="ml-[0.075em] border-l-3 border-gray-300 pl-4 text-gray-700"
+      className="ml-[0.075em] border-l-[3px] border-[var(--color-border-strong)] pl-4 text-[var(--color-text-muted)]"
       {...props}
     />
   ),

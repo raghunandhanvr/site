@@ -11,7 +11,7 @@ function GitHubIcon(props: any) {
 
 export default function Footer() {
   return (
-    <footer className="pt-6 flex justify-between items-center text-xs dark:text-gray-400 text-gray-500 font-mono">
+    <footer className="flex items-center justify-between pt-6 font-mono text-xs text-[var(--color-text-soft)]">
       <div className="flex items-center">
         <AgeCounter/>
       </div>
@@ -20,7 +20,7 @@ export default function Footer() {
           target="_blank"
           href={siteConfig.social.github}
           rel="noopener noreferrer"
-          className="footer-link text-gray-400 hover:text-gray-600 inline-flex items-center gap-1.5"
+          className="footer-link inline-flex items-center gap-1.5"
         >
           <GitHubIcon />
           <span className="leading-none">Source</span>

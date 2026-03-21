@@ -19,10 +19,15 @@ const SimpleMermaidDiagram: React.FC<SimpleMermaidDiagramProps> = ({
         mermaidRef.current.innerHTML = "";
 
         const mermaid = (await import("mermaid")).default;
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const rootStyles = getComputedStyle(document.documentElement);
+
+        const colorValue = (name: string, fallback: string) =>
+          rootStyles.getPropertyValue(name).trim() || fallback;
 
         mermaid.initialize({
           startOnLoad: false,
-          theme: "default",
+          theme: "base",
           flowchart: {
             useMaxWidth: false,
             htmlLabels: true,
@@ -40,12 +45,27 @@ const SimpleMermaidDiagram: React.FC<SimpleMermaidDiagramProps> = ({
           },
           themeVariables: {
             background: "transparent",
-            primaryColor: "#3b82f6",
-            primaryTextColor: "#1f2937",
-            primaryBorderColor: "#2563eb",
-            lineColor: "#6b7280",
-            secondaryColor: "#eff6ff",
-            tertiaryColor: "#dbeafe",
+            primaryColor: colorValue("--color-accent-soft", prefersDark ? "#0f172a" : "#dbeafe"),
+            primaryTextColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
+            primaryBorderColor: colorValue("--color-accent", prefersDark ? "#60a5fa" : "#2563eb"),
+            lineColor: colorValue("--color-border-strong", prefersDark ? "#404040" : "#d4d4d4"),
+            secondaryColor: colorValue("--color-surface-muted", prefersDark ? "#0a0a0a" : "#f5f5f5"),
+            tertiaryColor: colorValue("--color-surface-emphasis", prefersDark ? "#111111" : "#ededed"),
+            mainBkg: colorValue("--color-surface-muted", prefersDark ? "#0a0a0a" : "#f5f5f5"),
+            secondBkg: colorValue("--color-surface", prefersDark ? "#000000" : "#ffffff"),
+            tertiaryBkg: colorValue("--color-surface-emphasis", prefersDark ? "#111111" : "#ededed"),
+            primaryTextColorDark: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
+            edgeLabelBackground: colorValue("--color-surface", prefersDark ? "#000000" : "#ffffff"),
+            clusterBkg: colorValue("--color-surface-muted", prefersDark ? "#0a0a0a" : "#f5f5f5"),
+            clusterBorder: colorValue("--color-border", prefersDark ? "#262626" : "#e5e5e5"),
+            actorBkg: colorValue("--color-surface-muted", prefersDark ? "#0a0a0a" : "#f5f5f5"),
+            actorBorder: colorValue("--color-border-strong", prefersDark ? "#404040" : "#d4d4d4"),
+            actorTextColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
+            signalColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
+            signalTextColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
+            labelBoxBkgColor: colorValue("--color-surface", prefersDark ? "#000000" : "#ffffff"),
+            labelBoxBorderColor: colorValue("--color-border", prefersDark ? "#262626" : "#e5e5e5"),
+            labelTextColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
             fontSize: "16px",
             fontFamily: "inherit",
           },
@@ -73,11 +93,7 @@ const SimpleMermaidDiagram: React.FC<SimpleMermaidDiagramProps> = ({
         <div className="flex justify-center min-w-max md:min-w-0">
           <div
             ref={mermaidRef}
-            className="mermaid-container p-4 sm:p-6 rounded-lg"
-            style={{
-              backgroundColor: "#f8fafc",
-              border: "1px solid #e2e8f0",
-            }}
+            className="mermaid-container article-visual p-4 sm:p-6"
           />
         </div>
       </div>
