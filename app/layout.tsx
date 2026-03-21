@@ -98,9 +98,10 @@ export default function RootLayout({
           <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="RSS" />
           <link rel="alternate" type="application/atom+xml" href="/atom.xml" title="Atom" />
           <link rel="alternate" type="application/feed+json" href="/feed.json" title="JSON" />
+          <meta name="color-scheme" content="light dark" />
         </head>
         <body className="antialiased tracking-tight font-sans">
-          <div className="min-h-screen flex flex-col pt-0 px-4 sm:px-7 p-8 bg-white text-gray-900 max-w-full overflow-x-hidden">
+          <div className="min-h-screen flex flex-col pt-0 px-4 sm:px-7 p-8 max-w-full overflow-x-hidden bg-[var(--color-page)] text-[var(--color-text)]">
             <main className="flex-1 container space-y-6 max-w-full">
               <Header />
               {children}

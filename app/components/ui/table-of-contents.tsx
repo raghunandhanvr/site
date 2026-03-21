@@ -149,12 +149,12 @@ function TOCInner() {
                 type="button"
                 onClick={() => scroll(heading.id)}
                 className={cn({
-                  "mt-0 ml-2 border-l border-l-gray-400 py-1 text-left text-gray-600 opacity-100 transition ease-in-out hover:opacity-50 text-sm cursor-pointer": true,
-                  "text-bold text-gray-900": visibleHeadings.has(heading.id),
+                  "mt-0 ml-2 border-l py-1 text-left text-sm cursor-pointer opacity-100 transition ease-in-out hover:opacity-60": true,
+                  "border-l-[var(--color-border-strong)] text-[var(--color-text-muted)]": true,
+                  "font-semibold text-[var(--color-text)] border-l-[var(--color-text)]": visibleHeadings.has(heading.id),
                   "pl-4": heading.level === "h1",
                   "pl-8": heading.level === "h2",
                   "pl-12": heading.level === "h3",
-                  "border-l border-l-gray-900": visibleHeadings.has(heading.id),
                 })}
                 data-active={visibleHeadings.has(heading.id) ? "true" : "false"}
               >

@@ -39,7 +39,7 @@ async function ViewCount({ slug }: { slug: string }) {
 
 function ViewCountSkeleton() {
   return (
-    <div className="inline-block h-4 w-12 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite] rounded" 
+    <div className="inline-block h-4 w-12 rounded bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite] bg-[linear-gradient(90deg,var(--color-surface-muted),var(--color-surface-emphasis),var(--color-surface-muted))]" 
          style={{ 
            animation: 'shimmer 1.5s ease-in-out infinite',
            backgroundPosition: '-200% 0'
@@ -65,16 +65,16 @@ export default async function WritingsPage() {
               <Link href={post.slug} className="work-link">
                 <span className={`flex py-2 items-center ${!firstOfYear ? "ml-10 md:ml-14" : ""}`}>
                   {firstOfYear && (
-                    <span className="w-10 md:w-14 inline-block shrink-0 text-gray-500 text-xs">
+                    <span className="inline-block w-10 shrink-0 text-xs text-[var(--color-text-soft)] md:w-14">
                       {year}
                     </span>
                   )}
-                  <span className="grow text-gray-900">
-                    <span className="group-hover:bg-gray-200 transition-all px-1.5 inline-block">
+                  <span className="grow text-[var(--color-text)]">
+                    <span className="inline-block px-1.5 transition-all group-hover:bg-[var(--color-surface-emphasis)]">
                       {post.title}
                     </span>
                   </span>
-                  <span className="text-gray-500 text-xs ml-2">
+                  <span className="ml-2 text-xs text-[var(--color-text-soft)]">
                     <Suspense fallback={<ViewCountSkeleton />}>
                       <ViewCount slug={post.slug} />
                     </Suspense>

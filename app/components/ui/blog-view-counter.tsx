@@ -16,7 +16,7 @@ export async function BlogViewCounter({ slug, createdAt }: BlogViewCounterProps)
   ])
 
   return (
-    <div className="flex items-center space-x-3 text-xs text-muted-foreground text-gray-400">
+    <div className="flex items-center space-x-3 text-xs text-[var(--color-text-soft)]">
       <span className="flex items-center">
         <EyeIcon className="w-3 h-3 mr-1.5" aria-hidden="true" />
         <span>{views.toLocaleString()} views</span>

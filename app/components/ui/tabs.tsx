@@ -13,15 +13,15 @@ export function Tabs({ tabs, children }: TabsProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-2 border-b border-gray-200 overflow-x-auto hide-scrollbar">
+      <div className="hide-scrollbar flex gap-2 overflow-x-auto border-b border-[var(--color-border)]">
         {tabs.map((category) => (
           <button
             key={category}
             onClick={() => setActiveCategory(category)}
             className={`px-3 py-2 text-sm font-medium transition-colors whitespace-nowrap text-left ${
               activeCategory === category
-                ? "text-gray-900 border-b-2 border-gray-900"
-                : "text-gray-500 hover:text-gray-700"
+                ? "border-b-2 border-[var(--color-text)] text-[var(--color-text)]"
+                : "text-[var(--color-text-soft)] hover:text-[var(--color-text-muted)]"
             }`}
           >
             {category}

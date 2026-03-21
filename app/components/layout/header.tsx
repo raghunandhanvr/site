@@ -42,9 +42,9 @@ export default async function Header() {
                   <li key={item.name} className="group">
                     <Link
                       href={item.path}
-                      className="work-link font-normal text-gray-600"
+                      className="work-link font-normal text-[var(--color-text-muted)]"
                     >
-                      <span className="group-hover:bg-gray-200 transition-all py-0.5 px-1.5 inline-block">
+                      <span className="inline-block px-1.5 py-0.5 transition-all group-hover:bg-[var(--color-surface-emphasis)]">
                         {item.name}
                       </span>
                     </Link>
@@ -57,7 +57,7 @@ export default async function Header() {
                     rel="noopener noreferrer"
                     className="work-link"
                   >
-                    <span className="group-hover:bg-gray-200 transition-all py-0.5 px-1.5 inline-flex items-center gap-1 text-gray-600 font-normal">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 font-normal text-[var(--color-text-muted)] transition-all group-hover:bg-[var(--color-surface-emphasis)]">
                       <XIcon />
                       <span>Follow me</span>
                     </span>
