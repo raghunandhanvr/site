@@ -52,18 +52,6 @@ export default async function Header() {
                 ))}
                 <li className="group">
                   <a
-                    href="https://raghu.app/resume"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="work-link font-normal text-gray-600"
-                  >
-                    <span className="group-hover:bg-gray-200 transition-all py-0.5 px-1.5 inline-block">
-                      resume
-                    </span>
-                  </a>
-                </li>
-                <li className="group">
-                  <a
                     href={siteConfig.social.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
