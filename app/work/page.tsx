@@ -65,13 +65,22 @@ export default async function Works() {
               <div key={category}>
                 {categoryWorks.map((work, index) => (
                   <div key={index} className="mb-6">
-                    <Link href={work.url} className="block hover:opacity-80 transition-opacity duration-200 work-link">
+                    <Link
+                      href={work.url}
+                      className="work-link block transition-opacity duration-200 hover:opacity-80"
+                    >
                       <div className="flex justify-between items-baseline mb-2">
-                        <h3 className="text-gray-900 font-bold text-lg">{work.title}</h3>
-                        <span className="text-xs text-gray-500 font-medium ml-4 flex-shrink-0">{work.year}</span>
+                        <h3 className="text-lg font-bold text-[var(--color-text)]">
+                          {work.title}
+                        </h3>
+                        <span className="ml-4 shrink-0 text-xs font-medium text-[var(--color-text-soft)]">
+                          {work.year}
+                        </span>
                       </div>
-                      <div className="text-sm text-gray-600 mb-3">{work.techStack}</div>
-                      <ul className="text-gray-800 text-sm leading-snug space-y-1 ml-4">
+                      <div className="mb-3 text-sm text-[var(--color-text-muted)]">
+                        {work.techStack}
+                      </div>
+                      <ul className="ml-4 space-y-1 text-sm leading-snug text-[var(--color-text)]">
                         {work.description.map((item, idx) => (
                           <li key={idx} className="relative">
                             <span className="absolute -left-4">•</span>

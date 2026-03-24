@@ -28,15 +28,18 @@ function BreadcrumbsComponent() {
   const breadcrumbs = generateBreadcrumbs()
 
   return (
-    <nav className="text-[11px] text-gray-400 -mt-4 sm:-mt-8">
+    <nav className="mt-[-1rem] text-[11px] text-[var(--color-text-soft)] sm:mt-[-2rem]">
       <ol className="flex items-center">
         {breadcrumbs.map((crumb, index) => (
           <li key={crumb.path} className="flex items-center">
             {index > 0 && <span className="mx-1 opacity-50">/</span>}
             {index === breadcrumbs.length - 1 ? (
-              <span className="text-gray-600 font-normal">{crumb.name}</span>
+              <span className="font-normal text-[var(--color-text-muted)]">{crumb.name}</span>
             ) : (
-              <Link href={crumb.path} className="work-link hover:text-gray-700 transition-colors">
+              <Link
+                href={crumb.path}
+                className="work-link transition-colors hover:text-[var(--color-text)]"
+              >
                 {crumb.name}
               </Link>
             )}
@@ -48,7 +51,10 @@ function BreadcrumbsComponent() {
 }
 
 const breadcrumbsPlaceholder = (
-  <nav className="text-[11px] text-gray-400 -mt-4 sm:-mt-8" aria-hidden>
+  <nav
+    className="mt-[-1rem] text-[11px] text-[var(--color-text-soft)] sm:mt-[-2rem]"
+    aria-hidden
+  >
     <ol className="flex items-center opacity-0">
       <li>home</li>
     </ol>

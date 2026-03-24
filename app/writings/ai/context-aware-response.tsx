@@ -29,7 +29,7 @@ const ContextAwareResponse: React.FC = () => {
   }, [query, context]);
 
   return (
-    <div className="container p-4 sm:p-8 bg-white border border-gray-200 rounded-md">
+    <div className="article-visual-light container p-4 sm:p-8">
       <div className="mb-4">
         <label htmlFor="query" className="block text-sm font-medium text-gray-700 mb-2">Query:</label>
         <input

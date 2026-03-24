@@ -34,7 +34,7 @@ export default function AgeCounter() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.25 }}
-        className="text-gray-400 transition-colors text-xs font-mono"
+        className="text-xs font-mono transition-colors text-[var(--color-text-soft)]"
       >
           {age.years}y {age.days}d {age.hours}h {age.minutes}m {age.seconds}s
       </motion.span>

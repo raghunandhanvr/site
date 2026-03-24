@@ -2,8 +2,9 @@
 
 import { cn } from "@/app/lib/utils";
 
+import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 
 function TOCInner() {
@@ -13,7 +14,7 @@ function TOCInner() {
   const [visibleHeadings, setVisibleHeadings] = useState<Set<string>>(
     new Set(),
   );
-  const [shouldShow, setShouldShow] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const getHeadings = useCallback(() => {
     const container = document.querySelector("main.container");
@@ -82,39 +83,6 @@ function TOCInner() {
     };
   }, [headings]);
 
-  useEffect(() => {
-    const checkOverlap = () => {
-      const container = document.querySelector("main.container");
-      if (!container) {
-        setShouldShow(false);
-        return;
-      }
-
-      const containerRect = container.getBoundingClientRect();
-      const viewportWidth = window.innerWidth;
-
-      const tocWidth = 280;
-      const tocMargin = 96;
-      const tocTotalWidth = tocWidth + tocMargin;
-
-      const rightSpace = viewportWidth - containerRect.right;
-
-      setShouldShow(rightSpace >= tocTotalWidth);
-    };
-
-    const container = document.querySelector("main.container");
-    const resizeObserver = new ResizeObserver(checkOverlap);
-    if (container) resizeObserver.observe(container);
-
-    checkOverlap();
-    window.addEventListener("resize", checkOverlap);
-
-    return () => {
-      window.removeEventListener("resize", checkOverlap);
-      resizeObserver.disconnect();
-    };
-  }, []);
-
   const scroll = (id: string) => {
     const element = document.getElementById(id);
     if (!element) return;
@@ -127,44 +95,60 @@ function TOCInner() {
     window.scrollTo({ top, behavior: "smooth" });
   };
 
-  if (!shouldShow) {
+  const hasHeadings = useMemo(() => headings.length > 1, [headings.length]);
+
+  if (!hasHeadings) {
     return null;
   }
 
   return (
-    <React.Fragment>
-      <motion.nav
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className={cn(
-          "fixed top-24 right-[1.3rem] mt-10 h-full justify-start space-y-4 transition",
-          "max-w-xs w-auto z-20",
-        )}
+    <motion.nav
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="article-toc my-8 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-muted)]"
+    >
+      <button
+        type="button"
+        onClick={() => setIsOpen((open) => !open)}
+        className="flex w-full cursor-pointer items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:text-[var(--color-text-muted)]"
       >
-        <div className="mt-0 flex flex-col gap-0">
-          {headings.map((heading) => (
-            <div key={heading.id} className="mt-0">
+        <h3 className="text-sm font-medium text-[var(--color-text-soft)]">
+          Table of Contents
+        </h3>
+        <ChevronDown
+          className={cn(
+            "size-4 shrink-0 text-[var(--color-text-soft)] transition-transform duration-200",
+            isOpen && "rotate-180",
+          )}
+          aria-hidden="true"
+        />
+      </button>
+
+      {isOpen && (
+        <div className="px-4 py-3">
+          <div className="flex flex-col">
+            {headings.slice(1).map((heading) => (
               <button
+                key={heading.id}
                 type="button"
                 onClick={() => scroll(heading.id)}
-                className={cn({
-                  "mt-0 ml-2 border-l border-l-gray-400 py-1 text-left text-gray-600 opacity-100 transition ease-in-out hover:opacity-50 text-sm cursor-pointer": true,
-                  "text-bold text-gray-900": visibleHeadings.has(heading.id),
-                  "pl-4": heading.level === "h1",
-                  "pl-8": heading.level === "h2",
-                  "pl-12": heading.level === "h3",
-                  "border-l border-l-gray-900": visibleHeadings.has(heading.id),
-                })}
+                className={cn(
+                  "block w-full cursor-pointer py-1 text-left text-sm transition-colors",
+                  "text-[var(--color-text-muted)] hover:text-[var(--color-text-soft)]",
+                  visibleHeadings.has(heading.id) && "font-medium text-[var(--color-text)]",
+                  heading.level === "h2" && "pl-4",
+                  heading.level === "h3" && "pl-7",
+                )}
                 data-active={visibleHeadings.has(heading.id) ? "true" : "false"}
               >
                 {heading.text}
               </button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </motion.nav>
-    </React.Fragment>
+      )}
+    </motion.nav>
   );
 }
 
