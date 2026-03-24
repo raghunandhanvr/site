@@ -32,7 +32,7 @@ export default function ThemeToggle() {
       title={`Theme: ${currentTheme}`}
       onClick={() => setTheme(nextTheme)}
       className={cn(
-        "work-link inline-flex size-7 items-center justify-center rounded-full",
+        "work-link inline-flex cursor-pointer items-center justify-center px-1.5 py-0.5",
         "text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-emphasis)] hover:text-[var(--color-text)]",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-page)]",
       )}

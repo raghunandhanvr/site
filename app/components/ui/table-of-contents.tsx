@@ -106,12 +106,12 @@ function TOCInner() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="article-toc my-8 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)]"
+      className="article-toc my-8 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-muted)]"
     >
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:text-[var(--color-text-muted)]"
+        className="flex w-full cursor-pointer items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:text-[var(--color-text-muted)]"
       >
         <h3 className="text-sm font-medium text-[var(--color-text-soft)]">
           Table of Contents
@@ -126,7 +126,7 @@ function TOCInner() {
       </button>
 
       {isOpen && (
-        <div className="border-t border-[var(--color-border)] px-4 py-3">
+        <div className="px-4 py-3">
           <div className="flex flex-col">
             {headings.slice(1).map((heading) => (
               <button
@@ -134,7 +134,7 @@ function TOCInner() {
                 type="button"
                 onClick={() => scroll(heading.id)}
                 className={cn(
-                  "block w-full py-1 text-left text-sm transition-colors",
+                  "block w-full cursor-pointer py-1 text-left text-sm transition-colors",
                   "text-[var(--color-text-muted)] hover:text-[var(--color-text-soft)]",
                   visibleHeadings.has(heading.id) && "font-medium text-[var(--color-text)]",
                   heading.level === "h2" && "pl-4",
