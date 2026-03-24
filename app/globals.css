@@ -168,14 +168,11 @@
 html {
   scroll-behavior: smooth;
   min-width: 360px;
-  scrollbar-gutter: stable;
-  overscroll-behavior: none;
   background-color: var(--color-page);
 }
 
 body {
   text-rendering: optimizeLegibility;
-  overscroll-behavior: none;
   background-color: var(--color-page);
   color: var(--color-text);
   transition:

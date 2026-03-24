@@ -103,7 +103,7 @@ export default function RootLayout({
         </head>
         <body className="antialiased tracking-tight font-sans">
           <ThemeProvider>
-            <div className="min-h-screen flex flex-col pt-0 px-4 sm:px-7 p-8 max-w-full overflow-x-hidden bg-[var(--color-page)] text-[var(--color-text)]">
+            <div className="min-h-screen flex flex-col pt-0 px-4 sm:px-7 p-8 max-w-full bg-[var(--color-page)] text-[var(--color-text)]">
               <main className="flex-1 container space-y-6 max-w-full">
                 <Header />
                 {children}
