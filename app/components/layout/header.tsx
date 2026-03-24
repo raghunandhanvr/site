@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "../ui/logo";
 import { Breadcrumbs } from "../ui/breadcrumbs";
 import { siteConfig } from "@/app/config";
+import ThemeToggle from "@/app/components/theme/theme-toggle";
 
 const navItems = [
   { name: "works", path: "/work" },
@@ -62,6 +63,9 @@ export default async function Header() {
                       <span>Follow me</span>
                     </span>
                   </a>
+                </li>
+                <li>
+                  <ThemeToggle />
                 </li>
               </ul>
             </nav>
