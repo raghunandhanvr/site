@@ -111,9 +111,11 @@ function TOCInner() {
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
+        className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:text-[var(--color-text-muted)]"
       >
-        <span>Table of Contents</span>
+        <h3 className="text-sm font-medium text-[var(--color-text-soft)]">
+          Table of Contents
+        </h3>
         <ChevronDown
           className={cn(
             "size-4 shrink-0 text-[var(--color-text-soft)] transition-transform duration-200",
@@ -125,15 +127,15 @@ function TOCInner() {
 
       {isOpen && (
         <div className="border-t border-[var(--color-border)] px-4 py-3">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             {headings.slice(1).map((heading) => (
               <button
                 key={heading.id}
                 type="button"
                 onClick={() => scroll(heading.id)}
                 className={cn(
-                  "w-full text-left text-sm transition-colors",
-                  "text-[var(--color-text-muted)] hover:text-[var(--color-text)]",
+                  "block w-full py-1 text-left text-sm transition-colors",
+                  "text-[var(--color-text-muted)] hover:text-[var(--color-text-soft)]",
                   visibleHeadings.has(heading.id) && "font-medium text-[var(--color-text)]",
                   heading.level === "h2" && "pl-4",
                   heading.level === "h3" && "pl-7",
