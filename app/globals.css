@@ -413,11 +413,11 @@ tbody tr:last-child td {
 
 /* Anchor styles */
 a:not(.work-link, .fade-in, .footer-link) {
-  color: var(--color-link);
+  color: var(--color-text-muted);
   text-decoration-line: underline;
   text-decoration-thickness: 0.1em;
   text-underline-offset: 0.2em;
-  text-decoration-color: color-mix(in srgb, var(--color-link) 35%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--color-text-soft) 55%, transparent);
   transition:
     color 0.2s ease,
     text-decoration-color 0.2s ease;
