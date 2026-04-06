@@ -1,43 +1,83 @@
 "use client"
 
-import { Moon, Sun } from "lucide-react"
+import { Monitor, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { cn } from "@/app/lib/utils"
 
-const toggleOrder = {
-  system: "dark",
-  dark: "light",
-  light: "dark",
-} as const
+const toggleButtonClass = cn(
+  "theme-toggle-btn",
+  "relative inline-flex size-9 shrink-0 items-center justify-center rounded-full",
+  "fixed-safe-bottom-right text-[var(--color-text)]",
+  "outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-page)]",
+  "disabled:pointer-events-none disabled:opacity-50",
+)
 
 export default function ThemeToggle() {
-  const { resolvedTheme, setTheme, theme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const currentTheme = mounted ? (theme ?? "system") : "system"
-  const nextTheme = toggleOrder[currentTheme as keyof typeof toggleOrder] ?? "dark"
+  const handleToggle = useCallback(() => {
+    const t = theme ?? "system"
+    if (t === "light") {
+      setTheme("dark")
+    } else if (t === "dark") {
+      setTheme("system")
+    } else {
+      setTheme("light")
+    }
+  }, [theme, setTheme])
 
-  const Icon = mounted && resolvedTheme === "dark" ? Moon : Sun
+  if (!mounted) {
+    return (
+      <button
+        type="button"
+        className={toggleButtonClass}
+        disabled
+        aria-label="Toggle theme"
+      >
+        <Sun className="size-4" aria-hidden />
+        <span className="sr-only">Toggle theme</span>
+      </button>
+    )
+  }
+
+  const current = theme ?? "system"
 
   return (
     <button
       type="button"
-      aria-label={`Switch theme (current: ${currentTheme}, next: ${nextTheme})`}
-      title={`Theme: ${currentTheme}`}
-      onClick={() => setTheme(nextTheme)}
-      className={cn(
-        "work-link inline-flex cursor-pointer items-center justify-center px-1.5 py-0.5",
-        "text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-emphasis)] hover:text-[var(--color-text)]",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-page)]",
-      )}
+      className={toggleButtonClass}
+      onClick={handleToggle}
+      aria-label="Toggle theme"
     >
-      <Icon className="size-3.5" strokeWidth={1.8} aria-hidden="true" />
+      <Sun
+        className={cn(
+          "absolute size-4 transition-all",
+          current === "light" ? "scale-100 rotate-0" : "scale-0 rotate-90",
+        )}
+        aria-hidden
+      />
+      <Moon
+        className={cn(
+          "absolute size-4 transition-all",
+          current === "dark" ? "scale-100 rotate-0" : "scale-0 rotate-90",
+        )}
+        aria-hidden
+      />
+      <Monitor
+        className={cn(
+          "absolute size-4 transition-all",
+          current === "system" ? "scale-100 rotate-0" : "scale-0 rotate-90",
+        )}
+        aria-hidden
+      />
+      <span className="sr-only">Toggle theme</span>
     </button>
   )
 }

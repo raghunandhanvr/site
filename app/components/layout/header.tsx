@@ -1,79 +1,9 @@
-import Link from "next/link";
-import { Logo } from "../ui/logo";
-import { Breadcrumbs } from "../ui/breadcrumbs";
-import { siteConfig } from "@/app/config";
-import ThemeToggle from "@/app/components/theme/theme-toggle";
+import { Logo } from "@/app/components/ui/logo"
 
-const navItems = [
-  { name: "works", path: "/work" },
-  { name: "writings", path: "/writings" },
-];
-
-function XIcon(props: any) {
+export default function Header() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className="inline-flex fill-current"
-      width={12}
-      height={12}
-      {...props}
-    >
-      <g>
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-      </g>
-    </svg>
-  );
-}
-
-export default async function Header() {
-  "use cache";
-
-  return (
-    <>
-      <div className="mb-10">
-        <header className="mb-8 lg:pt-5">
-          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between items-start">
-            <div className="shrink-0 mb-2 sm:mb-0 sm:mr-auto">
-              <Logo />
-            </div>
-
-            <nav className="text-sm -ml-1.5 sm:ml-0">
-              <ul className="flex items-center space-x-2">
-                {navItems.map((item) => (
-                  <li key={item.name} className="group">
-                    <Link
-                      href={item.path}
-                      className="work-link font-normal text-[var(--color-text-muted)]"
-                    >
-                      <span className="inline-block px-1.5 py-0.5 transition-all group-hover:bg-[var(--color-surface-emphasis)]">
-                        {item.name}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-                <li className="group">
-                  <a
-                    href={siteConfig.social.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="work-link"
-                  >
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 font-normal text-[var(--color-text-muted)] transition-all group-hover:bg-[var(--color-surface-emphasis)]">
-                      <XIcon />
-                      <span>Follow me</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <ThemeToggle />
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </header>
-
-        <Breadcrumbs />
-      </div>
-    </>
-  );
+    <header className="mb-8 min-w-0 sm:mb-6">
+      <Logo />
+    </header>
+  )
 }

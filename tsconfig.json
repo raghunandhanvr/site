@@ -34,13 +34,11 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/page.tsx",
-    "app/work/page.mdx",
+    "app/(main)/page.tsx",
     ".next/dev/types/**/*.ts",
     ".next/dev/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "app/writings/ai/*.tsx"
+    "node_modules"
   ]
 }

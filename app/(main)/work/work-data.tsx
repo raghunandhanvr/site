@@ -178,3 +178,23 @@ export const works: Work[] = [
     category: "Freelancing",
   }
 ];
+
+export type EmployerRef = Pick<Work, "title" | "url">
+
+/** Current job (`year` includes Present) plus earlier employers, for the home intro. */
+export function introWorkRoles(): {
+  current: EmployerRef
+  past: EmployerRef[]
+} | null {
+  const wx = works.filter(
+    (w) => w.category === "Work Experience" && w.url !== "#",
+  )
+  const currentIdx = wx.findIndex((w) => /\bPresent\b/i.test(w.year))
+  if (currentIdx === -1) return null
+  const current = wx[currentIdx]!
+  const past = wx.filter((_, i) => i !== currentIdx)
+  return {
+    current: { title: current.title, url: current.url },
+    past: past.map((w) => ({ title: w.title, url: w.url })),
+  }
+}

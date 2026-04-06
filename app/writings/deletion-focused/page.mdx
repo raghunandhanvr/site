@@ -1,9 +1,14 @@
+import { WritingsArticleLayout } from '@/app/components/writings/writings-article-layout'
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
-import { TableOfContents } from '@/app/components/ui/table-of-contents'
+
+export const article = {
+  title: 'Code for Deletion, Not Reuse',
+  description: 'Good code isn\'t reusable; it\'s deletable. Every abstraction is a bet on future requirements you\'ll probably get wrong.',
+}
 
 export const metadata = {
   title: 'Code for Deletion, Not Reuse',
-  description: 'Good code isn\'t reusable; it\'s deletable. Every abstraction is a bet on future requirements you\'ll probably get wrong.',
+  description: article.description,
   alternates: {
     canonical: '/writings/deletion-focused',
   },
@@ -18,9 +23,7 @@ export const metadata = {
   },
 };
 
-# Code for Deletion, Not Reuse
-<BlogViewCounter slug="/writings/deletion-focused" createdAt={new Date('2025-07-29')} />
-<TableOfContents />
+<WritingsArticleLayout title={article.title} description={article.description} meta={<BlogViewCounter slug="/writings/deletion-focused" createdAt={new Date('2025-07-29')} />}>
 
 **TL;DR**: Good code isn't **reusable**; it's **deletable**. Every abstraction is a bet on future requirements you'll probably get wrong. Write code that's **easy to throw away**.
 
@@ -168,3 +171,5 @@ Before writing code, ask:
 Yes, this approach has tradeoffs. Yes, you'll have some duplication. Yes, it goes against what you learned in CS class. But here's what the DRY advocates won't tell you: **most production codebases are haunted by abstractions someone created in 2015 that nobody can remove**.
 
 Remember: **Every abstraction is a bet on the future, and the house always wins**. Today's "perfect" reusable component is tomorrow's **legacy bottleneck that three teams are afraid to touch**. Write code that **admits it might be wrong**. Build systems that can evolve by **subtraction, not just addition**. Because in the end, the code that survives isn't the code that does everything. **It's the code that can gracefully disappear when its time is up**. 
+
+</WritingsArticleLayout>
