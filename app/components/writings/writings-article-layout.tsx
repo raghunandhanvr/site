@@ -47,7 +47,10 @@ export function WritingsArticleLayout({
         </h1>
         {description ? (
           <p
-            className={`mt-4 text-balance text-lg leading-relaxed text-[var(--color-text-soft)] ${meta ? "mb-4" : "mb-6"}`}
+            className={cn(
+              "mt-4 text-balance text-lg leading-relaxed text-[var(--color-text-soft)]",
+              meta ? "mb-1.5" : "mb-6",
+            )}
           >
             {description}
           </p>
