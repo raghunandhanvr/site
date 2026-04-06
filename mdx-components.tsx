@@ -1,126 +1,176 @@
-import React, { ComponentPropsWithoutRef } from 'react';
-import { Link } from 'next-view-transitions';
-import { highlight } from 'sugar-high';
+import React, { ComponentPropsWithoutRef, Suspense } from "react"
+import { Link } from "next-view-transitions"
+import { highlight } from "sugar-high"
+import { LinkPreviewServer } from "@/app/components/link-preview/link-preview-server"
+import { slugifyHeadingChildren } from "@/app/lib/heading-slug"
+import { cn } from "@/app/lib/utils"
 
-function generateSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
+const linkClassName = cn(
+  "font-medium underline underline-offset-4 decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)]",
+  "text-[var(--color-text)] transition-colors hover:opacity-90",
+)
 
-type HeadingProps = ComponentPropsWithoutRef<'h1'>;
-type ParagraphProps = ComponentPropsWithoutRef<'p'>;
-type ListProps = ComponentPropsWithoutRef<'ul'>;
-type ListItemProps = ComponentPropsWithoutRef<'li'>;
-type AnchorProps = ComponentPropsWithoutRef<'a'>;
-type BlockquoteProps = ComponentPropsWithoutRef<'blockquote'>;
+type HeadingProps = ComponentPropsWithoutRef<"h1">
+type ParagraphProps = ComponentPropsWithoutRef<"p">
+type ListProps = ComponentPropsWithoutRef<"ul">
+type ListItemProps = ComponentPropsWithoutRef<"li">
+type AnchorProps = ComponentPropsWithoutRef<"a">
+type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">
 
 const components = {
   h1: (props: HeadingProps) => {
-    const id = props.id || generateSlug(props.children as string);
+    const id = props.id || slugifyHeadingChildren(props.children)
     return (
-      <h1 id={id} className="text-2xl font-bold mb-1" {...props} />
-    );
+      <h1
+        id={id}
+        className="mt-2 scroll-m-28 font-sans text-3xl font-medium tracking-tight text-[var(--color-text)]"
+        {...props}
+      />
+    )
   },
   h2: (props: HeadingProps) => {
-    const id = props.id || generateSlug(props.children as string);
+    const id = props.id || slugifyHeadingChildren(props.children)
     return (
-      <h2 id={id} className="group font-bold text-xl my-8 relative" {...props} />
-    );
+      <h2
+        id={id}
+        className="mt-16 scroll-m-28 font-sans text-xl font-medium tracking-tight text-[var(--color-text)] first:mt-0 lg:mt-8 [&+p]:!mt-4"
+        {...props}
+      />
+    )
   },
   h3: (props: HeadingProps) => {
-    const id = props.id || generateSlug(props.children as string);
+    const id = props.id || slugifyHeadingChildren(props.children)
     return (
-      <h3 id={id} className="group font-bold text-lg my-8 relative" {...props} />
-    );
+      <h3
+        id={id}
+        className="mt-12 scroll-m-28 font-sans text-lg font-medium tracking-tight text-[var(--color-text)]"
+        {...props}
+      />
+    )
   },
   h4: (props: HeadingProps) => {
-    const id = props.id || generateSlug(props.children as string);
+    const id = props.id || slugifyHeadingChildren(props.children)
     return (
-      <h4 id={id} className="group font-bold text-base my-6 relative" {...props} />
-    );
+      <h4
+        id={id}
+        className="mt-8 scroll-m-28 font-sans text-base font-medium tracking-tight text-[var(--color-text)]"
+        {...props}
+      />
+    )
   },
   p: (props: ParagraphProps) => (
-    <p className="leading-snug text-[var(--color-text-muted)]" {...props} />
-  ),
-  ol: (props: ListProps) => (
-    <ol className="list-decimal space-y-2 pl-5 text-[var(--color-text-muted)]" {...props} />
-  ),
-  ul: (props: ListProps) => (
-    <ul className="list-disc space-y-1 pl-5 text-[var(--color-text-muted)]" {...props} />
-  ),
-  li: (props: ListItemProps) => <li className="pl-1" {...props} />,
-  em: (props: ComponentPropsWithoutRef<'em'>) => (
-    <em className="font-medium" {...props} />
-  ),
-  strong: (props: ComponentPropsWithoutRef<'strong'>) => (
-    <strong className="font-medium" {...props} />
-  ),
-  a: ({ href, children, ...props }: AnchorProps) => {
-    const className = 'transition-colors';
-    if (href?.startsWith('/')) {
-      return (
-        <Link href={href} className={className} {...props}>
-          {children}
-        </Link>
-      );
-    }
-    if (href?.startsWith('#')) {
-      return (
-        <a href={href} className={className} {...props}>
-          {children}
-        </a>
-      );
-    }
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-        {...props}
-      >
-        {children}
-      </a>
-    );
-  },
-  code: ({ children, ...props }: ComponentPropsWithoutRef<'code'>) => {
-    const codeHTML = highlight(children as string);
-    return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
-  },
-  Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
-    <table className="my-6">
-      <thead>
-        <tr>
-          {data.headers.map((header, index) => (
-            <th key={index}>{header}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.rows.map((row, index) => (
-          <tr key={index}>
-            {row.map((cell, cellIndex) => (
-              <td key={cellIndex}>{cell}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  ),
-  blockquote: (props: BlockquoteProps) => (
-    <blockquote
-      className="ml-[0.075em] border-l-[3px] border-[var(--color-border-strong)] pl-4 text-[var(--color-text-muted)]"
+    <p
+      className="text-lg leading-relaxed text-[var(--color-text)] [&:not(:first-child)]:mt-2"
       {...props}
     />
   ),
-};
+  ol: (props: ListProps) => (
+    <ol
+      className="mb-2 ml-6 mt-0 list-decimal text-lg text-[var(--color-text)]"
+      {...props}
+    />
+  ),
+  ul: (props: ListProps) => (
+    <ul
+      className="mb-2 ml-6 mt-0 list-disc text-lg text-[var(--color-text)]"
+      {...props}
+    />
+  ),
+  li: (props: ListItemProps) => (
+    <li className="mt-2 pl-2 text-lg text-[var(--color-text)]" {...props} />
+  ),
+  em: (props: ComponentPropsWithoutRef<"em">) => (
+    <em className="font-medium italic" {...props} />
+  ),
+  strong: (props: ComponentPropsWithoutRef<"strong">) => (
+    <strong className="font-medium" {...props} />
+  ),
+  a: ({ href, children, ...props }: AnchorProps) => {
+    if (href?.startsWith("/")) {
+      return (
+        <Link href={href} className={linkClassName} {...props}>
+          {children}
+        </Link>
+      )
+    }
+    if (href?.startsWith("#")) {
+      return (
+        <a href={href} className={linkClassName} {...props}>
+          {children}
+        </a>
+      )
+    }
+    if (href?.startsWith("http")) {
+      return (
+        <Suspense
+          fallback={
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={linkClassName}
+              {...props}
+            >
+              {children}
+            </a>
+          }
+        >
+          <LinkPreviewServer href={href} className={linkClassName}>
+            {children}
+          </LinkPreviewServer>
+        </Suspense>
+      )
+    }
+    return (
+      <a href={href} className={linkClassName} {...props}>
+        {children}
+      </a>
+    )
+  },
+  code: ({ children, ...props }: ComponentPropsWithoutRef<"code">) => {
+    const codeHTML = highlight(children as string)
+    return (
+      <code
+        dangerouslySetInnerHTML={{ __html: codeHTML }}
+        className="text-[0.9em] [pre_&]:text-[0.8rem]"
+        {...props}
+      />
+    )
+  },
+  Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
+    <div className="my-6 w-full overflow-y-auto">
+      <table className="relative w-full overflow-hidden border-none text-sm text-[var(--color-text)]">
+        <thead>
+          <tr>
+            {data.headers.map((header, index) => (
+              <th key={index}>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.rows.map((row, index) => (
+            <tr key={index} className="m-0 border-b border-[var(--color-border)]">
+              {row.map((cell, cellIndex) => (
+                <td key={cellIndex}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ),
+  blockquote: (props: BlockquoteProps) => (
+    <blockquote
+      className="mt-6 border-l-2 border-[var(--color-border-strong)] pl-6 text-lg italic text-[var(--color-text-muted)]"
+      {...props}
+    />
+  ),
+}
 
 declare global {
-  type MDXProvidedComponents = typeof components;
+  type MDXProvidedComponents = typeof components
 }
 
 export function useMDXComponents(): MDXProvidedComponents {
-  return components;
+  return components
 }

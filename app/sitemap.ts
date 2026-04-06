@@ -12,8 +12,6 @@ export default async function sitemap() {
 
   const routes = [
     "",
-    "writings",
-    "work",
     "rss",
     "atom",
     "feed",

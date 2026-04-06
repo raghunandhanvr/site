@@ -1,9 +1,11 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 
-export default function AgeCounter() {
+import { cn } from "@/app/lib/utils"
+
+export default function AgeCounter({ className }: { className?: string }) {
   const [age, setAge] = useState({ years: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
@@ -29,14 +31,17 @@ export default function AgeCounter() {
   }, []);
 
   return (
-      <motion.span 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
-        className="text-xs font-mono transition-colors text-[var(--color-text-soft)]"
-      >
-          {age.years}y {age.days}d {age.hours}h {age.minutes}m {age.seconds}s
-      </motion.span>
-  );
+    <motion.span
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className={cn(
+        "font-mono text-xs transition-colors text-[var(--color-text-soft)]",
+        className,
+      )}
+    >
+      {age.years}y {age.days}d {age.hours}h {age.minutes}m {age.seconds}s
+    </motion.span>
+  )
 }

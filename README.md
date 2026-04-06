@@ -3,6 +3,7 @@
 This is a clean, fast, and lightweight site built with Next.js, Vercel, and Tailwind CSS. It features dynamic Open Graph image generation and MDX support for blog posts with rss/atom feeds. This site is inspired from [Leerob](https://leerob.com/) and [Guillermo Rauch](https://rauchg.com//).
 
 #### Features
+
 - Dynamic Open Graph image generation with random pixel icons
 - MDX support for blog posts or any other pages
 - RSS/Atom feeds
@@ -17,6 +18,7 @@ To set up the project locally, follow these steps:
 
 1. **Install Dependencies**  
    Run the following command to install the necessary packages:
+
    ```bash
    # use pnpm
    pnpm i
@@ -28,6 +30,7 @@ To set up the project locally, follow these steps:
 
 2. **Run the Development Server**  
    Start the development server with:
+
    ```bash
    # use pnpm
    pnpm dev
@@ -39,7 +42,6 @@ To set up the project locally, follow these steps:
 
 3. **Configuration**  
    Update the configuration in the following files according to your requirements:
-
    - **`/app/config.ts`**: Modify the metadata such as `baseUrl`, `title`, `description`, and social links
    - **`/app/writings/*`**: Update the content of your blog posts or pages as needed
    - **`/app/page.mdx`**: Make changes to the main page content to reflect your personal information and projects

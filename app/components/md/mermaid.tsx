@@ -1,104 +1,170 @@
-"use client";
+"use client"
 
-import React, { useEffect, useRef, useId } from "react";
+import React, { useEffect, useId, useRef } from "react"
 
 interface SimpleMermaidDiagramProps {
-  diagram: string;
+  diagram: string
+}
+
+function getIsDark(): boolean {
+  const t = document.documentElement.getAttribute("data-theme")
+  if (t === "dark") return true
+  if (t === "light") return false
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+}
+
+/**
+ * Mermaid only accepts hex/rgb/hsl — not lab()/oklch() from computed CSS vars.
+ */
+function mermaidThemeVariables(isDark: boolean) {
+  if (isDark) {
+    return {
+      background: "transparent",
+      primaryColor: "#1e293b",
+      primaryTextColor: "#f5f5f5",
+      primaryBorderColor: "#60a5fa",
+      lineColor: "#404040",
+      secondaryColor: "#262626",
+      tertiaryColor: "#333333",
+      mainBkg: "#262626",
+      secondBkg: "#1a1a1a",
+      tertiaryBkg: "#333333",
+      primaryTextColorDark: "#f5f5f5",
+      edgeLabelBackground: "#1a1a1a",
+      clusterBkg: "#262626",
+      clusterBorder: "#3f3f3f",
+      actorBkg: "#262626",
+      actorBorder: "#404040",
+      actorTextColor: "#f5f5f5",
+      signalColor: "#f5f5f5",
+      signalTextColor: "#f5f5f5",
+      labelBoxBkgColor: "#1a1a1a",
+      labelBoxBorderColor: "#3f3f3f",
+      labelTextColor: "#f5f5f5",
+      fontSize: "11px",
+      fontFamily: "inherit",
+    }
+  }
+
+  return {
+    background: "transparent",
+    primaryColor: "#dbeafe",
+    primaryTextColor: "#171717",
+    primaryBorderColor: "#2563eb",
+    lineColor: "#d4d4d4",
+    secondaryColor: "#f5f5f5",
+    tertiaryColor: "#ededed",
+    mainBkg: "#f5f5f5",
+    secondBkg: "#ffffff",
+    tertiaryBkg: "#ededed",
+    primaryTextColorDark: "#171717",
+    edgeLabelBackground: "#ffffff",
+    clusterBkg: "#f5f5f5",
+    clusterBorder: "#e5e5e5",
+    actorBkg: "#f5f5f5",
+    actorBorder: "#d4d4d4",
+    actorTextColor: "#171717",
+    signalColor: "#171717",
+    signalTextColor: "#171717",
+    labelBoxBkgColor: "#ffffff",
+    labelBoxBorderColor: "#e5e5e5",
+    labelTextColor: "#171717",
+    fontSize: "11px",
+    fontFamily: "inherit",
+  }
 }
 
 const SimpleMermaidDiagram: React.FC<SimpleMermaidDiagramProps> = ({
   diagram,
 }) => {
-  const mermaidRef = useRef<HTMLDivElement>(null);
-  const uniqueId = useId().replace(/:/g, "");
+  const mermaidRef = useRef<HTMLDivElement>(null)
+  const renderSeq = useRef(0)
+  const uniqueId = useId().replace(/:/g, "")
 
   useEffect(() => {
+    let cancelled = false
+
     const renderDiagram = async () => {
-      if (mermaidRef.current) {
-        // Clear previous content
-        mermaidRef.current.innerHTML = "";
+      const el = mermaidRef.current
+      if (!el) return
 
-        const mermaid = (await import("mermaid")).default;
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const rootStyles = getComputedStyle(document.documentElement);
+      el.innerHTML = ""
 
-        const colorValue = (name: string, fallback: string) =>
-          rootStyles.getPropertyValue(name).trim() || fallback;
+      const mermaid = (await import("mermaid")).default
+      if (cancelled || mermaidRef.current !== el) return
 
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: "base",
-          flowchart: {
-            useMaxWidth: false,
-            htmlLabels: true,
-            curve: "basis",
-            padding: 20,
-            nodeSpacing: 50,
-            rankSpacing: 60,
-          },
-          sequence: {
-            useMaxWidth: false,
-            boxMargin: 20,
-            boxTextMargin: 10,
-            noteMargin: 15,
-            messageMargin: 45,
-          },
-          themeVariables: {
-            background: "transparent",
-            primaryColor: colorValue("--color-accent-soft", prefersDark ? "#0f172a" : "#dbeafe"),
-            primaryTextColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
-            primaryBorderColor: colorValue("--color-accent", prefersDark ? "#60a5fa" : "#2563eb"),
-            lineColor: colorValue("--color-border-strong", prefersDark ? "#404040" : "#d4d4d4"),
-            secondaryColor: colorValue("--color-surface-muted", prefersDark ? "#0a0a0a" : "#f5f5f5"),
-            tertiaryColor: colorValue("--color-surface-emphasis", prefersDark ? "#111111" : "#ededed"),
-            mainBkg: colorValue("--color-surface-muted", prefersDark ? "#0a0a0a" : "#f5f5f5"),
-            secondBkg: colorValue("--color-surface", prefersDark ? "#000000" : "#ffffff"),
-            tertiaryBkg: colorValue("--color-surface-emphasis", prefersDark ? "#111111" : "#ededed"),
-            primaryTextColorDark: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
-            edgeLabelBackground: colorValue("--color-surface", prefersDark ? "#000000" : "#ffffff"),
-            clusterBkg: colorValue("--color-surface-muted", prefersDark ? "#0a0a0a" : "#f5f5f5"),
-            clusterBorder: colorValue("--color-border", prefersDark ? "#262626" : "#e5e5e5"),
-            actorBkg: colorValue("--color-surface-muted", prefersDark ? "#0a0a0a" : "#f5f5f5"),
-            actorBorder: colorValue("--color-border-strong", prefersDark ? "#404040" : "#d4d4d4"),
-            actorTextColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
-            signalColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
-            signalTextColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
-            labelBoxBkgColor: colorValue("--color-surface", prefersDark ? "#000000" : "#ffffff"),
-            labelBoxBorderColor: colorValue("--color-border", prefersDark ? "#262626" : "#e5e5e5"),
-            labelTextColor: colorValue("--color-text", prefersDark ? "#fafafa" : "#050505"),
-            fontSize: "16px",
-            fontFamily: "inherit",
-          },
-        });
+      const isDark = getIsDark()
+      const renderId = `mermaid-${uniqueId}-${++renderSeq.current}`
 
-        try {
-          const { svg } = await mermaid.render(`mermaid-${uniqueId}`, diagram);
-          mermaidRef.current.innerHTML = svg;
-        } catch (error) {
-          console.error("Mermaid rendering error:", error);
-          mermaidRef.current.innerHTML = `<pre>${diagram}</pre>`;
-        }
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "base",
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true,
+          curve: "basis",
+          padding: 8,
+          nodeSpacing: 28,
+          rankSpacing: 36,
+        },
+        sequence: {
+          useMaxWidth: true,
+          boxMargin: 10,
+          boxTextMargin: 6,
+          noteMargin: 10,
+          messageMargin: 24,
+          actorFontSize: 11,
+          noteFontSize: 10,
+          messageFontSize: 11,
+        },
+        themeVariables: mermaidThemeVariables(isDark),
+      })
+
+      try {
+        const { svg } = await mermaid.render(renderId, diagram)
+        if (cancelled || mermaidRef.current !== el) return
+        el.innerHTML = svg
+      } catch (error) {
+        console.error("Mermaid rendering error:", error)
+        if (cancelled || mermaidRef.current !== el) return
+        el.innerHTML = `<pre>${diagram}</pre>`
       }
-    };
+    }
 
-    renderDiagram();
-  }, [diagram, uniqueId]);
+    void renderDiagram()
+
+    const obs = new MutationObserver(() => {
+      void renderDiagram()
+    })
+    obs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    })
+
+    const mq = window.matchMedia("(prefers-color-scheme: dark)")
+    const onMq = () => void renderDiagram()
+    mq.addEventListener("change", onMq)
+
+    return () => {
+      cancelled = true
+      obs.disconnect()
+      mq.removeEventListener("change", onMq)
+    }
+  }, [diagram, uniqueId])
 
   return (
-    <div className="mermaid-wrapper my-8 -mx-4 sm:-mx-6 md:mx-0 md:relative md:w-[calc(100vw-2rem)] md:left-1/2 md:-translate-x-1/2 lg:w-[min(100vw-4rem,1200px)]">
+    <div className="mermaid-wrapper my-6 w-full min-w-0 max-w-full">
       <div
-        className="overflow-x-auto overflow-y-hidden py-4 px-4 sm:px-6"
+        className="mermaid-scroll max-h-[min(70vh,48rem)] w-full min-w-0 overflow-auto py-3 px-3 sm:px-5"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        <div className="flex justify-center min-w-max md:min-w-0">
-          <div
-            ref={mermaidRef}
-            className="mermaid-container article-visual p-4 sm:p-6"
-          />
-        </div>
+        <div
+          ref={mermaidRef}
+          className="mermaid-container article-visual w-full min-w-0 p-2 sm:p-3"
+        />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SimpleMermaidDiagram;
+export default SimpleMermaidDiagram

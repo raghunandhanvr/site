@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
       expire: 86400, // 1 day
     },
   },
+  async redirects() {
+    return [
+      { source: "/work", destination: "/", permanent: true },
+      { source: "/writings", destination: "/", permanent: true },
+    ];
+  },
   async rewrites() {
     return [
       {

@@ -1,9 +1,14 @@
+import { WritingsArticleLayout } from '@/app/components/writings/writings-article-layout'
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
-import { TableOfContents } from '@/app/components/ui/table-of-contents'
+
+export const article = {
+  title: 'Munnar',
+  description: 'Just a few tips for exploring Munnar',
+}
 
 export const metadata = {
   title: 'Munnar',
-  description: 'Just a few tips for exploring Munnar',
+  description: article.description,
   alternates: {
     canonical: '/writings/munnar',
   },
@@ -18,9 +23,7 @@ export const metadata = {
   },
 };
 
-# Munnar
-<BlogViewCounter slug='/writings/munnar' createdAt={new Date('2025-09-27')} />
-<TableOfContents />
+<WritingsArticleLayout title={article.title} description={article.description} meta={<BlogViewCounter slug='/writings/munnar' createdAt={new Date('2025-09-27')} />}>
 
 I've explored most of the mountains in South India. Munnar is simply the best, no question. Munnar is the best.
 
@@ -155,3 +158,5 @@ Need still more of adventure? Let's talk about [Gavi](https://www.google.com/sea
 - **Day 1**: Munnar town - Tea museum, local sightseeing, botanical garden
 - **Day 2**: Vattavada route - Dams, tea estates (no trekking), comfortable stays
 - **Day 3**: Udumalpet road - Kanthaloor (by car), Chinnar safari (comfortable vehicle)
+
+</WritingsArticleLayout>

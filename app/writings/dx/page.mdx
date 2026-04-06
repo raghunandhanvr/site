@@ -1,9 +1,14 @@
+import { WritingsArticleLayout } from '@/app/components/writings/writings-article-layout'
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
-import { TableOfContents } from '@/app/components/ui/table-of-contents'
+
+export const article = {
+  title: 'On Developer Experience',
+  description: 'Some thoughts on what makes a great DX',
+}
 
 export const metadata = {
   title: 'On Developer Experience',
-  description: 'Some thoughts on what makes a great DX',
+  description: article.description,
   alternates: {
     canonical: '/writings/dx',
   },
@@ -18,9 +23,7 @@ export const metadata = {
   },
 };
 
-# On Developer Experience
-<BlogViewCounter slug='/writings/dx' createdAt={new Date('2025-01-24')} />
-<TableOfContents />
+<WritingsArticleLayout title={article.title} description={article.description} meta={<BlogViewCounter slug='/writings/dx' createdAt={new Date('2025-01-24')} />}>
 
 My perspective on what creates a good developer experience:
 
@@ -55,3 +58,5 @@ My perspective on what creates a good developer experience:
 - It’s fine to be wrong—just learn and move forward
 - Confidence is good; arrogance isn’t
 - Be open to others’ ideas, even if you’re sure you’re right
+
+</WritingsArticleLayout>

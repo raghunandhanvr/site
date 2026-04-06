@@ -1,6 +1,9 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/app/config";
 
+const INSTRUMENT_SERIF_TTF =
+  "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-2zI.ttf";
+
 function generatePixelArt() {
   const grid = Array(6).fill(0).map(() => 
     Array(6).fill(0).map(() => Math.random() > 0.5)
@@ -24,6 +27,10 @@ export async function GET(request: Request) {
   const pixelSize = 8;
   const gridSize = 6;
   const totalSize = pixelSize * gridSize;
+
+  const instrumentSerif = await fetch(INSTRUMENT_SERIF_TTF).then((res) =>
+    res.arrayBuffer(),
+  );
 
   return new ImageResponse(
     (
@@ -76,8 +83,9 @@ export async function GET(request: Request) {
             <div
               style={{
                 display: 'flex',
-                fontSize: 48,
-                fontWeight: 'bold',
+                fontFamily: '"Instrument Serif"',
+                fontSize: 60,
+                fontWeight: 400,
                 letterSpacing: '-0.025em',
                 color: 'black',
                 textAlign: 'left',
@@ -89,7 +97,7 @@ export async function GET(request: Request) {
               <div
                 style={{
                   display: 'flex',
-                  fontSize: 24,
+                  fontSize: 30,
                   fontWeight: 'normal',
                   letterSpacing: '-0.01em',
                   color: '#666',
@@ -106,6 +114,14 @@ export async function GET(request: Request) {
     {
       width: 1200,
       height: 630,
+      fonts: [
+        {
+          name: "Instrument Serif",
+          data: instrumentSerif,
+          style: "normal",
+          weight: 400,
+        },
+      ],
     }
   );
 }

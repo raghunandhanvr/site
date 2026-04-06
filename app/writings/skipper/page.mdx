@@ -1,17 +1,22 @@
 import MermaidDiagram from '@/app/components/md/mermaid'
+import { WritingsArticleLayout } from '@/app/components/writings/writings-article-layout'
 import { BlogViewCounter } from '@/app/components/ui/blog-view-counter'
-import { TableOfContents } from '@/app/components/ui/table-of-contents'
+
+export const article = {
+  title: 'High-Performance Reverse Proxy',
+  description: 'About Zalando Skipper architecture, performance optimizations, and unique features.',
+}
 
 export const metadata = {
-  title: 'Inside a High-Performance Reverse Proxy',
-  description: 'About Zalando Skipper architecture, performance optimizations, and unique features.',
+  title: 'High-Performance Reverse Proxy',
+  description: article.description,
   alternates: {
     canonical: '/writings/skipper',
   },
   openGraph: {
     images: [
       {
-        url: `/api/og?title=Inside+a+High-Performance+Reverse+Proxy`,
+        url: `/api/og?title=High-Performance+Reverse+Proxy`,
         width: 1200,
         height: 630,
       },
@@ -19,9 +24,7 @@ export const metadata = {
   },
 };
 
-# Inside a High-Performance Reverse Proxy
-<BlogViewCounter slug="/writings/skipper" createdAt={new Date('2025-02-02')} />
-<TableOfContents />
+<WritingsArticleLayout title={article.title} description={article.description} meta={<BlogViewCounter slug="/writings/skipper" createdAt={new Date('2025-02-02')} />}>
 
 We recently switched to [Zalando Skipper](https://github.com/zalando/skipper) for our reverse proxy needs after trying out Nginx, HAProxy, Traefik, etc,.
 
@@ -305,3 +308,5 @@ While Nginx and HAProxy are solid, Skipper's Go-based architecture and focus on 
 The code is [well-documented](https://opensource.zalando.com/skipper/reference/architecture/), and the community seems pretty active in slack.
 
 Peace.
+
+</WritingsArticleLayout>

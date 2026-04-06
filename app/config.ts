@@ -25,6 +25,16 @@ export const siteConfig = {
   ],
 } as const;
 
+/**
+ * Use as `metadata.title` on nested routes. The root layout already sets
+ * `title.template` to `%s | ${siteConfig.name}`, so pass only the page title
+ * here (no site suffix).
+ */
+export function withSiteTitle(pageTitle: string): string {
+  const t = pageTitle.trim()
+  return t.length > 0 ? t : siteConfig.name
+}
+
 export function getStructuredData() {
   return {
     "@context": "https://schema.org",
