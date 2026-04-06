@@ -1,17 +1,17 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"
 
-/** Match MDX heading `id` generation in `mdx-components.tsx`. */
-export function slugifyHeadingText(text: string): string {
+/** URL-safe slug from plain text (article title, heading text). */
+export function slugify(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+    .replace(/(^-|-$)/g, "")
 }
 
-/** Plain text from heading children for stable slug ids (MDX often nests `strong`/`code`). */
-export function slugifyHeadingChildren(children: ReactNode): string {
-  const plain = headingChildrenToPlainText(children).trim();
-  return slugifyHeadingText(plain || "section");
+/** MDX heading id: derive from rich children (`strong`, `code`, etc.). */
+export function mdxHeadingSlug(children: ReactNode): string {
+  const plain = headingChildrenToPlainText(children).trim()
+  return slugify(plain || "section")
 }
 
 function headingChildrenToPlainText(node: ReactNode): string {

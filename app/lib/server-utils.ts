@@ -46,25 +46,6 @@ export async function getBlogData(slug: string) {
   };
 }
 
-export async function getAllBlogPosts() {
-  "use cache";
-  const slugs = await getBlogSlugs();
-  const posts = await Promise.all(
-    slugs.map(async (slug) => {
-      const { metadata } = await getBlogData(slug);
-      return {
-        slug: `/writings/${slug}`,
-        ...metadata,
-      };
-    })
-  );
-
-  return posts.sort(
-    (a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
-}
-
 export async function getBlogs() {
   "use cache";
   const slugs = await getBlogSlugs();

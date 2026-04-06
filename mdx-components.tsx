@@ -2,7 +2,7 @@ import React, { ComponentPropsWithoutRef, Suspense } from "react"
 import { Link } from "next-view-transitions"
 import { highlight } from "sugar-high"
 import { LinkPreviewServer } from "@/app/components/link-preview/link-preview-server"
-import { slugifyHeadingChildren } from "@/app/lib/heading-slug"
+import { mdxHeadingSlug } from "@/app/lib/heading-slug"
 import { cn } from "@/app/lib/utils"
 
 const linkClassName = cn(
@@ -19,7 +19,7 @@ type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">
 
 const components = {
   h1: (props: HeadingProps) => {
-    const id = props.id || slugifyHeadingChildren(props.children)
+    const id = props.id || mdxHeadingSlug(props.children)
     return (
       <h1
         id={id}
@@ -29,7 +29,7 @@ const components = {
     )
   },
   h2: (props: HeadingProps) => {
-    const id = props.id || slugifyHeadingChildren(props.children)
+    const id = props.id || mdxHeadingSlug(props.children)
     return (
       <h2
         id={id}
@@ -39,7 +39,7 @@ const components = {
     )
   },
   h3: (props: HeadingProps) => {
-    const id = props.id || slugifyHeadingChildren(props.children)
+    const id = props.id || mdxHeadingSlug(props.children)
     return (
       <h3
         id={id}
@@ -49,7 +49,7 @@ const components = {
     )
   },
   h4: (props: HeadingProps) => {
-    const id = props.id || slugifyHeadingChildren(props.children)
+    const id = props.id || mdxHeadingSlug(props.children)
     return (
       <h4
         id={id}

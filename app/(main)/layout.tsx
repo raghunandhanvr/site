@@ -4,7 +4,7 @@ import { MainLayoutShell } from "@/app/(main)/main-layout-shell"
 import { HeaderMainGap } from "@/app/components/layout/home-only"
 import Header from "@/app/components/layout/header"
 
-export default async function MainLayout({
+export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode

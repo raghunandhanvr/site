@@ -9,7 +9,7 @@ export function HomeOnly({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
-/** Space before page body on non-home routes — matches header `gap-3 sm:gap-6` above SiteIntro on `/`. */
+/** Space between header and body on routes other than `/`. */
 export function HeaderMainGap() {
   const pathname = usePathname()
   if (!pathname || pathname === "/") return null

@@ -4,7 +4,7 @@ import { Link } from "next-view-transitions"
 
 import { Fade } from "@/app/components/ui/blur-fade/blur-fade"
 import { WritingsTableOfContents } from "@/app/components/writings/writings-table-of-contents"
-import { slugifyHeadingText } from "@/app/lib/heading-slug"
+import { slugify } from "@/app/lib/heading-slug"
 import { cn } from "@/app/lib/utils"
 
 export function WritingsArticleLayout({
@@ -20,14 +20,14 @@ export function WritingsArticleLayout({
   meta?: ReactNode
   children: ReactNode
 }) {
-  const titleId = slugifyHeadingText(title)
+  const titleId = slugify(title)
 
   return (
     <div
       data-slot="writings-doc"
       className="relative w-full min-w-0 text-[1.05rem] sm:text-[15px]"
     >
-      {/* Content column first; top fade is h-32 — pt-32 clears it so Back/title aren’t dimmed (Fredrika doc layout). */}
+      {/* Top fade is h-32 — pt-32 clears it so Back/title aren’t dimmed. */}
       <div
         className="relative mx-auto flex w-full max-w-4xl flex-col gap-2 px-3 pb-40 pt-32 lg:px-12"
         data-writings-article

@@ -181,8 +181,8 @@ export const works: Work[] = [
 
 export type EmployerRef = Pick<Work, "title" | "url">
 
-/** Current role (`year` includes “Present”) and other full-time employers, for the home intro. */
-export function getCurrentAndPastEmployers(): {
+/** Current job (`year` includes Present) plus earlier employers, for the home intro. */
+export function introWorkRoles(): {
   current: EmployerRef
   past: EmployerRef[]
 } | null {

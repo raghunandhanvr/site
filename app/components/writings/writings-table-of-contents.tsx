@@ -16,10 +16,10 @@ import { cn } from "@/app/lib/utils"
 
 const ARTICLE_SELECTOR = "[data-writings-article]"
 
-/** fumadocs-style depth: h2 → 2, h3 → 3 (`depth - 2` drives x-offset like Fredrika). */
+/** Depth: h2 → 2, h3 → 3 (offset for sidebar dot + indent). */
 type TocItem = { url: string; title: string; depth: number }
 
-function FredrikaStyleTocItems({
+function TocList({
   toc,
   activeIndex,
   variant = "sidebar",
@@ -224,7 +224,7 @@ export function WritingsTableOfContents() {
           className="pointer-events-auto max-h-[calc(100vh-10rem)] overflow-y-auto pr-2 toc-scrollbar"
           aria-label="On this page"
         >
-          <FredrikaStyleTocItems toc={tocItems} activeIndex={activeIndex} />
+          <TocList toc={tocItems} activeIndex={activeIndex} />
         </nav>
       </aside>
 
@@ -248,7 +248,7 @@ export function WritingsTableOfContents() {
         </button>
         {mobileOpen ? (
           <div className="border-t border-[var(--color-border)] px-1 py-5">
-            <FredrikaStyleTocItems
+            <TocList
               toc={tocItems}
               activeIndex={activeIndex}
               variant="accordion"
