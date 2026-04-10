@@ -1,0 +1,96 @@
+import MermaidDiagram from "@/app/components/md/mermaid";
+import { WritingsArticleLayout } from "@/app/components/writings/writings-article-layout";
+import { BlogViewCounter } from "@/app/components/ui/blog-view-counter";
+
+export const article = {
+  title: "Freightify AI Foundation..?",
+  description: "Hi team, Just a brainstorm..",
+};
+
+export const metadata = {
+  title: "Freightify AI Foundation..?",
+  description: article.description,
+  alternates: {
+    canonical: "/writings/freightify-ai-foundation",
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=Freightify+AI+Foundation..%3F`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+<WritingsArticleLayout title={article.title} description={article.description} meta={<BlogViewCounter slug='/writings/freightify-ai-foundation' createdAt={new Date('2026-04-11')} />}>
+
+<div className="flex flex-col gap-6 [&_h1]:mb-1 [&_h2]:scroll-mt-28">
+
+This is just my thought process, thought of sharing. Just a 1min read.
+
+You guys know the business, you know the freight industry, and you guys also know the tech. If anyone can make this happen, it's this team. We should be the guys who make this evolution to the **Freight Forwarding industry**.
+
+I'm thinking very future here. This shift might come tomorrow, might take years, but it's coming for sure. I see people already started telling LLMs to book hotels for their vacations, search flights, etc. Why shouldn't we be the ones building the **AI infrastructure for freight management** before everyone else wakes up to it?
+
+I know freight management is a very professional industry, people might not do it like vacation room booking. What I'm trying to say is, we should create an **AI foundation** which should be capable enough to support these kind of questions too (like "get me rates from INNSA to CNSHA on this date, on this size, etc.").
+
+## I just thought of three things:
+
+1. **AI Foundation**: AI understandable, consumable interface (**MCP**, **AI Toolchain**, **Vectors**, etc.)
+2. Our platform, but enhanced with **LLMs**
+3. We have a huge amount of **TBs of freight data**, which we can use to train (this would help us to make LLMs answer questions like "Should I book this or should I wait for future, where the rates may drop")
+
+## 1. AI Foundation: AI understandable, consumable interface
+
+If you have used LLMs (GPT, Claude,..) you might have came across marketplaces, plugins. Like how you can connect ChatGPT or Claude with Google Drive to search your files, or connect with Jira to check tickets, or connect with Slack to read messages - all from the LLM chat itself. Similarly, we will provide **Freightify plugins**, **whitelabeled plugins**, where anyone can install and login via their LLM (ChatGPT, Claude, Gemini). FYI, if you haven't tried these connectors (marketplaces, plugins), this is a dead simple process. Just two clicks, no more of technical work needed.
+
+Then, if someone who installed asks questions to that LLM like, "get me rates from INNSA to CNSHA on this date, on this size, etc.", ChatGPT or any LLM would use our **MCP** (or any **AI usable toolchain**) to access the data and give response. Not just reading, any **write activities** also like "book this", "send this quote to client", etc. As it's natural language they can type anything and ask. We can send our same rate card designs in response. **Our toolchain must be solid.**
+
+<MermaidDiagram
+  diagram={`
+sequenceDiagram
+  autonumber
+  participant User as User
+  participant LLM as LLM
+  participant Tools as MCP or toolchain
+  participant API as Freightify APIs
+  User->>LLM: Natural language
+  LLM->>Tools: Tool calls
+  Tools->>API: Read or write
+  API-->>Tools: Data or result
+  Tools-->>LLM: Tool output
+  LLM-->>User: Answer
+`}
+/>
+
+This **AI Foundation** (**MCP**, **toolchain**), whatever we provide, it can be consumed anywhere. In email plugins (**QuoteAI**), LLMs, anywhere. This is the foundation of our **NLP**.
+
+## 2. Our current platform
+
+Just to be clear, our current platform stays as it is, **fully manual, nothing changes**. But we will add a **floating chat panel** on top of it, which uses our **MCP** we discussed above to give responses to our customers.
+
+We should provide **full control**. And the best part is, we can use this **foundation** we build anywhere.. like in any micro-modules of Freightify where we can give an **AI touch**. For example, in the **quotes module**, imagine auto-suggesting the **best carrier** for a lane based on past win ratios and rate history. That's it.
+
+## 3. What should we do with our TBs of Freight data
+
+The **MCP** (or **AI toolchain**) calls our **APIs only**.
+
+We should use our data and train an **internal AI model**, which will take care of natural language questions which other of our **MCP APIs** can't tell.. like "any possibility that this rate will change in future?", then our **LLM** will provide response like "yeah, it might change, here is the past history"..
+
+## Why should we consider this?
+
+1. Tech is evolving. I know this is a boomer point. But still, it's happening.
+2. What your first response would be is, "Forwarders and most of our users are not technically evolved yet to do this" - yeah valid. But they will evolve, as you know the **speed of AI**.
+3. We need to build this **foundation**, which can help in any of our internal modules.. like if we plan to bring any usage of AI in quote module (like if we introduce a feature in that module like, "analysis of forwarder budget with other rates and conditions, with world activities").
+
+   This **foundation AI toolchain** would help us anywhere in the platform.
+
+4. We can be **pioneers** in this kind of freight forwarding with AI era.
+
+I can anytime connect with the **Freightify team** to discuss on this further if needed.
+
+</div>
+
+</WritingsArticleLayout>
