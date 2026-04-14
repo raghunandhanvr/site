@@ -25,12 +25,21 @@ async function fetchOGMetadataInternal(
   try {
     const fetchUrl = isTweetUrl(url) ? getTweetProxyUrl(url) : url
 
-    const response = await fetch(fetchUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; LinkPreview/1.0)",
-      },
-      cache: "no-store",
-    })
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 5000)
+
+    let response: Response
+    try {
+      response = await fetch(fetchUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; LinkPreview/1.0)",
+        },
+        signal: controller.signal,
+        cache: "no-store",
+      })
+    } finally {
+      clearTimeout(timeout)
+    }
 
     if (!response.ok) {
       return null

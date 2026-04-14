@@ -4,6 +4,7 @@ import { Link } from "next-view-transitions"
 import { introWorkRoles } from "@/app/(main)/work/work-data"
 import { LinkPreviewServer } from "@/app/components/link-preview/link-preview-server"
 import { siteConfig } from "@/app/config"
+import { fetchOGMetadata } from "@/app/lib/og-metadata"
 import { blogPosts } from "@/app/writings/writings-data"
 
 export const metadata: Metadata = {
@@ -103,6 +104,19 @@ async function WritingsSection() {
 
 export default async function HomePage() {
   const roles = introWorkRoles()
+
+  const prefetchUrls: string[] = [
+    "https://ieeexplore.ieee.org/document/10046797",
+    "https://www.kghospital.com/",
+    siteConfig.social.twitter,
+  ]
+  if (roles) {
+    prefetchUrls.push(roles.current.url)
+    for (const p of roles.past) {
+      if (/^https?:\/\//i.test(p.url)) prefetchUrls.push(p.url)
+    }
+  }
+  await Promise.allSettled(prefetchUrls.map((u) => fetchOGMetadata(u)))
 
   return (
     <>
