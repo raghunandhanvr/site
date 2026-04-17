@@ -78,6 +78,11 @@ export default function RootLayout({
       )}
     >
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('theme');var d=s==='dark'||((!s||s==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(s==='light'){document.documentElement.setAttribute('data-theme','light');}else if(d){document.documentElement.setAttribute('data-theme','dark');}document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();`,
+          }}
+        />
         {process.env.NEXT_PUBLIC_GA_ID && (
           <Script
             id="ga-script"
