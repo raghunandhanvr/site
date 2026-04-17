@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { cacheLife } from "next/cache"
 import Link from "next/link"
 
 import { LinkPreviewServer } from "@/app/components/link-preview"
@@ -25,11 +26,24 @@ export const metadata: Metadata = {
 const previewMuted =
   "text-[var(--color-text-muted)] underline decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)] underline-offset-4"
 
-const sortedPosts = [...blogPosts].sort(
-  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-)
+const homeWritingsOrder = [
+  "/writings/skipper",
+  "/writings/deletion-focused",
+  "/writings/dx",
+  "/writings/db",
+  "/writings/munnar",
+] as const
 
-export default function HomePage() {
+const orderedHomeWritings = homeWritingsOrder.map((slug) => {
+  const post = blogPosts.find((p) => p.slug === slug)
+  if (!post) throw new Error(`Missing blog post for slug: ${slug}`)
+  return post
+})
+
+export default async function HomePage() {
+  "use cache"
+  cacheLife("max")
+
   return (
     <main className="flex w-max max-w-full min-w-0 flex-1 flex-col self-center px-6 pt-12 sm:px-10 sm:pt-16 lg:px-12">
       <header className="mb-8 min-w-0 sm:mb-6">
@@ -50,50 +64,47 @@ export default function HomePage() {
 
       <div className="min-w-0 w-full">
         <p className="text-base leading-normal text-[var(--color-text-muted)]">
-          Background across full-stack engineering, blockchain, and security;
-          <span className="block">
-            I&apos;m currently at{" "}
-            <LinkPreviewServer
-              href="https://byzanlink.com/"
-              className={previewMuted}
-            >
-              Byzanlink
-            </LinkPreviewServer>
-            . Previously at{" "}
-            <LinkPreviewServer href="https://lumel.com/" className={previewMuted}>
-              Lumel
-            </LinkPreviewServer>{" "}
-            and{" "}
-            <LinkPreviewServer
-              href="https://www.freightify.com"
-              className={previewMuted}
-            >
-              Freightify
-            </LinkPreviewServer>
-            .
-          </span>
+          Engineer.{" "}
+          Currently at{" "}
+          <LinkPreviewServer
+            href="https://byzanlink.com/"
+            className={previewMuted}
+          >
+            Byzanlink
+          </LinkPreviewServer>
+          , working on{" "}
+          <LinkPreviewServer
+            href="https://www.erc3643.org/"
+            className={previewMuted}
+          >
+            ERC-3643
+          </LinkPreviewServer>{" "}
+          and{" "}
+          <LinkPreviewServer
+            href="https://ethereum.org/developers/docs/standards/tokens/erc-4626/"
+            className={previewMuted}
+          >
+            ERC-4626
+          </LinkPreviewServer>
+          . Previously at{" "}
+          <LinkPreviewServer href="https://lumel.com/" className={previewMuted}>
+            Lumel
+          </LinkPreviewServer>{" "}
+          and{" "}
+          <LinkPreviewServer
+            href="https://www.freightify.com"
+            className={previewMuted}
+          >
+            Freightify
+          </LinkPreviewServer>
+          .
         </p>
         <p className="mt-5 text-base font-medium leading-normal text-[var(--color-text)]">
           Some of my tech contributions:
         </p>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-base leading-normal text-[var(--color-text-muted)]">
           <li>
-            <strong className="font-medium text-[var(--color-text)]">
-              IAM service
-            </strong>{" "}
-            in golang serving 100K+ users daily
-          </li>
-          <li>
-            <strong className="font-medium text-[var(--color-text)]">
-              Custom reverse proxy
-            </strong>{" "}
-            in golang handling 1M+ daily API requests
-          </li>
-          <li>
-            <strong className="font-medium text-[var(--color-text)]">
-              AI research
-            </strong>{" "}
-            on fake image detection (
+            AI research on fake image detection (
             <LinkPreviewServer
               href="https://ieeexplore.ieee.org/document/10046797"
               className={previewMuted}
@@ -103,22 +114,40 @@ export default function HomePage() {
             )
           </li>
           <li>
-            <strong className="font-medium text-[var(--color-text)]">
-              Bug bounties
-            </strong>{" "}
-            from Microsoft Azure, McAfee, Uber
+            Bug bounties from{" "}
+            <LinkPreviewServer
+              href="https://www.microsoft.com/en-us/msrc/bounty-microsoft-azure"
+              className={previewMuted}
+            >
+              Microsoft Azure
+            </LinkPreviewServer>
+            ,{" "}
+            <LinkPreviewServer
+              href="https://hackerone.com/mcafee_secure"
+              className={previewMuted}
+            >
+              McAfee
+            </LinkPreviewServer>
+            ,{" "}
+            <LinkPreviewServer
+              href="https://hackerone.com/uber"
+              className={previewMuted}
+            >
+              Uber
+            </LinkPreviewServer>
           </li>
           <li>
-            Top 50 finalist in{" "}
-            <strong className="font-medium text-[var(--color-text)]">
-              Smart India Hackathon 2022
-            </strong>
+            <LinkPreviewServer
+              href="https://github.com/zalando/skipper"
+              className={previewMuted}
+            >
+              Custom reverse proxy
+            </LinkPreviewServer>{" "}
+            in Go, 1M+ daily API requests
           </li>
+          <li>IAM service in Go serving 100K+ users daily</li>
           <li>
-            <strong className="font-medium text-[var(--color-text)]">
-              Network infrastructure
-            </strong>{" "}
-            for{" "}
+            Network infrastructure for{" "}
             <LinkPreviewServer
               href="https://www.kghospital.com/"
               className={previewMuted}
@@ -126,17 +155,6 @@ export default function HomePage() {
               KG Hospital
             </LinkPreviewServer>
             , Coimbatore
-          </li>
-          <li>
-            Working on{" "}
-            <strong className="font-medium text-[var(--color-text)]">
-              ERC-3643
-            </strong>{" "}
-            (permissioned tokens) and{" "}
-            <strong className="font-medium text-[var(--color-text)]">
-              ERC-4626
-            </strong>{" "}
-            (tokenized vaults)
           </li>
         </ul>
       </div>
@@ -146,7 +164,7 @@ export default function HomePage() {
           Some of my writings:
         </h2>
         <ol className="mt-2 list-decimal space-y-1 pl-5 marker:text-[var(--color-text-soft)]">
-          {sortedPosts.map((post) => (
+          {orderedHomeWritings.map((post) => (
             <li key={post.slug} className="pl-1 text-base leading-normal">
               <Link href={post.slug} className="home-writings-link">
                 {post.title}

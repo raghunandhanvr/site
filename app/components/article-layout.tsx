@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
+import { cacheLife } from "next/cache"
 import { ArrowLeft } from "lucide-react"
 
 import { Fade } from "@/app/components/fade"
@@ -7,7 +8,7 @@ import { TableOfContents } from "@/app/components/toc"
 import { slugify } from "@/app/lib/heading-slug"
 import { cn } from "@/app/lib/utils"
 
-export function WritingsArticleLayout({
+export async function WritingsArticleLayout({
   title,
   description,
   backHref = "/",
@@ -20,6 +21,9 @@ export function WritingsArticleLayout({
   meta?: ReactNode
   children: ReactNode
 }) {
+  "use cache"
+  cacheLife("max")
+
   const titleId = slugify(title)
 
   return (

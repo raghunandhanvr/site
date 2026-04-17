@@ -153,7 +153,19 @@ export function TableOfContents() {
     }
   }, [tocItems])
 
-  if (tocItems.length === 0) return null
+  if (tocItems.length === 0) {
+    return (
+      <nav
+        aria-hidden
+        className="mb-10 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-muted)] 2xl:hidden"
+      >
+        <div className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm text-[var(--color-text-soft)]">
+          <span className="font-medium">On this page</span>
+          <ChevronDown className="size-4 shrink-0" aria-hidden />
+        </div>
+      </nav>
+    )
+  }
 
   return (
     <>

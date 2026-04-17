@@ -31,7 +31,7 @@ export const blogPosts: BlogPost[] = [
     year: "2025",
   },
   {
-    title: "Other DB options",
+    title: "Other DB Options",
     slug: "/writings/db",
     date: "2024-08-10",
     year: "2024",
