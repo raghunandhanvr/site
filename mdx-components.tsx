@@ -1,7 +1,7 @@
 import React, { ComponentPropsWithoutRef, Suspense } from "react"
-import { Link } from "next-view-transitions"
+import Link from "next/link"
 import { highlight } from "sugar-high"
-import { LinkPreviewServer } from "@/app/components/link-preview/link-preview-server"
+import { LinkPreviewServer } from "@/app/components/link-preview"
 import { mdxHeadingSlug } from "@/app/lib/heading-slug"
 import { cn } from "@/app/lib/utils"
 

@@ -44,12 +44,10 @@ To set up the project locally, follow these steps:
    Update the configuration in the following files according to your requirements:
    - **`/app/config.ts`**: Modify the metadata such as `baseUrl`, `title`, `description`, and social links
    - **`/app/writings/*`**: Update the content of your blog posts or pages as needed
-   - **`/app/page.mdx`**: Make changes to the main page content to reflect your personal information and projects
-   - **`/app/components/ui/name-transition.tsx`**: Update the name with your own name
-   - **`/app/globals.css`**: Update the name in `.transition-element`, `::view-transition-old`, `::view-transition-new`
+   - **`/app/page.tsx`**: Make changes to the main page content to reflect your personal information and projects
    - Remove `@vercel/analytics/react` and `@vercel/speed-insights/next` from `app/layout.tsx` if you don't need analytics or speed insights from vercel
    - Change the Google Analytics ID in `app/layout.tsx` to your own
-   - Change the birthday in `app/components/ui/age-counter.tsx` to your birthday
+   - Change the birthday in `app/components/age-counter.tsx` to your birthday
    - Create your .env.local with .env.example
 
 #### Deployment

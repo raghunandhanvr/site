@@ -1,13 +1,9 @@
-'use server'
-
-import { Redis } from '@upstash/redis'
+import { Redis } from "@upstash/redis"
 
 let redisClient: Redis | null | undefined
 
 function getRedis(): Redis | null {
-  if (redisClient !== undefined) {
-    return redisClient
-  }
+  if (redisClient !== undefined) return redisClient
   const url = process.env.REDIS_KV_REST_API_URL?.trim()
   const token = process.env.REDIS_KV_REST_API_TOKEN?.trim()
   if (!url || !token) {

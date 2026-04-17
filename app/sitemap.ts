@@ -1,28 +1,30 @@
-import { BaseUrl, getBlogSlugs } from "@/app/lib/server-utils";
+import type { MetadataRoute } from "next"
 
-export default async function sitemap() {
-  "use cache";
+import { siteConfig } from "@/app/config"
+import { blogPosts } from "@/app/writings/writings-data"
 
-  const slugs = await getBlogSlugs();
+const baseUrl = siteConfig.url.endsWith("/")
+  ? siteConfig.url
+  : `${siteConfig.url}/`
 
-  const blogs = slugs.map((slug) => ({
-    url: `${BaseUrl}writings/${slug}`,
-    lastModified: new Date(),
-  }));
+export default function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date()
+
+  const blogs = blogPosts.map((post) => ({
+    url: `${baseUrl}${post.slug.replace(/^\//, "")}`,
+    lastModified: new Date(post.date),
+  }))
 
   const routes = [
     "",
-    "rss",
-    "atom",
-    "feed",
     "rss.xml",
     "atom.xml",
     "feed.json",
     "sitemap.xml",
   ].map((route) => ({
-    url: route ? `${BaseUrl}${route}` : BaseUrl,
-    lastModified: new Date(),
-  }));
+    url: route ? `${baseUrl}${route}` : baseUrl,
+    lastModified: now,
+  }))
 
-  return [...routes, ...blogs];
+  return [...routes, ...blogs]
 }

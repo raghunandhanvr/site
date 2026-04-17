@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache"
+import { cache } from "react"
 
 export type OGMetadata = {
   title?: string
@@ -9,11 +9,34 @@ export type OGMetadata = {
   url: string
 }
 
+const META_RE_CACHE = new Map<string, RegExp>()
+function metaRegex(property: string): RegExp {
+  let re = META_RE_CACHE.get(property)
+  if (!re) {
+    re = new RegExp(
+      `<meta[^>]*(?:property|name)=["']${property}["'][^>]*content=["']([^"']*)["']|<meta[^>]*content=["']([^"']*)["'][^>]*(?:property|name)=["']${property}["']`,
+      "i",
+    )
+    META_RE_CACHE.set(property, re)
+  }
+  return re
+}
+
+const TITLE_RE = /<title[^>]*>([^<]*)<\/title>/i
+const APPLE_TOUCH_RE_A =
+  /<link[^>]*rel=["']apple-touch-icon["'][^>]*href=["']([^"']*)["']/i
+const APPLE_TOUCH_RE_B =
+  /<link[^>]*href=["']([^"']*)["'][^>]*rel=["']apple-touch-icon["']/i
+const ICON_RE_A =
+  /<link[^>]*rel=["'](?:shortcut )?icon["'][^>]*href=["']([^"']*)["']/i
+const ICON_RE_B =
+  /<link[^>]*href=["']([^"']*)["'][^>]*rel=["'](?:shortcut )?icon["']/i
+
 function isTweetUrl(url: string): boolean {
   return /^https?:\/\/(twitter\.com|x\.com)\/\w+\/status\/\d+/.test(url)
 }
 
-function getTweetProxyUrl(url: string): string {
+function tweetProxy(url: string): string {
   return url
     .replace("twitter.com", "fxtwitter.com")
     .replace("x.com", "fxtwitter.com")
@@ -23,23 +46,17 @@ async function fetchOGMetadataInternal(
   url: string,
 ): Promise<OGMetadata | null> {
   try {
-    const fetchUrl = isTweetUrl(url) ? getTweetProxyUrl(url) : url
+    const fetchUrl = isTweetUrl(url) ? tweetProxy(url) : url
 
     const response = await fetch(fetchUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; LinkPreview/1.0)",
-      },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; LinkPreview/1.0)" },
       next: { revalidate: 86400 },
     })
 
-    if (!response.ok) {
-      return null
-    }
+    if (!response.ok) return null
 
     const reader = response.body?.getReader()
-    if (!reader) {
-      return null
-    }
+    if (!reader) return null
 
     const decoder = new TextDecoder()
     let html = ""
@@ -53,77 +70,41 @@ async function fetchOGMetadataInternal(
     }
     reader.cancel()
 
-    const getMetaContent = (property: string): string | undefined => {
-      const regex = new RegExp(
-        `<meta[^>]*(?:property|name)=["']${property}["'][^>]*content=["']([^"']*)["']|<meta[^>]*content=["']([^"']*)["'][^>]*(?:property|name)=["']${property}["']`,
-        "i",
-      )
-      const match = html.match(regex)
-      return match?.[1] || match?.[2]
+    const meta = (property: string): string | undefined => {
+      const m = html.match(metaRegex(property))
+      return m?.[1] || m?.[2]
     }
 
-    const getTitle = (): string | undefined => {
-      const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i)
-      return getMetaContent("og:title") || titleMatch?.[1]
-    }
+    const title = meta("og:title") || html.match(TITLE_RE)?.[1]
 
-    const getFavicon = (): string | undefined => {
-      const urlObj = new URL(url)
-      const origin = urlObj.origin
+    const origin = new URL(url).origin
+    const favicon = (() => {
+      const apple =
+        html.match(APPLE_TOUCH_RE_A)?.[1] || html.match(APPLE_TOUCH_RE_B)?.[1]
+      if (apple?.startsWith("http")) return apple
 
-      const appleTouchMatch =
-        html.match(
-          /<link[^>]*rel=["']apple-touch-icon["'][^>]*href=["']([^"']*)["']/i,
-        ) ||
-        html.match(
-          /<link[^>]*href=["']([^"']*)["'][^>]*rel=["']apple-touch-icon["']/i,
-        )
-
-      if (appleTouchMatch?.[1]) {
-        const iconUrl = appleTouchMatch[1]
-        if (iconUrl.startsWith("http")) {
-          return iconUrl
-        }
+      const icon = html.match(ICON_RE_A)?.[1] || html.match(ICON_RE_B)?.[1]
+      if (icon) {
+        if (icon.startsWith("http")) return icon
+        if (icon.startsWith("//")) return `https:${icon}`
+        if (icon.startsWith("/")) return `${origin}${icon}`
+        return `${origin}/${icon}`
       }
-
-      const iconMatch =
-        html.match(
-          /<link[^>]*rel=["'](?:shortcut )?icon["'][^>]*href=["']([^"']*)["']/i,
-        ) ||
-        html.match(
-          /<link[^>]*href=["']([^"']*)["'][^>]*rel=["'](?:shortcut )?icon["']/i,
-        )
-
-      if (iconMatch?.[1]) {
-        const iconUrl = iconMatch[1]
-        if (iconUrl.startsWith("http")) {
-          return iconUrl
-        }
-        if (iconUrl.startsWith("//")) {
-          return `https:${iconUrl}`
-        }
-        if (iconUrl.startsWith("/")) {
-          return `${origin}${iconUrl}`
-        }
-        return `${origin}/${iconUrl}`
-      }
-
       return `${origin}/favicon.ico`
-    }
+    })()
 
-    const image = getMetaContent("og:image") || getMetaContent("twitter:image")
+    const image = meta("og:image") || meta("twitter:image")
 
     return {
-      title: getTitle(),
-      description:
-        getMetaContent("og:description") || getMetaContent("description"),
+      title,
+      description: meta("og:description") || meta("description"),
       image: image?.startsWith("http")
         ? image
         : image
           ? new URL(image, url).href
           : undefined,
-      siteName: getMetaContent("og:site_name"),
-      favicon: getFavicon(),
+      siteName: meta("og:site_name"),
+      favicon,
       url,
     }
   } catch (error) {
@@ -132,14 +113,4 @@ async function fetchOGMetadataInternal(
   }
 }
 
-const getCachedOG = unstable_cache(
-  async (url: string) => fetchOGMetadataInternal(url),
-  ["og-metadata"],
-  { revalidate: 86400 },
-)
-
-export async function fetchOGMetadata(
-  url: string,
-): Promise<OGMetadata | null> {
-  return getCachedOG(url)
-}
+export const fetchOGMetadata = cache(fetchOGMetadataInternal)

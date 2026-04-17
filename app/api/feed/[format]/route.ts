@@ -1,129 +1,76 @@
-import { Feed } from "feed";
-import { siteConfig } from "@/app/config";
-import { type NextRequest } from "next/server";
-import { BaseUrl, getBlogs } from "@/app/lib/server-utils";
+import { Feed } from "feed"
+import { notFound } from "next/navigation"
 
-const validFormats = [
-  "rss.xml",
-  "atom.xml",
-  "feed.json",
-  "rss",
-  "atom",
-  "json",
-] as const;
-type FeedFormat = (typeof validFormats)[number];
+import { siteConfig } from "@/app/config"
+import { blogPosts } from "@/app/writings/writings-data"
 
-function isValidFormat(format: string): format is FeedFormat {
-  return validFormats.includes(format as FeedFormat);
-}
+export const revalidate = 3600
 
-function normalizeFormat(format: string): FeedFormat {
-  switch (format) {
-    case "rss":
-    case "feed":
-      return "rss.xml";
-    case "atom":
-      return "atom.xml";
-    case "json":
-      return "feed.json";
-    default:
-      return format as FeedFormat;
-  }
-}
+const baseUrl = siteConfig.url.replace(/\/$/, "")
 
-async function generateFeed(format: FeedFormat) {
-  "use cache";
-
+function generateFeed() {
   const feed = new Feed({
     title: siteConfig.name,
     description: siteConfig.description,
-    id: BaseUrl,
-    link: BaseUrl,
+    id: baseUrl,
+    link: baseUrl,
     language: "en",
+    image: `${baseUrl}/opengraph-image.png`,
+    favicon: `${baseUrl}/favicon.ico`,
+    copyright: `All rights reserved ${new Date().getFullYear()}, ${siteConfig.name}`,
+    feedLinks: {
+      rss: `${baseUrl}/api/feed/rss`,
+      json: `${baseUrl}/api/feed/json`,
+      atom: `${baseUrl}/api/feed/atom`,
+    },
     author: {
       name: siteConfig.name,
-      email: siteConfig.email.replace("mailto:", ""),
-      link: BaseUrl,
+      email: siteConfig.email,
+      link: baseUrl,
     },
-    copyright: `All rights reserved ${new Date().getFullYear()}, ${
-      siteConfig.name
-    }`,
-    generator: "Feed for Node.js",
-    feedLinks: {
-      json: `${BaseUrl}feed.json`,
-      atom: `${BaseUrl}atom.xml`,
-      rss: `${BaseUrl}rss.xml`,
-    },
-    image: `${BaseUrl}${siteConfig.image}`,
-    favicon: `${BaseUrl}favicon.ico`,
-  });
+  })
 
-  const blogs = await getBlogs();
-
-  blogs.forEach((blog) => {
-    const blogUrl = `${BaseUrl}writings/${blog.slug}`;
-    const categories = blog.metadata.tags
-      ? blog.metadata.tags.split(",").map((tag: string) => tag.trim())
-      : [];
-
+  for (const post of blogPosts) {
+    const url = `${baseUrl}${post.slug}`
     feed.addItem({
-      title: blog.metadata.title,
-      id: blogUrl,
-      link: blogUrl,
-      description: blog.metadata.summary,
-      content: blog.content,
-      category: categories.map((tag: string) => ({
-        name: tag,
-        term: tag,
-      })),
-      date: new Date(blog.metadata.publishedAt),
+      title: post.title,
+      id: url,
+      link: url,
+      date: new Date(post.date),
       author: [
         {
           name: siteConfig.name,
-          email: siteConfig.email.replace("mailto:", ""),
-          link: BaseUrl,
+          email: siteConfig.email,
+          link: baseUrl,
         },
       ],
-      image: blog.metadata.image
-        ? `${BaseUrl}${blog.metadata.image}`
-        : undefined,
-    });
-  });
+    })
+  }
 
-  const responseMap: Record<
-    FeedFormat,
-    { content: string; contentType: string }
-  > = {
-    "rss.xml": { content: feed.rss2(), contentType: "application/xml" },
-    "atom.xml": { content: feed.atom1(), contentType: "application/xml" },
-    "feed.json": { content: feed.json1(), contentType: "application/json" },
-    rss: { content: feed.rss2(), contentType: "application/xml" },
-    atom: { content: feed.atom1(), contentType: "application/xml" },
-    json: { content: feed.json1(), contentType: "application/json" },
-  };
-
-  return responseMap[format];
+  return feed
 }
 
-export async function GET(request: NextRequest) {
-  let format = request.nextUrl.pathname.split("/").pop() || "";
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ format: string }> },
+) {
+  const { format } = await params
+  const feed = generateFeed()
 
-  if (!format || format === "feed") {
-    format = "rss.xml";
+  switch (format) {
+    case "rss":
+      return new Response(feed.rss2(), {
+        headers: { "Content-Type": "application/rss+xml; charset=utf-8" },
+      })
+    case "atom":
+      return new Response(feed.atom1(), {
+        headers: { "Content-Type": "application/atom+xml; charset=utf-8" },
+      })
+    case "json":
+      return new Response(feed.json1(), {
+        headers: { "Content-Type": "application/feed+json; charset=utf-8" },
+      })
+    default:
+      notFound()
   }
-
-  format = normalizeFormat(format);
-
-  if (!isValidFormat(format)) {
-    return Response.json({ error: "Unsupported feed format" }, { status: 404 });
-  }
-
-  const response = await generateFeed(format);
-
-  return new Response(response.content, {
-    headers: {
-      "Content-Type": response.contentType,
-      "Cache-Control": "public, max-age=3600, must-revalidate",
-    },
-  });
 }
