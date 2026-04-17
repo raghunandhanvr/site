@@ -86,18 +86,21 @@ export default async function HomePage() {
           >
             ERC-4626
           </LinkPreviewServer>
-          . Previously at{" "}
-          <LinkPreviewServer href="https://lumel.com/" className={previewMuted}>
-            Lumel
-          </LinkPreviewServer>{" "}
-          and{" "}
-          <LinkPreviewServer
-            href="https://www.freightify.com"
-            className={previewMuted}
-          >
-            Freightify
-          </LinkPreviewServer>
           .
+          <span className="sm:mt-2 sm:block">
+            {" "}Previously at{" "}
+            <LinkPreviewServer href="https://lumel.com/" className={previewMuted}>
+              Lumel
+            </LinkPreviewServer>{" "}
+            and{" "}
+            <LinkPreviewServer
+              href="https://www.freightify.com"
+              className={previewMuted}
+            >
+              Freightify
+            </LinkPreviewServer>
+            .
+          </span>
         </p>
         <p className="mt-5 text-base font-medium leading-normal text-[var(--color-text)]">
           Some of my tech contributions:
