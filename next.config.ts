@@ -3,6 +3,7 @@ import createMDX from "@next/mdx"
 
 const nextConfig: NextConfig = {
   pageExtensions: ["mdx", "ts", "tsx"],
+  cacheComponents: true,
   experimental: {
     mdxRs: true,
     optimizePackageImports: ["lucide-react"],

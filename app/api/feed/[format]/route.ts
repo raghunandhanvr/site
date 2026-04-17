@@ -1,12 +1,26 @@
 import { Feed } from "feed"
+import { cacheLife } from "next/cache"
 import { notFound } from "next/navigation"
 
 import { siteConfig } from "@/app/config"
 import { blogPosts } from "@/app/writings/writings-data"
 
-export const revalidate = 3600
-
 const baseUrl = siteConfig.url.replace(/\/$/, "")
+
+async function renderFeed(format: "rss" | "atom" | "json"): Promise<string> {
+  "use cache"
+  cacheLife("max")
+
+  const feed = generateFeed()
+  switch (format) {
+    case "rss":
+      return feed.rss2()
+    case "atom":
+      return feed.atom1()
+    case "json":
+      return feed.json1()
+  }
+}
 
 function generateFeed() {
   const feed = new Feed({
@@ -50,27 +64,19 @@ function generateFeed() {
   return feed
 }
 
+const CONTENT_TYPES = {
+  rss: "application/rss+xml; charset=utf-8",
+  atom: "application/atom+xml; charset=utf-8",
+  json: "application/feed+json; charset=utf-8",
+} as const
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ format: string }> },
 ) {
   const { format } = await params
-  const feed = generateFeed()
+  if (format !== "rss" && format !== "atom" && format !== "json") notFound()
 
-  switch (format) {
-    case "rss":
-      return new Response(feed.rss2(), {
-        headers: { "Content-Type": "application/rss+xml; charset=utf-8" },
-      })
-    case "atom":
-      return new Response(feed.atom1(), {
-        headers: { "Content-Type": "application/atom+xml; charset=utf-8" },
-      })
-    case "json":
-      return new Response(feed.json1(), {
-        headers: { "Content-Type": "application/feed+json; charset=utf-8" },
-      })
-    default:
-      notFound()
-  }
+  const body = await renderFeed(format)
+  return new Response(body, { headers: { "Content-Type": CONTENT_TYPES[format] } })
 }

@@ -1,16 +1,7 @@
-import { Suspense } from "react"
 import { CalendarIcon, EyeIcon } from "lucide-react"
 import { format } from "date-fns"
 
-import { getViewCount, incrementViewCount } from "@/app/lib/redis"
-
-async function Views({ slug }: { slug: string }) {
-  const [views] = await Promise.all([
-    getViewCount(slug),
-    incrementViewCount(slug),
-  ])
-  return <span>{views.toLocaleString()} views</span>
-}
+import { ViewsClient } from "@/app/components/views-client"
 
 export function BlogViewCounter({
   slug,
@@ -23,9 +14,7 @@ export function BlogViewCounter({
     <div className="flex items-center space-x-3 text-xs text-[var(--color-text-soft)]">
       <span className="flex items-center">
         <EyeIcon className="w-3 h-3 mr-1.5" aria-hidden="true" />
-        <Suspense fallback={<span>— views</span>}>
-          <Views slug={slug} />
-        </Suspense>
+        <ViewsClient slug={slug} />
       </span>
       <span className="flex items-center">
         <CalendarIcon className="w-3 h-3 mr-1.5" aria-hidden="true" />

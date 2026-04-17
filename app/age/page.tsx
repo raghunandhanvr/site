@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import type { Metadata } from "next"
 
 import AgeCounter from "@/app/components/age-counter"
@@ -8,10 +9,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
+const counterClass =
+  "text-lg text-[var(--color-text)] tabular-nums sm:text-2xl"
+
 export default function AgePage() {
   return (
     <div className="flex min-h-svh flex-1 flex-col items-center justify-center px-6 sm:px-10">
-      <AgeCounter className="text-lg text-[var(--color-text)] tabular-nums sm:text-2xl" />
+      <Suspense fallback={<span className={counterClass}>—</span>}>
+        <AgeCounter className={counterClass} />
+      </Suspense>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { cache } from "react"
+import { cacheLife } from "next/cache"
 
 export type OGMetadata = {
   title?: string
@@ -42,15 +42,17 @@ function tweetProxy(url: string): string {
     .replace("x.com", "fxtwitter.com")
 }
 
-async function fetchOGMetadataInternal(
+export async function fetchOGMetadata(
   url: string,
 ): Promise<OGMetadata | null> {
+  "use cache"
+  cacheLife("max")
+
   try {
     const fetchUrl = isTweetUrl(url) ? tweetProxy(url) : url
 
     const response = await fetch(fetchUrl, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; LinkPreview/1.0)" },
-      next: { revalidate: 86400 },
     })
 
     if (!response.ok) return null
@@ -112,5 +114,3 @@ async function fetchOGMetadataInternal(
     return null
   }
 }
-
-export const fetchOGMetadata = cache(fetchOGMetadataInternal)
