@@ -45,7 +45,7 @@ export default async function HomePage() {
   cacheLife("max")
 
   return (
-    <main className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col px-6 pt-32 sm:px-10 lg:px-12">
+    <main className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col px-6 pt-12 sm:px-10 sm:pt-32 lg:px-12">
       <header className="mb-8 min-w-0 sm:mb-6">
         <h1 className="m-0 p-0 text-lg font-medium leading-[1.3] sm:text-xl">
           <Link href="/" className="work-link">
