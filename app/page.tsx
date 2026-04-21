@@ -45,7 +45,7 @@ export default async function HomePage() {
   cacheLife("max")
 
   return (
-    <main className="flex w-max max-w-full min-w-0 flex-1 flex-col self-center px-6 pt-12 sm:px-10 sm:pt-16 lg:px-12">
+    <main className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col px-6 pt-32 sm:px-10 lg:px-12">
       <header className="mb-8 min-w-0 sm:mb-6">
         <h1 className="m-0 p-0 text-lg font-medium leading-[1.3] sm:text-xl">
           <Link href="/" className="work-link">
@@ -64,8 +64,18 @@ export default async function HomePage() {
 
       <div className="min-w-0 w-full">
         <p className="text-base leading-normal text-[var(--color-text-muted)]">
-          Engineer.{" "}
-          Currently at{" "}
+          I&apos;m a software engineer based in India.
+        </p>
+        <p className="mt-4 text-base leading-normal text-[var(--color-text-muted)]">
+          Got into tech by hacking things, eventually started building them
+          after the social media app we made in{" "}
+          <LinkPreviewServer
+            href="https://sece.ac.in/"
+            className={previewMuted}
+          >
+            college
+          </LinkPreviewServer>{" "}
+          picked up real traction. Currently at{" "}
           <LinkPreviewServer
             href="https://byzanlink.com/"
             className={previewMuted}
@@ -86,21 +96,18 @@ export default async function HomePage() {
           >
             ERC-4626
           </LinkPreviewServer>
+          . Previously with teams at{" "}
+          <LinkPreviewServer href="https://lumel.com/" className={previewMuted}>
+            Lumel
+          </LinkPreviewServer>{" "}
+          and{" "}
+          <LinkPreviewServer
+            href="https://www.freightify.com"
+            className={previewMuted}
+          >
+            Freightify
+          </LinkPreviewServer>
           .
-          <span className="sm:mt-2 sm:block">
-            {" "}Previously at{" "}
-            <LinkPreviewServer href="https://lumel.com/" className={previewMuted}>
-              Lumel
-            </LinkPreviewServer>{" "}
-            and{" "}
-            <LinkPreviewServer
-              href="https://www.freightify.com"
-              className={previewMuted}
-            >
-              Freightify
-            </LinkPreviewServer>
-            .
-          </span>
         </p>
         <p className="mt-5 text-base font-medium leading-normal text-[var(--color-text)]">
           Some of my tech contributions:
@@ -183,14 +190,7 @@ export default async function HomePage() {
           >
             follow me online
           </LinkPreviewServer>
-          .{" "}
-          <LinkPreviewServer
-            href={`mailto:${siteConfig.email}`}
-            className={previewMuted}
-          >
-            Reach out
-          </LinkPreviewServer>{" "}
-          if interested.
+          .
         </p>
       </section>
     </main>
