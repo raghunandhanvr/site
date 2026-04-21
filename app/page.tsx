@@ -67,15 +67,14 @@ export default async function HomePage() {
           I&apos;m a software engineer based in India.
         </p>
         <p className="mt-4 text-base leading-normal text-[var(--color-text-muted)]">
-          Got into tech by hacking things, eventually started building them
-          after the social media app we made in{" "}
+          Got into tech by hacking things. Then a social media app we built in{" "}
           <LinkPreviewServer
             href="https://sece.ac.in/"
             className={previewMuted}
           >
             college
           </LinkPreviewServer>{" "}
-          picked up real traction. Currently at{" "}
+          took off, and I&apos;ve been building since. Now at{" "}
           <LinkPreviewServer
             href="https://byzanlink.com/"
             className={previewMuted}
