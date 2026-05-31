@@ -23,9 +23,6 @@ export const metadata: Metadata = {
   alternates: { canonical: siteConfig.url },
 }
 
-const previewMuted =
-  "text-[var(--color-text-muted)] underline decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)] underline-offset-4"
-
 const homeWritingsOrder = [
   "/writings/skipper",
   "/writings/deletion-focused",
@@ -63,60 +60,51 @@ export default async function HomePage() {
       </header>
 
       <div className="min-w-0 w-full">
-        <p className="text-base leading-normal text-[var(--color-text-muted)]">
+        <p className="text-base leading-relaxed text-[var(--color-text)]">
           I&apos;m a software engineer based in India.
         </p>
-        <p className="mt-4 text-base leading-normal text-[var(--color-text-muted)]">
-          Got into tech by hacking things. Then a social media app we built in{" "}
+        <p className="mt-4 text-base leading-relaxed text-[var(--color-text)]">
+          I just like making things. It started with building PCs for my
+          friends. Then a social media app we built in{" "}
           <LinkPreviewServer
             href="https://sece.ac.in/"
-            className={previewMuted}
+            className="home-inline-link"
           >
             college
           </LinkPreviewServer>{" "}
-          took off, and I&apos;ve been building since. Now at{" "}
+          got serious traffic, and I kept building after that. Now I&apos;m at{" "}
           <LinkPreviewServer
             href="https://byzanlink.com/"
-            className={previewMuted}
+            className="home-inline-link"
           >
             Byzanlink
           </LinkPreviewServer>
-          , working on{" "}
-          <LinkPreviewServer
-            href="https://www.erc3643.org/"
-            className={previewMuted}
-          >
-            ERC-3643
-          </LinkPreviewServer>{" "}
-          and{" "}
-          <LinkPreviewServer
-            href="https://ethereum.org/developers/docs/standards/tokens/erc-4626/"
-            className={previewMuted}
-          >
-            ERC-4626
-          </LinkPreviewServer>
-          . Previously with teams at{" "}
-          <LinkPreviewServer href="https://lumel.com/" className={previewMuted}>
+          , after working with the teams at{" "}
+          <LinkPreviewServer href="https://lumel.com/" className="home-inline-link">
             Lumel
           </LinkPreviewServer>{" "}
           and{" "}
           <LinkPreviewServer
             href="https://www.freightify.com"
-            className={previewMuted}
+            className="home-inline-link"
           >
             Freightify
           </LinkPreviewServer>
           .
         </p>
-        <p className="mt-5 text-base font-medium leading-normal text-[var(--color-text)]">
+        <p className="mt-4 text-base leading-relaxed text-[var(--color-text)]">
+          Away from the screen, I&apos;m usually backpacking or out on my bike
+          somewhere.
+        </p>
+        <p className="mt-8 text-base font-medium leading-normal text-[var(--color-text)]">
           Some of my tech contributions:
         </p>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-base leading-normal text-[var(--color-text-muted)]">
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-base leading-normal text-[var(--color-text)]">
           <li>
             AI research on fake image detection (
             <LinkPreviewServer
               href="https://ieeexplore.ieee.org/document/10046797"
-              className={previewMuted}
+              className="home-inline-link"
             >
               IEEE published
             </LinkPreviewServer>
@@ -126,21 +114,21 @@ export default async function HomePage() {
             Bug bounties from{" "}
             <LinkPreviewServer
               href="https://www.microsoft.com/en-us/msrc/bounty-microsoft-azure"
-              className={previewMuted}
+              className="home-inline-link"
             >
               Microsoft Azure
             </LinkPreviewServer>
             ,{" "}
             <LinkPreviewServer
               href="https://hackerone.com/mcafee_secure"
-              className={previewMuted}
+              className="home-inline-link"
             >
               McAfee
             </LinkPreviewServer>
             ,{" "}
             <LinkPreviewServer
               href="https://hackerone.com/uber"
-              className={previewMuted}
+              className="home-inline-link"
             >
               Uber
             </LinkPreviewServer>
@@ -148,7 +136,7 @@ export default async function HomePage() {
           <li>
             <LinkPreviewServer
               href="https://github.com/zalando/skipper"
-              className={previewMuted}
+              className="home-inline-link"
             >
               Custom reverse proxy
             </LinkPreviewServer>{" "}
@@ -159,7 +147,7 @@ export default async function HomePage() {
             Network infrastructure for{" "}
             <LinkPreviewServer
               href="https://www.kghospital.com/"
-              className={previewMuted}
+              className="home-inline-link"
             >
               KG Hospital
             </LinkPreviewServer>
@@ -172,7 +160,7 @@ export default async function HomePage() {
         <h2 className="text-base font-medium leading-normal text-[var(--color-text)]">
           Some of my writings:
         </h2>
-        <ol className="mt-2 list-decimal space-y-1 pl-5 marker:text-[var(--color-text-soft)]">
+        <ol className="mt-2 list-decimal space-y-1 pl-5 marker:text-[var(--color-text)]">
           {orderedHomeWritings.map((post) => (
             <li key={post.slug} className="pl-1 text-base leading-normal">
               <Link href={post.slug} className="home-writings-link">
@@ -181,11 +169,11 @@ export default async function HomePage() {
             </li>
           ))}
         </ol>
-        <p className="mt-6 text-base leading-normal text-[var(--color-text-muted)]">
+        <p className="home-footer mt-6 text-base leading-normal">
           You can read my above writings or{" "}
           <LinkPreviewServer
             href={siteConfig.social.twitter}
-            className={previewMuted}
+            className="home-footer-link"
           >
             follow me online
           </LinkPreviewServer>
