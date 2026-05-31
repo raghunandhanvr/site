@@ -43,7 +43,6 @@
   --color-text: oklch(0.145 0 0);
   --color-text-muted: color-mix(in oklch, var(--color-text) 70%, transparent);
   --color-text-soft: color-mix(in oklch, var(--color-text) 55%, transparent);
-  --color-text-faint: color-mix(in oklch, var(--color-text) 42%, transparent);
   --color-link: #1d4ed8;
   --color-link-hover: #1e3a8a;
   --color-toc-active: #0070f3;
@@ -465,60 +464,30 @@ a:not(
   text-decoration: none !important;
 }
 
-/* Home writings list: solid white in dark UI; theme-aware in light */
+/* Home writings list: secondary hierarchy — softer than body copy */
 a.home-writings-link {
-  color: #ffffff !important;
-  font-weight: 500;
+  color: var(--color-text-soft) !important;
+  font-weight: 400;
   text-decoration: underline !important;
   text-decoration-thickness: 0.1em;
   text-underline-offset: 0.25rem;
-  text-decoration-color: color-mix(in srgb, #ffffff 55%, transparent) !important;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--color-text-soft) 55%,
+    transparent
+  ) !important;
   transition:
     color 0.2s ease,
     text-decoration-color 0.2s ease;
 }
 
 a.home-writings-link:hover {
-  color: rgb(255 255 255 / 0.88) !important;
-  text-decoration-color: rgb(255 255 255 / 0.72) !important;
-}
-
-html[data-theme="light"] a.home-writings-link {
-  color: var(--color-text) !important;
-  text-decoration-color: color-mix(
-    in srgb,
-    var(--color-text-soft) 55%,
-    transparent
-  ) !important;
-}
-
-html[data-theme="light"] a.home-writings-link:hover {
   color: var(--color-text-muted) !important;
   text-decoration-color: color-mix(
     in srgb,
-    var(--color-text-soft) 70%,
+    var(--color-text-muted) 70%,
     transparent
   ) !important;
-}
-
-@media (prefers-color-scheme: light) {
-  html[data-theme="system"] a.home-writings-link {
-    color: var(--color-text) !important;
-    text-decoration-color: color-mix(
-      in srgb,
-      var(--color-text-soft) 55%,
-      transparent
-    ) !important;
-  }
-
-  html[data-theme="system"] a.home-writings-link:hover {
-    color: var(--color-text-muted) !important;
-    text-decoration-color: color-mix(
-      in srgb,
-      var(--color-text-soft) 70%,
-      transparent
-    ) !important;
-  }
 }
 
 /* Footer link styles */

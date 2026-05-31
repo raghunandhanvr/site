@@ -23,7 +23,10 @@ export const metadata: Metadata = {
   alternates: { canonical: siteConfig.url },
 }
 
-const homeInlineLink =
+const homeBodyLink =
+  "text-[var(--color-text)] underline decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)] underline-offset-4 transition-colors hover:text-[var(--color-text-muted)]"
+
+const homeSoftLink =
   "text-[var(--color-text-soft)] underline decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)] underline-offset-4 transition-colors hover:text-[var(--color-text-muted)]"
 
 const homeWritingsOrder = [
@@ -64,48 +67,32 @@ export default async function HomePage() {
 
       <div className="min-w-0 w-full">
         <p className="text-base leading-relaxed text-[var(--color-text)]">
-          I just like building things. It started with hacking, following stuff
-          online and getting into things just to see if I could, and I kept
-          going deeper from there.
+          I&apos;m a software engineer based in India.
         </p>
         <p className="mt-4 text-base leading-relaxed text-[var(--color-text)]">
-          Then a social media app we built in{" "}
+          I just like making things. It started with building PCs for my
+          friends. Then a social media app we built in{" "}
           <LinkPreviewServer
             href="https://sece.ac.in/"
-            className={homeInlineLink}
+            className={homeBodyLink}
           >
             college
           </LinkPreviewServer>{" "}
-          took off, and I went from breaking things to building them.
-          I&apos;ve been building ever since. Right now I&apos;m at{" "}
+          got serious traffic, and I kept building after that. Now I&apos;m at{" "}
           <LinkPreviewServer
             href="https://byzanlink.com/"
-            className={homeInlineLink}
+            className={homeBodyLink}
           >
             Byzanlink
-          </LinkPreviewServer>{" "}
-          on{" "}
-          <LinkPreviewServer
-            href="https://www.erc3643.org/"
-            className={homeInlineLink}
-          >
-            ERC-3643
-          </LinkPreviewServer>{" "}
-          and{" "}
-          <LinkPreviewServer
-            href="https://ethereum.org/developers/docs/standards/tokens/erc-4626/"
-            className={homeInlineLink}
-          >
-            ERC-4626
           </LinkPreviewServer>
-          , after time with the teams at{" "}
-          <LinkPreviewServer href="https://lumel.com/" className={homeInlineLink}>
+          , after working with the teams at{" "}
+          <LinkPreviewServer href="https://lumel.com/" className={homeBodyLink}>
             Lumel
           </LinkPreviewServer>{" "}
           and{" "}
           <LinkPreviewServer
             href="https://www.freightify.com"
-            className={homeInlineLink}
+            className={homeBodyLink}
           >
             Freightify
           </LinkPreviewServer>
@@ -113,17 +100,17 @@ export default async function HomePage() {
         </p>
         <p className="mt-4 text-base leading-relaxed text-[var(--color-text)]">
           Away from the screen, I&apos;m usually backpacking or out on my bike
-          somewhere new.
+          somewhere.
         </p>
-        <p className="mt-8 text-base font-medium leading-normal text-[var(--color-text-soft)]">
+        <p className="mt-8 text-base font-medium leading-normal text-[var(--color-text)]">
           Some of my tech contributions:
         </p>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-base leading-normal text-[var(--color-text-soft)]">
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-base leading-normal text-[var(--color-text)]">
           <li>
             AI research on fake image detection (
             <LinkPreviewServer
               href="https://ieeexplore.ieee.org/document/10046797"
-              className={homeInlineLink}
+              className={homeBodyLink}
             >
               IEEE published
             </LinkPreviewServer>
@@ -133,21 +120,21 @@ export default async function HomePage() {
             Bug bounties from{" "}
             <LinkPreviewServer
               href="https://www.microsoft.com/en-us/msrc/bounty-microsoft-azure"
-              className={homeInlineLink}
+              className={homeBodyLink}
             >
               Microsoft Azure
             </LinkPreviewServer>
             ,{" "}
             <LinkPreviewServer
               href="https://hackerone.com/mcafee_secure"
-              className={homeInlineLink}
+              className={homeBodyLink}
             >
               McAfee
             </LinkPreviewServer>
             ,{" "}
             <LinkPreviewServer
               href="https://hackerone.com/uber"
-              className={homeInlineLink}
+              className={homeBodyLink}
             >
               Uber
             </LinkPreviewServer>
@@ -155,7 +142,7 @@ export default async function HomePage() {
           <li>
             <LinkPreviewServer
               href="https://github.com/zalando/skipper"
-              className={homeInlineLink}
+              className={homeBodyLink}
             >
               Custom reverse proxy
             </LinkPreviewServer>{" "}
@@ -166,7 +153,7 @@ export default async function HomePage() {
             Network infrastructure for{" "}
             <LinkPreviewServer
               href="https://www.kghospital.com/"
-              className={homeInlineLink}
+              className={homeBodyLink}
             >
               KG Hospital
             </LinkPreviewServer>
@@ -192,7 +179,7 @@ export default async function HomePage() {
           You can read my above writings or{" "}
           <LinkPreviewServer
             href={siteConfig.social.twitter}
-            className={homeInlineLink}
+            className={homeSoftLink}
           >
             follow me online
           </LinkPreviewServer>
