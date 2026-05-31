@@ -45,6 +45,7 @@
   --color-text-soft: color-mix(in oklch, var(--color-text) 55%, transparent);
   --color-link: #1d4ed8;
   --color-link-hover: #1e40af;
+  --color-home-link: #0070f3;
   --color-toc-active: #0070f3;
   --color-accent: #2563eb;
   --color-accent-soft: #dbeafe;
@@ -95,6 +96,7 @@
     --color-text-soft: color-mix(in oklch, var(--color-text) 45%, transparent);
     --color-link: #93c5fd;
     --color-link-hover: #bfdbfe;
+    --color-home-link: #47a8ff;
     --color-toc-active: #3291ff;
     --color-accent: #60a5fa;
     --color-accent-soft: oklch(0.269 0.06 264);
@@ -138,6 +140,7 @@
   --color-text-soft: color-mix(in oklch, var(--color-text) 45%, transparent);
   --color-link: #93c5fd;
   --color-link-hover: #bfdbfe;
+  --color-home-link: #47a8ff;
   --color-toc-active: #3291ff;
   --color-accent: #60a5fa;
   --color-accent-soft: oklch(0.269 0.06 264);
@@ -470,7 +473,7 @@ a:not(
 
 a.home-inline-link,
 a.home-writings-link {
-  color: #47a8ff !important;
+  color: var(--color-home-link) !important;
   font-weight: 500;
   text-decoration-line: none !important;
   text-decoration-thickness: 0.1em;
@@ -482,9 +485,9 @@ a.home-writings-link {
 
 a.home-inline-link:hover,
 a.home-writings-link:hover {
-  color: #47a8ff !important;
+  color: var(--color-home-link) !important;
   text-decoration-line: underline !important;
-  text-decoration-color: #47a8ff !important;
+  text-decoration-color: var(--color-home-link) !important;
 }
 
 .home-footer {
