@@ -23,12 +23,6 @@ export const metadata: Metadata = {
   alternates: { canonical: siteConfig.url },
 }
 
-const homeBodyLink =
-  "text-[var(--color-text)] underline decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)] underline-offset-4 transition-colors hover:text-[var(--color-text-muted)]"
-
-const homeSoftLink =
-  "text-[var(--color-text-soft)] underline decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)] underline-offset-4 transition-colors hover:text-[var(--color-text-muted)]"
-
 const homeWritingsOrder = [
   "/writings/skipper",
   "/writings/deletion-focused",
@@ -74,25 +68,25 @@ export default async function HomePage() {
           friends. Then a social media app we built in{" "}
           <LinkPreviewServer
             href="https://sece.ac.in/"
-            className={homeBodyLink}
+            className="home-inline-link"
           >
             college
           </LinkPreviewServer>{" "}
           got serious traffic, and I kept building after that. Now I&apos;m at{" "}
           <LinkPreviewServer
             href="https://byzanlink.com/"
-            className={homeBodyLink}
+            className="home-inline-link"
           >
             Byzanlink
           </LinkPreviewServer>
           , after working with the teams at{" "}
-          <LinkPreviewServer href="https://lumel.com/" className={homeBodyLink}>
+          <LinkPreviewServer href="https://lumel.com/" className="home-inline-link">
             Lumel
           </LinkPreviewServer>{" "}
           and{" "}
           <LinkPreviewServer
             href="https://www.freightify.com"
-            className={homeBodyLink}
+            className="home-inline-link"
           >
             Freightify
           </LinkPreviewServer>
@@ -110,7 +104,7 @@ export default async function HomePage() {
             AI research on fake image detection (
             <LinkPreviewServer
               href="https://ieeexplore.ieee.org/document/10046797"
-              className={homeBodyLink}
+              className="home-inline-link"
             >
               IEEE published
             </LinkPreviewServer>
@@ -120,21 +114,21 @@ export default async function HomePage() {
             Bug bounties from{" "}
             <LinkPreviewServer
               href="https://www.microsoft.com/en-us/msrc/bounty-microsoft-azure"
-              className={homeBodyLink}
+              className="home-inline-link"
             >
               Microsoft Azure
             </LinkPreviewServer>
             ,{" "}
             <LinkPreviewServer
               href="https://hackerone.com/mcafee_secure"
-              className={homeBodyLink}
+              className="home-inline-link"
             >
               McAfee
             </LinkPreviewServer>
             ,{" "}
             <LinkPreviewServer
               href="https://hackerone.com/uber"
-              className={homeBodyLink}
+              className="home-inline-link"
             >
               Uber
             </LinkPreviewServer>
@@ -142,7 +136,7 @@ export default async function HomePage() {
           <li>
             <LinkPreviewServer
               href="https://github.com/zalando/skipper"
-              className={homeBodyLink}
+              className="home-inline-link"
             >
               Custom reverse proxy
             </LinkPreviewServer>{" "}
@@ -153,7 +147,7 @@ export default async function HomePage() {
             Network infrastructure for{" "}
             <LinkPreviewServer
               href="https://www.kghospital.com/"
-              className={homeBodyLink}
+              className="home-inline-link"
             >
               KG Hospital
             </LinkPreviewServer>
@@ -163,10 +157,10 @@ export default async function HomePage() {
       </div>
 
       <section className="mt-5 min-w-0 w-full">
-        <h2 className="text-base font-medium leading-normal text-[var(--color-text-soft)]">
+        <h2 className="text-base font-medium leading-normal text-[var(--color-text)]">
           Some of my writings:
         </h2>
-        <ol className="mt-2 list-decimal space-y-1 pl-5 marker:text-[var(--color-text-soft)]">
+        <ol className="mt-2 list-decimal space-y-1 pl-5 marker:text-[var(--color-text)]">
           {orderedHomeWritings.map((post) => (
             <li key={post.slug} className="pl-1 text-base leading-normal">
               <Link href={post.slug} className="home-writings-link">
@@ -175,11 +169,11 @@ export default async function HomePage() {
             </li>
           ))}
         </ol>
-        <p className="mt-6 text-base leading-normal text-[var(--color-text-soft)]">
+        <p className="home-footer mt-6 text-base leading-normal">
           You can read my above writings or{" "}
           <LinkPreviewServer
             href={siteConfig.social.twitter}
-            className={homeSoftLink}
+            className="home-footer-link"
           >
             follow me online
           </LinkPreviewServer>
