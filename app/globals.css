@@ -43,6 +43,7 @@
   --color-text: oklch(0.145 0 0);
   --color-text-muted: color-mix(in oklch, var(--color-text) 70%, transparent);
   --color-text-soft: color-mix(in oklch, var(--color-text) 55%, transparent);
+  --color-text-faint: color-mix(in oklch, var(--color-text) 42%, transparent);
   --color-link: #1d4ed8;
   --color-link-hover: #1e3a8a;
   --color-toc-active: #0070f3;
