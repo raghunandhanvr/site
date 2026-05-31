@@ -166,7 +166,7 @@ export default async function HomePage() {
         <h2 className="text-base font-medium leading-normal text-[var(--color-text-soft)]">
           Some of my writings:
         </h2>
-        <ol className="mt-2 list-decimal space-y-1 pl-5 marker:text-[var(--color-text-faint)]">
+        <ol className="mt-2 list-decimal space-y-1 pl-5 marker:text-[var(--color-text-soft)]">
           {orderedHomeWritings.map((post) => (
             <li key={post.slug} className="pl-1 text-base leading-normal">
               <Link href={post.slug} className="home-writings-link">
