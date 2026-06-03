@@ -64,7 +64,7 @@ export default async function HomePage() {
           I&apos;m a software engineer based in India.
         </p>
         <p className="mt-4 text-base leading-relaxed text-[var(--color-text)]">
-          I just like making things. It started with building PCs for my
+          I like building things, used to assemble PCs for my
           friends. Then a social media app we built in{" "}
           <LinkPreviewServer
             href="https://sece.ac.in/"
