@@ -150,7 +150,7 @@ export default async function HomePage() {
             >
               Insider
             </LinkPreviewServer>
-            , 40,000+ concurrent requests
+            , 40,000+ concurrent requests at sub-200ms p99
           </li>
           <li>IAM service in Go serving 100K+ users daily</li>
           <li>
