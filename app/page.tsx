@@ -142,6 +142,16 @@ export default async function HomePage() {
             </LinkPreviewServer>{" "}
             in Go, 1M+ daily API requests
           </li>
+          <li>
+            Ticketing queue in Go for Paytm{" "}
+            <LinkPreviewServer
+              href="https://insider.in/"
+              className="home-inline-link"
+            >
+              Insider
+            </LinkPreviewServer>
+            , 40,000+ concurrent requests
+          </li>
           <li>IAM service in Go serving 100K+ users daily</li>
           <li>
             Network infrastructure for{" "}
