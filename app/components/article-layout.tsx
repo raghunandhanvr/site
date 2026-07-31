@@ -51,7 +51,7 @@ export async function WritingsArticleLayout({
         {description ? (
           <p
             className={cn(
-              "mt-4 text-balance text-lg leading-relaxed text-[var(--color-text-soft)]",
+              "mt-4 text-lg leading-relaxed text-[var(--color-text-soft)]",
               meta ? "mb-1.5" : "mb-6",
             )}
           >

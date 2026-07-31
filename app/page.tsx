@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 }
 
 const homeWritingsOrder = [
+  "/writings/simd",
   "/writings/skipper",
   "/writings/deletion-focused",
   "/writings/dx",

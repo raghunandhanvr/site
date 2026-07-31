@@ -1,0 +1,277 @@
+import { WritingsArticleLayout } from '@/app/components/article-layout'
+import { BlogViewCounter } from '@/app/components/view-counter'
+
+export const article = {
+  title: 'Speed up hash table lookups',
+  description:
+    'Using F14-style SIMD tag filtering to speed up C++ hash table lookups in high-cardinality aggregation.',
+}
+
+export const metadata = {
+  title: 'Speed up hash table lookups',
+  description: article.description,
+  alternates: {
+    canonical: '/writings/simd',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=Speed+up+hash+table+lookups`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+<WritingsArticleLayout title={article.title} description={article.description} meta={<BlogViewCounter slug="/writings/simd" createdAt={new Date('2026-07-31')} />}>
+
+[SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) means **Single Instruction, Multiple Data**. It lets the CPU apply one operation to several values at the same time. In this case, we use one SIMD comparison to check sixteen small hash tags during a hash table lookup.
+
+We were working on an in-memory aggregation path for events. Each event carried an `account_id`, and for every event we looked up that account and updated its running aggregate.
+
+I cannot publish the original workload, so I used a public aggregation benchmark to show the same high-cardinality problem with reproducible data. The operation was similar to:
+
+```sql
+select WatchID, count()
+from events
+group by WatchID
+```
+
+The hash map stores one entry for every distinct `WatchID`. The key is a 64-bit ID and the value is the current count.
+
+To make the example concrete, I used the public [hash-table aggregation benchmark](https://github.com/kitaisreal/hash-table-aggregation-benchmark), which is based on anonymised Yandex.Metrica web analytics data. Its `WatchID` input contains **99,997,497** rows and **99,997,493** unique keys. This is almost the worst case for aggregation because nearly every row creates a new hash table entry.
+
+The published x86-64 result makes the cost clear:
+
+<Table
+  data={{
+    headers: ['Hash table', 'Time', 'Memory'],
+    rows: [
+      ['std::unordered_map', '58.03 s', '5.23 GiB'],
+      ['absl::flat_hash_map', '10.01 s', '2.13 GiB'],
+      ['ClickHouse HashMap', '6.70 s', '4.00 GiB'],
+    ],
+  }}
+/>
+
+These numbers are not an F14 benchmark. They show the actual problem we wanted to understand: the standard node-based table was spending much more time and memory on a high-cardinality aggregation.
+
+During one of our discussions, an engineer pointed me towards Meta's [F14](https://engineering.fb.com/2019/04/25/developer-tools/f14/) design. He suggested keeping a small part of each hash beside the occupancy metadata, comparing a group of tags first, and reading the full keys only for matching tags.
+
+Meta's public F14 material was the main reference for this experiment. F14 was developed by Meta engineers **Nathan Bronson** and **Xiao Shi** and is available through [Folly](https://github.com/facebook/folly).
+
+## What was slow
+
+A common [`std::unordered_map`](https://en.cppreference.com/w/cpp/container/unordered_map) implementation uses separate nodes. After hashing a key, lookup may load a bucket, follow a pointer to a node, compare the key and follow another pointer if there is a collision.
+
+This layout causes two costs:
+
+- every node carries allocation and pointer overhead
+- lookups can perform dependent memory reads at unrelated addresses
+
+The second cost matters once the table is larger than the CPU caches. The processor cannot compare a key until the node containing that key reaches the core.
+
+The public benchmark also includes `perf` measurements for a lower-cardinality `RegionID` aggregation. For `std::unordered_map`, it reports about **6.54 billion** CPU cycles, **12.2 million** branch misses and **9.18 million** cache misses while processing roughly 100 million rows. This is not a flame graph from our application, but it confirms that the hash table path has real branch and cache costs.
+
+## The part I first got wrong
+
+My first small implementation stored a one-byte fingerprint for each integer key. I took the fingerprint from the upper bits of `std::hash<std::uint64_t>`.
+
+```cpp
+std::uint8_t fingerprint(std::uint64_t hash) {
+    return static_cast<std::uint8_t>((hash >> 57) & 0x7f);
+}
+```
+
+That failed with sequential IDs. On the standard library used for the test, hashing an integer returned the integer value. Small IDs therefore had zero in their upper bits. Thousands of different keys received the same fingerprint.
+
+The table was correct because it still compared the full key, but the filter did almost no filtering. Every occupied slot looked like a candidate.
+
+F14 handles this problem by mixing weak hash output before splitting it into a table position and a tag. I added a 64-bit mixer:
+
+```cpp
+std::uint64_t mix64(std::uint64_t value) {
+    value += 0x9e3779b97f4a7c15ULL;
+    value = (value ^ (value >> 30))
+        * 0xbf58476d1ce4e5b9ULL;
+    value = (value ^ (value >> 27))
+        * 0x94d049bb133111ebULL;
+    return value ^ (value >> 31);
+}
+```
+
+After mixing, different parts of the hash can be used for different jobs:
+
+```cpp
+const std::uint64_t hash = mix64(key);
+const std::size_t group = hash & group_mask;
+const std::uint8_t tag =
+    static_cast<std::uint8_t>((hash >> 57) & 0x7f);
+```
+
+The lower bits select a group. Seven upper bits become the tag.
+
+## Changing the table layout
+
+The test table has groups of sixteen slots:
+
+```cpp
+constexpr std::size_t kSlots = 16;
+constexpr std::uint8_t kEmpty = 0x80;
+
+struct alignas(16) Group {
+    std::array<std::uint8_t, kSlots> control;
+    std::array<std::uint64_t, kSlots> keys;
+    std::array<std::uint64_t, kSlots> counts;
+
+    Group() {
+        control.fill(kEmpty);
+    }
+};
+```
+
+Each control byte contains either `kEmpty` or a seven-bit tag. The sixteen control bytes are contiguous and aligned, so one [SSE2](https://en.wikipedia.org/wiki/SSE2) load can read all of them.
+
+The key detail is that the lookup does not load sixteen 64-bit keys first. It loads sixteen bytes of metadata. If none of the tags match, the lookup does not access the keys or values.
+
+Without SIMD, the tag filter is a normal loop:
+
+```cpp
+for (std::size_t slot = 0; slot < 16; ++slot) {
+    if (group.control[slot] == wanted &&
+        group.keys[slot] == key) {
+        return &group.counts[slot];
+    }
+}
+```
+
+With SSE2, the sixteen byte comparisons happen together:
+
+```cpp
+const __m128i wanted_vector =
+    _mm_set1_epi8(static_cast<char>(wanted));
+
+const __m128i metadata = _mm_load_si128(
+    reinterpret_cast<const __m128i*>(
+        group.control.data()
+    )
+);
+
+const __m128i equal =
+    _mm_cmpeq_epi8(metadata, wanted_vector);
+
+std::uint32_t matches =
+    static_cast<std::uint32_t>(
+        _mm_movemask_epi8(equal)
+    );
+```
+
+[`_mm_cmpeq_epi8`](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi8) compares all sixteen tag bytes. [`_mm_movemask_epi8`](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movemask_epi8) converts the results into a 16-bit mask. A set bit means that slot may contain the key.
+
+We then visit only those slots:
+
+```cpp
+while (matches != 0) {
+    const unsigned slot = std::countr_zero(matches);
+
+    if (group.keys[slot] == key) {
+        return &group.counts[slot];
+    }
+
+    matches &= matches - 1;
+}
+```
+
+A seven-bit tag has **128** possible values. With a properly mixed hash, most unrelated keys are rejected before a full-key comparison.
+
+Empty slots are checked using the same metadata:
+
+```cpp
+const __m128i empty_vector =
+    _mm_set1_epi8(static_cast<char>(kEmpty));
+
+const std::uint32_t empty_slots =
+    static_cast<std::uint32_t>(
+        _mm_movemask_epi8(
+            _mm_cmpeq_epi8(metadata, empty_vector)
+        )
+    );
+
+if (empty_slots != 0) {
+    return nullptr;
+}
+```
+
+If the group has no matching key and contains an empty slot, the lookup can stop. If it is full, probing continues with the next group.
+
+## The controlled C++ test
+
+That public benchmark does not measure this implementation, so I wrote a smaller controlled benchmark for it. The scalar and SSE2 paths use the same table layout. Only the tag scan changes.
+
+The test used:
+
+- **750,000** `std::uint64_t` keys
+- **1,048,576** slots, around **72%** load
+- **3,000,000** lookups, split approximately evenly between successful and failed queries: **1,501,073** successful and **1,498,927** failed
+- GCC 13.3, C++20 and `-O3`
+- AMD EPYC 9V74 on x86-64
+
+The keys were generated deterministically with `mix64`. Successful queries selected an inserted key. Failed queries used a separate input range. Table construction, query generation and correctness checks were excluded from the timed section.
+
+Before timing, every query was checked against the scalar path, SIMD path and `std::unordered_map`. Each timed run returned its duration and checksum. The benchmark verifies that every run and all three implementations produce the same checksum before printing it.
+
+Each lookup method ran three times inside one process, and the lowest time was reported. I did not control CPU frequency scaling, so the numbers should be treated as a comparison on this machine, not as absolute performance.
+
+The complete source is available in [`f14_style_hash_benchmark.cpp`](./f14_style_hash_benchmark.cpp).
+
+I launched the executable three times. Each process ran every lookup method three times and reported its lowest time. The observed results were:
+
+<Table
+  data={{
+    headers: ['Lookup path', 'Time'],
+    rows: [
+      ['Scalar tag scan', '112.74 to 119.60 ms'],
+      ['SSE2 tag scan', '51.09 to 55.41 ms'],
+      ['std::unordered_map', '129.75 to 138.81 ms'],
+    ],
+  }}
+/>
+
+The SSE2 path was **2.16x to 2.32x** faster than the scalar path using the same keys, hash mixer, capacity and probing rule.
+
+I kept `std::unordered_map` in the table only as a reference. It receives keys that already look mixed, while the custom table applies `mix64` again during lookup. The small test table also has fixed-width keys and values, fixed capacity and no deletion. This is not a controlled comparison against `std::unordered_map`.
+
+## How close is this to F14?
+
+The experiment uses the same broad pattern, but it is not an F14 implementation.
+
+F14 stores up to fourteen entries in a chunk. Fourteen tag bytes and two bytes of chunk metadata fit in one 16-byte SIMD value. It uses SSE2 on x86-64 and [NEON](https://en.wikipedia.org/wiki/ARM_architecture_family#Advanced_SIMD_(Neon)) on AArch64 to filter the chunk. It also supports double-hash probing, deletion, overflow tracking, resizing and different storage policies for different entry sizes.
+
+Our table uses all sixteen bytes as slot tags and omits those production requirements. Adding deletion alone changes the stopping rule. Clearing a slot to empty can make a later displaced key unreachable, so a real table needs tombstones, overflow metadata or relocation.
+
+There was one more important warning from ClickHouse's published engineering material. Its team lists SIMD hash-table lookup among experiments that did not improve its `group by` implementation, while predicting the table size did. SIMD is not an automatic win. Existing layout, load factor, key distribution, compiler output and surrounding aggregation work can change the result.
+
+Compared with `std::unordered_map`, the custom table changes both the layout and lookup strategy:
+
+```text
+64-bit key
+    -> mixed hash
+    -> group and 7-bit tag
+    -> one SIMD tag comparison
+    -> bit mask of candidates
+    -> full-key comparison only for candidates
+```
+
+In the controlled comparison between the scalar and SIMD paths, both use this same layout. The measured difference comes from how the same sixteen tag bytes are scanned.
+
+## References
+
+- [Meta Engineering: Open-sourcing F14 for faster, more memory-efficient hash tables](https://engineering.fb.com/2019/04/25/developer-tools/f14/)
+- [Folly: F14 Hash Table](https://github.com/facebook/folly/blob/main/folly/container/F14.md)
+- [Folly source: F14Table.h](https://github.com/facebook/folly/blob/main/folly/container/detail/F14Table.h)
+- [Hash table aggregation benchmark using Yandex.Metrica data](https://github.com/kitaisreal/hash-table-aggregation-benchmark)
+- [Maksim Kita: Hash Tables](https://maksimkita.com/blog/hash_tables.html)
+- [ClickHouse: Building for Fast](https://presentations.clickhouse.com/2022-meetup58/building_for_fast/)
+
+</WritingsArticleLayout>

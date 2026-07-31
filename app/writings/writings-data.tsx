@@ -7,6 +7,12 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    title: "Speed up hash table lookups",
+    slug: "/writings/simd",
+    date: "2026-07-31",
+    year: "2026",
+  },
+  {
     title: "Munnar",
     slug: "/writings/munnar",
     date: "2025-09-27",
