@@ -551,7 +551,6 @@ a.home-footer-link:hover {
   max-width: 100% !important;
   overflow-x: visible !important;
   white-space: normal !important;
-  table-layout: fixed;
 }
 
 .writings-table th,
