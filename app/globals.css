@@ -544,42 +544,20 @@ a.home-footer-link:hover {
   @apply visible;
 }
 
-/* Override global table styles for writings table */
+/* Override global table { display: block } so columns fill width */
 .writings-table {
   display: table !important;
+  width: 100% !important;
   max-width: 100% !important;
   overflow-x: visible !important;
   white-space: normal !important;
+  table-layout: fixed;
 }
 
-.writings-table td:nth-child(2) {
+.writings-table th,
+.writings-table td {
   white-space: normal;
   word-break: break-word;
-}
-
-/* Mobile responsive for writings table */
-@media (max-width: 640px) {
-  .writings-table {
-    table-layout: fixed;
-  }
-
-  .writings-table th:first-child,
-  .writings-table td:first-child {
-    width: 60px !important;
-    padding-right: 8px;
-  }
-
-  .writings-table th:last-child,
-  .writings-table td:last-child {
-    width: 50px !important;
-    padding-left: 8px;
-  }
-
-  .writings-table th:nth-child(2),
-  .writings-table td:nth-child(2) {
-    width: auto;
-    padding-right: 8px;
-  }
 }
 
 /* Page content width (matches root shell max-w-4xl) */

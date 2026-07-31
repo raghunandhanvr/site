@@ -138,12 +138,17 @@ const components = {
     )
   },
   Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
-    <div className="my-6 w-full overflow-y-auto">
-      <table className="relative w-full overflow-hidden border-none text-sm text-[var(--color-text)]">
+    <div className="my-6 w-full overflow-x-auto">
+      <table className="writings-table relative w-full text-sm text-[var(--color-text)]">
         <thead>
           <tr>
             {data.headers.map((header, index) => (
-              <th key={index}>{header}</th>
+              <th
+                key={index}
+                className={index > 0 ? "text-right" : undefined}
+              >
+                {header}
+              </th>
             ))}
           </tr>
         </thead>
@@ -151,7 +156,12 @@ const components = {
           {data.rows.map((row, index) => (
             <tr key={index} className="m-0 border-b border-[var(--color-border)]">
               {row.map((cell, cellIndex) => (
-                <td key={cellIndex}>{cell}</td>
+                <td
+                  key={cellIndex}
+                  className={cellIndex > 0 ? "text-right" : undefined}
+                >
+                  {cell}
+                </td>
               ))}
             </tr>
           ))}
