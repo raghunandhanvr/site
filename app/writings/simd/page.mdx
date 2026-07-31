@@ -1,0 +1,466 @@
+import { WritingsArticleLayout } from '@/app/components/article-layout'
+import { BlogViewCounter } from '@/app/components/view-counter'
+
+export const article = {
+  title: 'Speed up hash table lookups',
+  description:
+    'How grouped fingerprints and SIMD turn hash table lookups into a cheap filter before key comparison.',
+}
+
+export const metadata = {
+  title: 'Speed up hash table lookups',
+  description: article.description,
+  alternates: {
+    canonical: '/writings/simd',
+  },
+  openGraph: {
+    images: [
+      {
+        url: `/api/og?title=Speed+up+hash+table+lookups`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
+
+<WritingsArticleLayout title={article.title} description={article.description} meta={<BlogViewCounter slug="/writings/simd" createdAt={new Date('2026-07-31')} />}>
+
+We were working on an in-memory aggregation path for events. Every event had an `account_id`, and we had to update the aggregate stored for that account.
+
+The basic code used a hash map:
+
+```cpp
+std::unordered_map<std::uint64_t, AccountStats> aggregates;
+
+for (const Event& event : events) {
+    aggregates[event.account_id].add(event);
+}
+```
+
+The number of accounts could reach hundreds of thousands. Once we profiled the aggregation path, **hash table lookup** was taking more CPU time than expected.
+
+We first checked the hash function. It was not the main problem. The larger cost came from how the table searched for a key after calculating its hash. A common [`std::unordered_map`](https://en.cppreference.com/w/cpp/container/unordered_map) implementation stores entries in separate nodes. A lookup may load a bucket, follow a pointer, compare a key, and follow more pointers when there is a collision. These memory accesses are difficult for the CPU to predict and keep in cache.
+
+One of the engineers advising us suggested changing the **layout** before trying a faster hash function. His idea was to keep a small **fingerprint** of every hash separately from the complete keys. We could then compare one fingerprint against a group of stored fingerprints using [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data). The complete keys would be loaded only for the slots whose fingerprints matched.
+
+It took me some time to understand why the layout was more important than the SIMD instruction itself. This article explains the smaller implementation we built to test the idea.
+
+## What SIMD does here
+
+[SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) stands for **Single Instruction, Multiple Data**. It allows one CPU instruction to perform the same operation on several values.
+
+Our implementation uses [SSE2](https://en.wikipedia.org/wiki/SSE2) on x86-64. An SSE2 register is **128 bits** wide, so it can hold sixteen 8-bit fingerprints:
+
+```
+128 bits / 8 bits = 16 fingerprints
+```
+
+A scalar lookup checks the fingerprints one by one:
+
+```cpp
+for (std::size_t slot = 0; slot < 16; ++slot) {
+    if (control[slot] == wanted) {
+        // Check the complete key.
+    }
+}
+```
+
+The SIMD version compares all sixteen fingerprints in one operation:
+
+```
+stored:  12 34 6A 20 6A 18 42 71 09 51 33 11 08 75 45 21
+wanted:  6A 6A 6A 6A 6A 6A 6A 6A 6A 6A 6A 6A 6A 6A 6A 6A
+match:    0  0  1  0  1  0  0  0  0  0  0  0  0  0  0  0
+```
+
+The comparison produces a **bit mask**. In this example, bits 2 and 4 are set. Only those two slots can contain the requested key.
+
+SIMD is not being used to compare sixteen complete keys. It is being used as a **cheap filter** before complete key comparison.
+
+## Separating metadata from keys
+
+We created a simplified hash table with groups of sixteen slots:
+
+```cpp
+constexpr std::size_t kSlotsPerGroup = 16;
+constexpr std::uint8_t kEmpty = 0x80;
+
+struct alignas(16) Group {
+    std::array<std::uint8_t, kSlotsPerGroup> control;
+    std::array<std::uint64_t, kSlotsPerGroup> keys;
+    std::array<std::uint64_t, kSlotsPerGroup> values;
+
+    Group() {
+        control.fill(kEmpty);
+    }
+};
+```
+
+The **control** array contains one byte for every slot. A control byte is either:
+
+- `0x80`, meaning the slot is empty
+- a seven-bit hash fingerprint between `0x00` and `0x7f`
+
+The metadata is stored separately from the keys and values. A lookup can inspect all sixteen control bytes without loading sixteen keys.
+
+The group is aligned to 16 bytes because [`_mm_load_si128`](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_load_si128) requires a 16-byte-aligned address.
+
+This is a learning implementation. It supports **fixed-capacity** storage and does **not** support deletion. Those restrictions keep the lookup logic small enough to study.
+
+## Splitting the hash
+
+We use different parts of the hash for two purposes:
+
+```cpp
+std::size_t group_index =
+    static_cast<std::size_t>(hash) & group_mask;
+
+std::uint8_t fingerprint =
+    static_cast<std::uint8_t>((hash >> 57) & 0x7f);
+```
+
+The lower bits select the first group. Seven upper bits become the fingerprint.
+
+This requires a hash with **well-distributed bits**. For integer keys, using the identity value directly is not a good choice. Consecutive integers would produce poor fingerprints. Our experiment first applies a 64-bit mixing function:
+
+```cpp
+std::uint64_t mix64(std::uint64_t value) {
+    value += 0x9e3779b97f4a7c15ULL;
+    value = (value ^ (value >> 30))
+        * 0xbf58476d1ce4e5b9ULL;
+    value = (value ^ (value >> 27))
+        * 0x94d049bb133111ebULL;
+    return value ^ (value >> 31);
+}
+```
+
+The group index and fingerprint should not be taken from poorly distributed input bits. Otherwise, too many keys will select the same group or receive the same fingerprint.
+
+## Scalar fingerprint lookup
+
+Before adding SIMD, we implemented the group layout with a scalar lookup:
+
+```cpp
+std::optional<std::uint64_t> find_scalar(
+    std::uint64_t key
+) const {
+    const std::uint64_t hash = mix64(key);
+    const std::uint8_t wanted = fingerprint(hash);
+    std::size_t group_index = first_group(hash);
+
+    for (std::size_t probe = 0;
+         probe < groups_.size();
+         ++probe) {
+        const Group& group = groups_[group_index];
+        bool has_empty = false;
+
+        for (std::size_t slot = 0; slot < 16; ++slot) {
+            const std::uint8_t stored =
+                group.control[slot];
+
+            if (stored == kEmpty) {
+                has_empty = true;
+            } else if (
+                stored == wanted &&
+                group.keys[slot] == key
+            ) {
+                return group.values[slot];
+            }
+        }
+
+        if (has_empty) {
+            return std::nullopt;
+        }
+
+        group_index = next_group(group_index);
+    }
+
+    return std::nullopt;
+}
+```
+
+There are two comparisons:
+
+- Compare the small fingerprint.
+- Compare the complete key only if the fingerprint matches.
+
+A seven-bit fingerprint has **128** possible values. With a well-distributed hash, an unrelated occupied slot has a **1/128** chance of passing the fingerprint check. Most failed lookups therefore avoid complete key comparisons.
+
+The lookup stops when it reaches a group containing an empty slot. In this table, insertion always uses the first available slot along the probe sequence. If a lookup reaches an empty slot, the key could not have been inserted into a later group.
+
+This early-stop rule becomes more complex when deletion is supported. Removing a key can create an empty slot before another key that was displaced into a later group. Production hash tables need **tombstones**, overflow metadata, relocation, or another method to keep such lookups correct.
+
+## Comparing sixteen fingerprints using SSE2
+
+The SIMD lookup keeps the same group layout and probing logic. Only the fingerprint scan changes.
+
+First, the requested fingerprint is copied into all sixteen byte lanes:
+
+```cpp
+const __m128i wanted_vector =
+    _mm_set1_epi8(static_cast<char>(wanted));
+```
+
+We then load the sixteen control bytes:
+
+```cpp
+const auto* address =
+    reinterpret_cast<const __m128i*>(
+        group.control.data()
+    );
+
+const __m128i metadata = _mm_load_si128(address);
+```
+
+The equality comparison happens across all byte lanes:
+
+```cpp
+const __m128i equal =
+    _mm_cmpeq_epi8(metadata, wanted_vector);
+```
+
+Each matching byte becomes `0xff`. Each non-matching byte becomes `0x00`.
+
+[`_mm_movemask_epi8`](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movemask_epi8) takes the highest bit from every byte and places those bits in a normal integer:
+
+```cpp
+std::uint32_t matches =
+    static_cast<std::uint32_t>(
+        _mm_movemask_epi8(equal)
+    );
+```
+
+If `matches` is zero, none of the sixteen fingerprints matched. We do not load any key from that group.
+
+If one or more bits are set, we process only those slots:
+
+```cpp
+while (matches != 0) {
+    const unsigned slot = std::countr_zero(matches);
+
+    if (group.keys[slot] == key) {
+        return group.values[slot];
+    }
+
+    matches &= matches - 1;
+}
+```
+
+[`std::countr_zero`](https://en.cppreference.com/w/cpp/numeric/countr_zero) returns the position of the lowest set bit. The expression `matches &= matches - 1` clears that bit. The loop therefore visits only the candidate slots.
+
+Empty slots are found with one more vector comparison:
+
+```cpp
+const __m128i empty_vector =
+    _mm_set1_epi8(static_cast<char>(kEmpty));
+
+const std::uint32_t empty_slots =
+    static_cast<std::uint32_t>(
+        _mm_movemask_epi8(
+            _mm_cmpeq_epi8(metadata, empty_vector)
+        )
+    );
+
+if (empty_slots != 0) {
+    return std::nullopt;
+}
+```
+
+If the group has no matching key and no empty slot, the lookup continues to the next group.
+
+## Complete SIMD lookup
+
+The core lookup is:
+
+```cpp
+std::optional<std::uint64_t> find_simd(
+    std::uint64_t key
+) const {
+    const std::uint64_t hash = mix64(key);
+    const std::uint8_t wanted = fingerprint(hash);
+    std::size_t group_index = first_group(hash);
+
+    const __m128i wanted_vector =
+        _mm_set1_epi8(static_cast<char>(wanted));
+    const __m128i empty_vector =
+        _mm_set1_epi8(static_cast<char>(kEmpty));
+
+    for (std::size_t probe = 0;
+         probe < groups_.size();
+         ++probe) {
+        const Group& group = groups_[group_index];
+
+        const auto* address =
+            reinterpret_cast<const __m128i*>(
+                group.control.data()
+            );
+
+        const __m128i metadata =
+            _mm_load_si128(address);
+
+        std::uint32_t matches =
+            static_cast<std::uint32_t>(
+                _mm_movemask_epi8(
+                    _mm_cmpeq_epi8(
+                        metadata,
+                        wanted_vector
+                    )
+                )
+            );
+
+        while (matches != 0) {
+            const unsigned slot =
+                std::countr_zero(matches);
+
+            if (group.keys[slot] == key) {
+                return group.values[slot];
+            }
+
+            matches &= matches - 1;
+        }
+
+        const std::uint32_t empty_slots =
+            static_cast<std::uint32_t>(
+                _mm_movemask_epi8(
+                    _mm_cmpeq_epi8(
+                        metadata,
+                        empty_vector
+                    )
+                )
+            );
+
+        if (empty_slots != 0) {
+            return std::nullopt;
+        }
+
+        group_index = next_group(group_index);
+    }
+
+    return std::nullopt;
+}
+```
+
+The code contains SIMD intrinsics, but the main change is still the **table layout**. The control bytes are small, contiguous and independent from the complete keys.
+
+## Benchmark
+
+We compared three lookup paths:
+
+- scalar fingerprint lookup using the grouped table
+- SSE2 fingerprint lookup using the same grouped table
+- `std::unordered_map`
+
+The benchmark used:
+
+- **750,000** `uint64_t` keys
+- **1,048,576** available slots
+- a load factor of approximately **72%**
+- **3,000,000** lookups
+- a mixture of successful and unsuccessful lookups
+- GCC 13.3 with C++20 and `-O3`
+- an AMD EPYC 9V74 x86-64 CPU
+
+Across three repeated process runs, the best-of-three times inside each run were:
+
+<Table
+  data={{
+    headers: ['Lookup', 'Observed time'],
+    rows: [
+      ['Scalar fingerprint lookup', '116.22 to 124.90 ms'],
+      ['SSE2 fingerprint lookup', '51.47 to 54.01 ms'],
+      ['std::unordered_map', '129.66 to 138.47 ms'],
+    ],
+  }}
+/>
+
+On this workload, SIMD lookup was around **2.26x to 2.32x** faster than scalar lookup over the same grouped layout.
+
+The scalar and SIMD comparison is the useful result because both use the same hash function, keys, values, capacity and memory layout. Only the metadata search is different.
+
+The `std::unordered_map` result is included for context. It is not a general claim that this small table is always faster. Our implementation has several restrictions that make its work easier:
+
+- keys and values are fixed-width integers
+- capacity is fixed before insertion
+- deletion is not supported
+- reference and iterator stability are not provided
+- no allocator customisation is supported
+- the benchmark uses one thread
+
+Different keys, load factors, compilers and CPUs will produce different results.
+
+## Why the layout helps
+
+The speedup does not come only from replacing a loop with `_mm_cmpeq_epi8`.
+
+### Metadata is easier to cache
+
+Sixteen fingerprints require only **sixteen bytes**. A much larger part of the table's searchable state can remain in the CPU cache.
+
+### Failed lookups usually avoid key loads
+
+If no fingerprint matches, the lookup does not read any complete key from the group. This reduces unnecessary **memory traffic**.
+
+### Candidate branches are limited
+
+The scalar loop performs a branch or conditional check for every slot. The SIMD version produces one mask and then branches only for actual candidates.
+
+### Groups reduce probe length
+
+A key selects a **group** instead of one exact slot. The table can search all slots in that group cheaply before moving elsewhere.
+
+This is why the data layout and collision strategy matter as much as the vector instruction.
+
+## How this relates to Meta F14
+
+After understanding the grouped fingerprint approach, we looked at production hash table designs using the same broader idea.
+
+[Meta's F14](https://engineering.fb.com/2019/04/25/developer-tools/f14/) is a C++ hash table in [Folly](https://github.com/facebook/folly). It stores up to fourteen keys in a chunk. Fourteen one-byte tags and two bytes of additional metadata form one aligned 16-byte block. F14 uses SSE2 on x86-64 and [NEON](https://en.wikipedia.org/wiki/ARM_architecture_family#Advanced_SIMD_(Neon)) on AArch64 to filter the tags in a chunk before comparing complete keys.
+
+F14 is much more advanced than our experiment:
+
+- it uses fourteen usable slots because two metadata bytes are required
+- it uses double hashing for probing
+- it supports insertion and deletion correctly
+- it maintains overflow counts instead of leaving permanent tombstones
+- it provides different storage layouts for different key and value sizes
+- it supports high load factors
+- it handles poor hash functions by mixing their output
+
+Our table should not be used as a replacement for F14 or another tested hash table. It only demonstrates the lookup mechanism in a smaller amount of code.
+
+## Portability
+
+SSE2 is part of the x86-64 baseline, so an x86-64 build does not need AVX2 runtime detection for this implementation.
+
+A production library still needs separate code for other targets. F14 uses NEON on AArch64 because ARM does not provide the same movemask instruction used by x86. The algorithm can stay the same, but the vector operations differ.
+
+If wide platform support is required, using an existing library is safer than maintaining several architecture-specific implementations.
+
+## Main point
+
+Initially, I thought SIMD optimisation meant finding a loop and processing more items in every iteration. That view was incomplete.
+
+In this case, SIMD became useful only after changing the data structure:
+
+```
+hash
+  -> select a group
+  -> build a small fingerprint
+  -> compare all group fingerprints
+  -> receive a candidate mask
+  -> load only possible matching keys
+```
+
+The CPU does less work because the table gives it a compact set of values that can be checked together. The intrinsic is only one part of that design.
+
+For our aggregation path, the useful question was not only, "Can this loop use SIMD?" It was, **"Can we arrange the data so that SIMD can reject most of the work before we touch the complete keys?"**
+
+## References
+
+- Meta engineering: [Open-sourcing F14 for faster, more memory-efficient hash tables](https://engineering.fb.com/2019/04/25/developer-tools/f14/)
+- Folly documentation: [F14 Hash Table](https://github.com/facebook/folly/blob/main/folly/container/F14.md)
+- Folly source: [F14Table.h](https://github.com/facebook/folly/blob/main/folly/container/detail/F14Table.h)
+- [Intel Intrinsics Guide](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html)
+
+</WritingsArticleLayout>
