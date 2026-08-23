@@ -1,6 +1,8 @@
 import type { NextConfig } from "next"
 import createMDX from "@next/mdx"
 
+import { siteConfig } from "./app/config"
+
 const nextConfig: NextConfig = {
   pageExtensions: ["mdx", "ts", "tsx"],
   cacheComponents: true,
@@ -12,6 +14,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/work", destination: "/", permanent: true },
       { source: "/writings", destination: "/", permanent: true },
+      { source: "/resume", destination: siteConfig.resume, permanent: true },
     ]
   },
   async rewrites() {
