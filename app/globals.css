@@ -425,8 +425,7 @@ a:not(
   .writings-back-link,
   .writings-toc-link,
   .home-writings-link,
-  .home-inline-link,
-  .home-footer-link
+  .home-inline-link
 ) {
   color: var(--color-text-muted);
   text-decoration-line: underline;
@@ -450,8 +449,7 @@ a:not(
     .writings-back-link,
     .writings-toc-link,
     .home-writings-link,
-    .home-inline-link,
-    .home-footer-link
+    .home-inline-link
   ):hover {
   color: #2563eb;
   text-decoration-color: #2563eb;
@@ -492,27 +490,6 @@ a.home-writings-link:hover {
 
 .home-footer {
   color: var(--color-text-muted);
-}
-
-a.home-footer-link {
-  color: var(--color-text-muted) !important;
-  font-weight: 500;
-  text-decoration-line: none !important;
-  text-decoration-thickness: 0.1em;
-  text-underline-offset: 0.25rem;
-  transition:
-    color 0.2s ease,
-    text-decoration-color 0.2s ease;
-}
-
-a.home-footer-link:hover {
-  color: var(--color-text-soft) !important;
-  text-decoration-line: underline !important;
-  text-decoration-color: color-mix(
-    in srgb,
-    var(--color-text-soft) 70%,
-    transparent
-  ) !important;
 }
 
 /* Footer link styles */
