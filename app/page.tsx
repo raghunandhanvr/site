@@ -190,7 +190,7 @@ export default async function HomePage() {
           </LinkPreviewServer>
           . Here is my{" "}
           <LinkPreviewServer
-            href={siteConfig.resume}
+            href="/resume"
             className="home-inline-link"
           >
             resume
