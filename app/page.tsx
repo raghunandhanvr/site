@@ -188,6 +188,13 @@ export default async function HomePage() {
           >
             follow me online
           </LinkPreviewServer>
+          . Here is my{" "}
+          <LinkPreviewServer
+            href={siteConfig.resume}
+            className="home-footer-link"
+          >
+            resume
+          </LinkPreviewServer>
           .
         </p>
       </section>
