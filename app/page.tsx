@@ -184,14 +184,14 @@ export default async function HomePage() {
           You can read my above writings or{" "}
           <LinkPreviewServer
             href={siteConfig.social.twitter}
-            className="home-footer-link"
+            className="home-inline-link"
           >
             follow me online
           </LinkPreviewServer>
           . Here is my{" "}
           <LinkPreviewServer
             href={siteConfig.resume}
-            className="home-footer-link"
+            className="home-inline-link"
           >
             resume
           </LinkPreviewServer>
