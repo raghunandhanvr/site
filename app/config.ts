@@ -7,7 +7,7 @@ export const siteConfig = {
   jobTitle: "Software Engineer",
   image: "/opengraph-image.png",
   email: "raghunandhanvr@outlook.com",
-  resume: "https://drive.google.com/file/d/1485NhQ5ldfmRCXJqURvS_Ab-_aE3VeID/view?usp=sharing",
+  resume: "https://drive.google.com/file/d/143J86Ph4mncMKW5cG81SidWObnZeIbKq/view?usp=sharing",
   social: {
     twitter: "https://x.com/raghunandhanvr",
     github: "https://github.com/raghunandhanvr",
