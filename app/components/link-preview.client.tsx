@@ -3,26 +3,23 @@
 import * as React from "react"
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card"
 import { ExternalLink } from "lucide-react"
+import * as stylex from "@stylexjs/stylex"
+import type { StyleXStyles } from "@stylexjs/stylex"
 
-import { cn } from "@/app/lib/utils"
 import type { OGMetadata } from "@/app/lib/og-metadata"
-
-const linkClass = cn(
-  "font-medium underline underline-offset-4",
-  "decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)]",
-)
+import { styles } from "@/app/styles/ui"
 
 type LinkPreviewClientProps = {
   href: string
   children: React.ReactNode
-  className?: string
+  style?: StyleXStyles
   metadata?: OGMetadata | null
 }
 
 export function LinkPreviewClient({
   href,
   children,
-  className,
+  style,
   metadata,
 }: LinkPreviewClientProps) {
   const [imageError, setImageError] = React.useState(false)
@@ -36,7 +33,7 @@ export function LinkPreviewClient({
         href={href}
         target={isExternal ? "_blank" : undefined}
         rel={isExternal ? "noopener noreferrer" : undefined}
-        className={cn(linkClass, className)}
+        {...stylex.props(styles.previewLink, style)}
       >
         {children}
       </a>
@@ -58,7 +55,7 @@ export function LinkPreviewClient({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className={cn(linkClass, className)}
+          {...stylex.props(styles.previewLink, style)}
         >
           {children}
         </a>
@@ -67,48 +64,46 @@ export function LinkPreviewClient({
         <HoverCardPrimitive.Content
           side="top"
           sideOffset={8}
-          className="z-50 w-[320px] overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-0 text-[var(--color-text)] shadow-lg outline-none"
+          {...stylex.props(styles.box, styles.previewCard)}
         >
-          {metadata.image && !imageError && (
-            <div className="relative h-40 w-full overflow-hidden bg-[var(--color-surface-muted)]">
+          {metadata.image && !imageError ? (
+            <div {...stylex.props(styles.box, styles.previewImageWrap)}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={metadata.image}
                 alt={metadata.title || "Link preview"}
-                className="h-full w-full object-cover"
+                {...stylex.props(styles.previewImage)}
                 onError={() => setImageError(true)}
               />
             </div>
-          )}
+          ) : null}
 
-          <div className="space-y-1.5 p-3">
-            <div className="flex items-center gap-2 text-xs text-[var(--color-text-soft)]">
-              {metadata.favicon && !faviconError && (
+          <div {...stylex.props(styles.box, styles.previewBody)}>
+            <div {...stylex.props(styles.previewMeta)}>
+              {metadata.favicon && !faviconError ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={metadata.favicon}
                   alt=""
                   width={14}
                   height={14}
-                  className="rounded-sm"
+                  {...stylex.props(styles.previewFavicon)}
                   onError={() => setFaviconError(true)}
                 />
-              )}
-              <span className="truncate">{metadata.siteName || domain}</span>
-              <ExternalLink className="ml-auto size-3 shrink-0 opacity-50" />
+              ) : null}
+              <span {...stylex.props(styles.previewDomain)}>
+                {metadata.siteName || domain}
+              </span>
+              <ExternalLink {...stylex.props(styles.previewExt)} />
             </div>
 
-            {metadata.title && (
-              <h4 className="line-clamp-2 text-sm font-medium leading-snug text-[var(--color-text)]">
-                {metadata.title}
-              </h4>
-            )}
+            {metadata.title ? (
+              <h4 {...stylex.props(styles.previewTitle)}>{metadata.title}</h4>
+            ) : null}
 
-            {metadata.description && (
-              <p className="line-clamp-2 text-xs leading-relaxed text-[var(--color-text-muted)]">
-                {metadata.description}
-              </p>
-            )}
+            {metadata.description ? (
+              <p {...stylex.props(styles.previewDesc)}>{metadata.description}</p>
+            ) : null}
           </div>
         </HoverCardPrimitive.Content>
       </HoverCardPrimitive.Portal>

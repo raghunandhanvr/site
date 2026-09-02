@@ -1,5 +1,5 @@
 import MermaidDiagram from "@/app/components/mermaid";
-import { WritingsArticleLayout } from "@/app/components/article-layout";
+import { WritingsArticleLayout, WritingsStack } from "@/app/components/article-layout";
 import { BlogViewCounter } from "@/app/components/view-counter";
 
 export const article = {
@@ -26,7 +26,7 @@ export const metadata = {
 
 <WritingsArticleLayout title={article.title} description={article.description} meta={<BlogViewCounter slug='/writings/freightify-ai-foundation' createdAt={new Date('2026-04-11')} />}>
 
-<div className="flex flex-col gap-6 [&_h1]:mb-1 [&_h2]:scroll-mt-28">
+<WritingsStack>
 
 This is just my thought process, thought of sharing. Just a 1min read.
 
@@ -91,6 +91,6 @@ We should use our data and train an **internal AI model**, which will take care 
 
 I can anytime connect with the **Freightify team** to discuss on this further if needed.
 
-</div>
+</WritingsStack>
 
 </WritingsArticleLayout>

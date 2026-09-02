@@ -1,41 +1,38 @@
 import * as React from "react"
+import * as stylex from "@stylexjs/stylex"
+import type { StyleXStyles } from "@stylexjs/stylex"
 
-import { cn } from "@/app/lib/utils"
-import styles from "./fade.module.css"
+import { styles } from "@/app/styles/ui"
 
 type FadeProps = {
   stop?: string
   blur?: string
   side: "top" | "bottom" | "left" | "right"
-  className?: string
+  style?: StyleXStyles
   background: string
-  style?: React.CSSProperties
   ref?: React.Ref<HTMLDivElement>
 }
 
+const sideStyles = {
+  top: styles.fadeTop,
+  bottom: styles.fadeBottom,
+  left: styles.fadeLeft,
+  right: styles.fadeRight,
+} as const
+
 export function Fade({
-  stop,
-  blur,
+  stop = "25%",
+  blur = "4px",
   side = "top",
-  className,
-  background,
   style,
+  background,
   ref,
 }: FadeProps) {
   return (
     <div
       ref={ref}
       aria-hidden
-      className={cn(styles.root, className)}
-      data-side={side}
-      style={
-        {
-          "--stop": stop,
-          "--blur": blur,
-          "--background": background,
-          ...style,
-        } as React.CSSProperties
-      }
+      {...stylex.props(styles.fadeRoot, sideStyles[side](background, stop, blur), style)}
     />
   )
 }

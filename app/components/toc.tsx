@@ -3,8 +3,9 @@
 import { ChevronDown } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
+import * as stylex from "@stylexjs/stylex"
 
-import { cn } from "@/app/lib/utils"
+import { styles } from "@/app/styles/ui"
 
 const ARTICLE_SELECTOR = "[data-writings-article]"
 
@@ -37,17 +38,12 @@ function TocList({
   }, [safeIndex, toc, isAccordion])
 
   return (
-    <div className="relative">
-      <ul className="relative flex flex-col text-sm">
+    <div {...stylex.props(styles.tocWrap)}>
+      <ul {...stylex.props(styles.tocList)}>
         {!isAccordion ? (
           <span
             aria-hidden
-            className="pointer-events-none absolute size-3 rounded-full bg-[var(--color-toc-active)] transition-[top,left] duration-300 ease-out"
-            style={{
-              top: dot.top,
-              left: dot.left,
-              transform: "translateY(-50%)",
-            }}
+            {...stylex.props(styles.tocDot(dot.top, dot.left))}
           />
         ) : null}
 
@@ -61,17 +57,14 @@ function TocList({
               ref={(el) => {
                 if (!isAccordion) itemRefs.current[index] = el
               }}
-              className="relative"
-              style={{ paddingLeft: `${depth * 12 + 24}px` }}
+              {...stylex.props(styles.tocItem(depth * 12 + 24))}
             >
               <a
                 href={item.url}
-                className={cn(
-                  "writings-toc-link block no-underline transition-colors duration-200",
-                  isAccordion ? "py-0.5 leading-snug" : "py-1.5",
-                  isActive
-                    ? "font-medium text-[var(--color-toc-active)]"
-                    : "text-[var(--color-text-soft)] hover:text-[var(--color-text)]",
+                {...stylex.props(
+                  styles.tocLink,
+                  isAccordion ? styles.tocLinkAccordion : styles.tocLinkSidebar,
+                  isActive ? styles.tocLinkActive : styles.tocLinkIdle,
                 )}
               >
                 {item.title}
@@ -155,13 +148,10 @@ export function TableOfContents() {
 
   if (tocItems.length === 0) {
     return (
-      <nav
-        aria-hidden
-        className="mb-10 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-muted)] 2xl:hidden"
-      >
-        <div className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm text-[var(--color-text-soft)]">
-          <span className="font-medium">On this page</span>
-          <ChevronDown className="size-4 shrink-0" aria-hidden />
+      <nav aria-hidden {...stylex.props(styles.box, styles.tocMobile)}>
+        <div {...stylex.props(styles.tocMobileHead)}>
+          <span {...stylex.props(styles.tocLabel)}>On this page</span>
+          <ChevronDown {...stylex.props(styles.tocChevron)} aria-hidden />
         </div>
       </nav>
     )
@@ -169,35 +159,32 @@ export function TableOfContents() {
 
   return (
     <>
-      <aside className="pointer-events-none fixed left-8 top-32 z-20 hidden w-64 2xl:block">
-        <nav
-          className="pointer-events-auto max-h-[calc(100vh-10rem)] overflow-y-auto pr-2 toc-scrollbar"
-          aria-label="On this page"
-        >
+      <aside {...stylex.props(styles.tocSidebar)}>
+        <nav {...stylex.props(styles.box, styles.tocNav)} aria-label="On this page">
           <TocList toc={tocItems} activeIndex={activeIndex} />
         </nav>
       </aside>
 
       <nav
-        className="mb-10 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-muted)] 2xl:hidden"
+        {...stylex.props(styles.box, styles.tocMobile)}
         aria-label="On this page"
       >
         <button
           type="button"
           onClick={() => setMobileOpen((o) => !o)}
-          className="flex w-full cursor-pointer items-center justify-between gap-4 px-4 py-3 text-left text-sm text-[var(--color-text-soft)] transition-colors hover:text-[var(--color-text)]"
+          {...stylex.props(styles.tocMobileBtn)}
         >
-          <span className="font-medium">On this page</span>
+          <span {...stylex.props(styles.tocLabel)}>On this page</span>
           <ChevronDown
-            className={cn(
-              "size-4 shrink-0 transition-transform duration-200",
-              mobileOpen && "rotate-180",
+            {...stylex.props(
+              styles.tocChevron,
+              mobileOpen && styles.tocChevronOpen,
             )}
             aria-hidden
           />
         </button>
         {mobileOpen ? (
-          <div className="border-t border-[var(--color-border)] px-1 py-5">
+          <div {...stylex.props(styles.tocAccordionBody)}>
             <TocList
               toc={tocItems}
               activeIndex={activeIndex}

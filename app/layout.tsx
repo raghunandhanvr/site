@@ -4,11 +4,14 @@ import Script from "next/script"
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import clsx from "clsx"
+import * as stylex from "@stylexjs/stylex"
 
-import "@/app/globals.css"
+import "@/app/styles/stylex.css"
 import { ThemeProvider, ThemeToggle } from "@/app/components/theme"
+import { ThemeSync } from "@/app/components/theme-sync"
 import { siteConfig, getStructuredData } from "@/app/config"
+import { darkThemeClassName } from "@/app/styles/themes"
+import { styles } from "@/app/styles/ui"
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
 const geistMono = Geist_Mono({
@@ -64,6 +67,11 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.ico" },
 }
 
+const htmlSx = stylex.props(styles.html)
+const bodySx = stylex.props(styles.body)
+const shellSx = stylex.props(styles.box, styles.shell)
+const darkClass = darkThemeClassName()
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -71,19 +79,23 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={clsx(
+      className={[
         geistSans.variable,
         geistMono.variable,
         instrumentSerif.variable,
-      )}
+        htmlSx.className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={htmlSx.style}
     >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('theme');var d=s==='dark'||((!s||s==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(s==='light'){document.documentElement.setAttribute('data-theme','light');}else if(d){document.documentElement.setAttribute('data-theme','dark');}document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();`,
+            __html: `(function(){try{var s=localStorage.getItem('theme');var d=s==='dark'||((!s||s==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(s==='light'){document.documentElement.setAttribute('data-theme','light');}else if(d){document.documentElement.setAttribute('data-theme','dark');}document.documentElement.style.colorScheme=d?'dark':'light';if(d){document.documentElement.classList.add.apply(document.documentElement.classList,${JSON.stringify(darkClass.split(/\s+/).filter(Boolean))});}}catch(e){}})();`,
           }}
         />
-        {process.env.NEXT_PUBLIC_GA_ID && (
+        {process.env.NEXT_PUBLIC_GA_ID ? (
           <Script
             id="ga-script"
             strategy="afterInteractive"
@@ -96,7 +108,7 @@ export default function RootLayout({
               `,
             }}
           />
-        )}
+        ) : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -124,11 +136,10 @@ export default function RootLayout({
         />
         <meta name="color-scheme" content="light dark" />
       </head>
-      <body className="antialiased">
+      <body {...bodySx}>
         <ThemeProvider>
-          <div className="mx-auto flex min-h-svh w-full max-w-4xl min-w-0 flex-col bg-[var(--color-page)] pb-safe-shell text-[var(--color-text)]">
-            {children}
-          </div>
+          <ThemeSync />
+          <div {...shellSx}>{children}</div>
           <Analytics />
           <SpeedInsights />
           <ThemeToggle />

@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
 import { cacheLife } from "next/cache"
 import Link from "next/link"
+import * as stylex from "@stylexjs/stylex"
 
 import { LinkPreviewServer } from "@/app/components/link-preview"
 import { siteConfig } from "@/app/config"
+import { styles } from "@/app/styles/ui"
 import { blogPosts } from "@/app/writings/writings-data"
 
 export const metadata: Metadata = {
@@ -43,122 +45,128 @@ export default async function HomePage() {
   cacheLife("max")
 
   return (
-    <main className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col px-6 pt-12 sm:px-10 sm:pt-32 lg:px-12">
-      <header className="mb-8 min-w-0 sm:mb-6">
-        <h1 className="m-0 p-0 text-lg font-medium leading-[1.3] sm:text-xl">
-          <Link href="/" className="work-link">
-            <span className="sr-only">{siteConfig.name}</span>
-            <span aria-hidden="true" className="group relative block overflow-hidden">
-              <span className="inline-block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">
+    <main {...stylex.props(styles.box, styles.homeMain)}>
+      <header {...stylex.props(styles.homeHeader)}>
+        <h1 {...stylex.props(styles.homeTitle)}>
+          <Link href="/" {...stylex.props(styles.workLink)}>
+            <span {...stylex.props(styles.srOnly)}>{siteConfig.name}</span>
+            <span
+              aria-hidden="true"
+              {...stylex.props(stylex.defaultMarker(), styles.nameWrap)}
+            >
+              <span {...stylex.props(styles.nameCurrent)}>
                 {siteConfig.name}
               </span>
-              <span className="absolute left-0 top-0 inline-block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0">
-                raghu
-              </span>
+              <span {...stylex.props(styles.nameAlt)}>raghu</span>
             </span>
           </Link>
         </h1>
       </header>
 
-      <div className="min-w-0 w-full">
-        <p className="text-base leading-relaxed text-[var(--color-text)]">
+      <div {...stylex.props(styles.homeCopy)}>
+        <p {...stylex.props(styles.homeP)}>
           I&apos;m a software engineer based in India.
         </p>
-        <p className="mt-4 text-base leading-relaxed text-[var(--color-text)]">
+        <p {...stylex.props(styles.homePSpaced)}>
           I like building things, used to assemble PCs for my
           friends. Then a social media app we built in{" "}
           <LinkPreviewServer
             href="https://sece.ac.in/"
-            className="home-inline-link"
+            style={styles.homeInlineLink}
           >
             college
           </LinkPreviewServer>{" "}
           got serious traffic, and I kept building after that. Now I&apos;m at{" "}
           <LinkPreviewServer
             href="https://byzanlink.com/"
-            className="home-inline-link"
+            style={styles.homeInlineLink}
           >
             Byzanlink
           </LinkPreviewServer>
           , after working with the teams at{" "}
-          <LinkPreviewServer href="https://lumel.com/" className="home-inline-link">
+          <LinkPreviewServer
+            href="https://lumel.com/"
+            style={styles.homeInlineLink}
+          >
             Lumel
           </LinkPreviewServer>{" "}
           and{" "}
           <LinkPreviewServer
             href="https://www.freightify.com"
-            className="home-inline-link"
+            style={styles.homeInlineLink}
           >
             Freightify
           </LinkPreviewServer>
           .
         </p>
-        <p className="mt-4 text-base leading-relaxed text-[var(--color-text)]">
+        <p {...stylex.props(styles.homePSpaced)}>
           Away from the screen, I&apos;m usually backpacking or out on my bike
           somewhere.
         </p>
-        <p className="mt-8 text-base font-medium leading-normal text-[var(--color-text)]">
+        <p {...stylex.props(styles.homeLead)}>
           Some of my tech contributions:
         </p>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-base leading-normal text-[var(--color-text)]">
-          <li>
+        <ul {...stylex.props(styles.homeList)}>
+          <li {...stylex.props(styles.homeListItem)}>
             AI research on fake image detection (
             <LinkPreviewServer
               href="https://ieeexplore.ieee.org/document/10046797"
-              className="home-inline-link"
+              style={styles.homeInlineLink}
             >
               IEEE published
             </LinkPreviewServer>
             )
           </li>
-          <li>
+          <li {...stylex.props(styles.homeListItem)}>
             Bug bounties from{" "}
             <LinkPreviewServer
               href="https://www.microsoft.com/en-us/msrc/bounty-microsoft-azure"
-              className="home-inline-link"
+              style={styles.homeInlineLink}
             >
               Microsoft Azure
             </LinkPreviewServer>
             ,{" "}
             <LinkPreviewServer
               href="https://hackerone.com/mcafee_secure"
-              className="home-inline-link"
+              style={styles.homeInlineLink}
             >
               McAfee
             </LinkPreviewServer>
             ,{" "}
             <LinkPreviewServer
               href="https://hackerone.com/uber"
-              className="home-inline-link"
+              style={styles.homeInlineLink}
             >
               Uber
             </LinkPreviewServer>
           </li>
-          <li>
+          <li {...stylex.props(styles.homeListItem)}>
             <LinkPreviewServer
               href="https://github.com/zalando/skipper"
-              className="home-inline-link"
+              style={styles.homeInlineLink}
             >
               Custom reverse proxy
             </LinkPreviewServer>{" "}
             in Go, 1M+ daily API requests
           </li>
-          <li>
+          <li {...stylex.props(styles.homeListItem)}>
             Ticketing queue in Go for Paytm{" "}
             <LinkPreviewServer
               href="https://insider.in/"
-              className="home-inline-link"
+              style={styles.homeInlineLink}
             >
               Insider
             </LinkPreviewServer>
             , 40,000+ concurrent requests at sub-200ms p99
           </li>
-          <li>IAM service in Go serving 100K+ users daily</li>
-          <li>
+          <li {...stylex.props(styles.homeListItem)}>
+            IAM service in Go serving 100K+ users daily
+          </li>
+          <li {...stylex.props(styles.homeListItem)}>
             Network infrastructure for{" "}
             <LinkPreviewServer
               href="https://www.kghospital.com/"
-              className="home-inline-link"
+              style={styles.homeInlineLink}
             >
               KG Hospital
             </LinkPreviewServer>
@@ -167,32 +175,29 @@ export default async function HomePage() {
         </ul>
       </div>
 
-      <section className="mt-5 min-w-0 w-full">
-        <h2 className="text-base font-medium leading-normal text-[var(--color-text)]">
+      <section {...stylex.props(styles.homeWritings)}>
+        <h2 {...stylex.props(styles.homeWritingsTitle)}>
           Some of my writings:
         </h2>
-        <ol className="mt-2 list-decimal space-y-1 pl-5 marker:text-[var(--color-text)]">
+        <ol {...stylex.props(styles.homeWritingsList)}>
           {orderedHomeWritings.map((post) => (
-            <li key={post.slug} className="pl-1 text-base leading-normal">
-              <Link href={post.slug} className="home-writings-link">
+            <li key={post.slug} {...stylex.props(styles.homeWritingsItem)}>
+              <Link href={post.slug} {...stylex.props(styles.homeWritingsLink)}>
                 {post.title}
               </Link>
             </li>
           ))}
         </ol>
-        <p className="home-footer mt-6 text-base leading-normal">
+        <p {...stylex.props(styles.homeFooter)}>
           You can read my above writings or{" "}
           <LinkPreviewServer
             href={siteConfig.social.twitter}
-            className="home-inline-link"
+            style={styles.homeInlineLink}
           >
             follow me online
           </LinkPreviewServer>
           . Here is my{" "}
-          <LinkPreviewServer
-            href="/resume"
-            className="home-inline-link"
-          >
+          <LinkPreviewServer href="/resume" style={styles.homeInlineLink}>
             resume
           </LinkPreviewServer>
           .

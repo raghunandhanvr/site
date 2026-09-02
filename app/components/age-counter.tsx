@@ -1,8 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import * as stylex from "@stylexjs/stylex"
+import type { StyleXStyles } from "@stylexjs/stylex"
 
-import { cn } from "@/app/lib/utils"
+import { styles } from "@/app/styles/ui"
 
 const BIRTHDAY = new Date("2002-06-21T05:30:00")
 const YEAR_MS = 1000 * 60 * 60 * 24 * 365.25
@@ -21,7 +23,7 @@ function compute() {
   }
 }
 
-export default function AgeCounter({ className }: { className?: string }) {
+export default function AgeCounter({ style }: { style?: StyleXStyles }) {
   const [age, setAge] = useState(compute)
 
   useEffect(() => {
@@ -31,12 +33,7 @@ export default function AgeCounter({ className }: { className?: string }) {
   }, [])
 
   return (
-    <span
-      className={cn(
-        "fade-in font-mono text-xs text-[var(--color-text-soft)] transition-colors",
-        className,
-      )}
-    >
+    <span {...stylex.props(styles.ageFade, style)}>
       {age.years}y {age.days}d {age.hours}h {age.minutes}m {age.seconds}s
     </span>
   )

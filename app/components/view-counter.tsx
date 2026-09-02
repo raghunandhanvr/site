@@ -1,7 +1,9 @@
 import { CalendarIcon, EyeIcon } from "lucide-react"
 import { format } from "date-fns"
+import * as stylex from "@stylexjs/stylex"
 
 import { ViewsClient } from "@/app/components/views-client"
+import { styles } from "@/app/styles/ui"
 
 export function BlogViewCounter({
   slug,
@@ -11,13 +13,13 @@ export function BlogViewCounter({
   createdAt: Date
 }) {
   return (
-    <div className="flex items-center space-x-3 text-xs text-[var(--color-text-soft)]">
-      <span className="flex items-center">
-        <EyeIcon className="w-3 h-3 mr-1.5" aria-hidden="true" />
+    <div {...stylex.props(styles.box, styles.views)}>
+      <span {...stylex.props(styles.viewsItem)}>
+        <EyeIcon {...stylex.props(styles.viewsIcon)} aria-hidden="true" />
         <ViewsClient slug={slug} />
       </span>
-      <span className="flex items-center">
-        <CalendarIcon className="w-3 h-3 mr-1.5" aria-hidden="true" />
+      <span {...stylex.props(styles.viewsItem)}>
+        <CalendarIcon {...stylex.props(styles.viewsIcon)} aria-hidden="true" />
         <time dateTime={createdAt.toISOString()}>
           {format(createdAt, "MMM d, yyyy")}
         </time>

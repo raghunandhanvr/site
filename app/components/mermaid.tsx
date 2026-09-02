@@ -1,6 +1,9 @@
 "use client"
 
 import React, { useEffect, useId, useRef } from "react"
+import * as stylex from "@stylexjs/stylex"
+
+import { styles } from "@/app/styles/ui"
 
 interface SimpleMermaidDiagramProps {
   diagram: string
@@ -124,6 +127,7 @@ const SimpleMermaidDiagram: React.FC<SimpleMermaidDiagramProps> = ({
         const { svg } = await mermaid.render(renderId, diagram)
         if (cancelled || mermaidRef.current !== el) return
         el.innerHTML = svg
+        polishMermaidSvg(el)
       } catch (error) {
         console.error("Mermaid rendering error:", error)
         if (cancelled || mermaidRef.current !== el) return
@@ -153,18 +157,42 @@ const SimpleMermaidDiagram: React.FC<SimpleMermaidDiagramProps> = ({
   }, [diagram, uniqueId])
 
   return (
-    <div className="mermaid-wrapper my-6 w-full min-w-0 max-w-full">
-      <div
-        className="mermaid-scroll max-h-[min(70vh,48rem)] w-full min-w-0 overflow-auto py-3 px-3 sm:px-5"
-        style={{ WebkitOverflowScrolling: "touch" }}
-      >
+    <div {...stylex.props(styles.box, styles.mermaidWrap)}>
+      <div {...stylex.props(styles.box, styles.mermaidScroll)}>
         <div
           ref={mermaidRef}
-          className="mermaid-container article-visual w-full min-w-0 p-2 sm:p-3"
+          {...stylex.props(styles.box, styles.mermaidBox)}
         />
       </div>
     </div>
   )
+}
+
+function polishMermaidSvg(el: HTMLDivElement) {
+  const svg = el.querySelector("svg")
+  if (svg) {
+    svg.style.display = "block"
+    svg.style.maxWidth = "100%"
+    svg.style.height = "auto"
+  }
+
+  el.querySelectorAll<HTMLElement>(".node rect, .node circle, .node ellipse, .node polygon, .node path, .flowchart-link, .actor").forEach((node) => {
+    node.style.strokeWidth = "1px"
+  })
+  el.querySelectorAll<HTMLElement>(".node .label").forEach((node) => {
+    node.style.fontSize = "11px"
+    node.style.fontWeight = "500"
+  })
+  el.querySelectorAll<HTMLElement>(".edgeLabel").forEach((node) => {
+    node.style.fontSize = "10px"
+    node.style.backgroundColor = "transparent"
+  })
+  el.querySelectorAll<HTMLElement>(".messageText").forEach((node) => {
+    node.style.fontSize = "10px"
+  })
+  el.querySelectorAll<HTMLElement>(".flowchart .node").forEach((node) => {
+    node.style.padding = "6px 10px"
+  })
 }
 
 export default SimpleMermaidDiagram

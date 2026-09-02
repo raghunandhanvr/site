@@ -1,6 +1,6 @@
 ### Personal Site
 
-This is a clean, fast, and lightweight site built with Next.js, Vercel, and Tailwind CSS. It features dynamic Open Graph image generation and MDX support for blog posts with rss/atom feeds. This site is inspired from [Leerob](https://leerob.com/) and [Guillermo Rauch](https://rauchg.com//).
+This is a clean, fast, and lightweight site built with Next.js, Vercel, and StyleX. It features dynamic Open Graph image generation and MDX support for blog posts with rss/atom feeds. This site is inspired from [Leerob](https://leerob.com/) and [Guillermo Rauch](https://rauchg.com//).
 
 #### Features
 
@@ -45,6 +45,7 @@ To set up the project locally, follow these steps:
    - **`/app/config.ts`**: Modify the metadata such as `baseUrl`, `title`, `description`, and social links
    - **`/app/writings/*`**: Update the content of your blog posts or pages as needed
    - **`/app/page.tsx`**: Make changes to the main page content to reflect your personal information and projects
+   - **`/app/styles/`**: Tokens, themes, and StyleX styles live here. `stylex.css` is only the compiler hook (`@stylex`).
    - Remove `@vercel/analytics/react` and `@vercel/speed-insights/next` from `app/layout.tsx` if you don't need analytics or speed insights from vercel
    - Change the Google Analytics ID in `app/layout.tsx` to your own
    - Change the birthday in `app/components/age-counter.tsx` to your birthday

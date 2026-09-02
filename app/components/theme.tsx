@@ -4,8 +4,9 @@ import type { PropsWithChildren } from "react"
 import { useCallback, useEffect, useState } from "react"
 import { Monitor, Moon, Sun } from "lucide-react"
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
+import * as stylex from "@stylexjs/stylex"
 
-import { cn } from "@/app/lib/utils"
+import { styles } from "@/app/styles/ui"
 
 export function ThemeProvider({ children }: PropsWithChildren) {
   return (
@@ -19,14 +20,6 @@ export function ThemeProvider({ children }: PropsWithChildren) {
     </NextThemesProvider>
   )
 }
-
-const buttonClass = cn(
-  "theme-toggle-btn",
-  "relative inline-flex size-9 shrink-0 items-center justify-center rounded-full",
-  "fixed-safe-bottom-right text-[var(--color-text)]",
-  "outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-page)]",
-  "disabled:pointer-events-none disabled:opacity-50",
-)
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -45,12 +38,12 @@ export function ThemeToggle() {
     return (
       <button
         type="button"
-        className={buttonClass}
+        {...stylex.props(styles.themeToggle)}
         disabled
         aria-label="Toggle theme"
       >
-        <Sun className="size-4" aria-hidden />
-        <span className="sr-only">Toggle theme</span>
+        <Sun {...stylex.props(styles.themeIcon)} aria-hidden />
+        <span {...stylex.props(styles.srOnly)}>Toggle theme</span>
       </button>
     )
   }
@@ -60,32 +53,32 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      className={buttonClass}
+      {...stylex.props(styles.themeToggle)}
       onClick={handleToggle}
       aria-label="Toggle theme"
     >
       <Sun
-        className={cn(
-          "absolute size-4 transition-all",
-          current === "light" ? "scale-100 rotate-0" : "scale-0 rotate-90",
+        {...stylex.props(
+          styles.themeIcon,
+          current === "light" ? styles.themeIconOn : styles.themeIconOff,
         )}
         aria-hidden
       />
       <Moon
-        className={cn(
-          "absolute size-4 transition-all",
-          current === "dark" ? "scale-100 rotate-0" : "scale-0 rotate-90",
+        {...stylex.props(
+          styles.themeIcon,
+          current === "dark" ? styles.themeIconOn : styles.themeIconOff,
         )}
         aria-hidden
       />
       <Monitor
-        className={cn(
-          "absolute size-4 transition-all",
-          current === "system" ? "scale-100 rotate-0" : "scale-0 rotate-90",
+        {...stylex.props(
+          styles.themeIcon,
+          current === "system" ? styles.themeIconOn : styles.themeIconOff,
         )}
         aria-hidden
       />
-      <span className="sr-only">Toggle theme</span>
+      <span {...stylex.props(styles.srOnly)}>Toggle theme</span>
     </button>
   )
 }

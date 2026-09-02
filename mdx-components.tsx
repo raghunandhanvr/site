@@ -1,14 +1,11 @@
 import React, { ComponentPropsWithoutRef, Suspense } from "react"
 import Link from "next/link"
 import { highlight } from "sugar-high"
+import * as stylex from "@stylexjs/stylex"
+
 import { LinkPreviewServer } from "@/app/components/link-preview"
 import { mdxHeadingSlug } from "@/app/lib/heading-slug"
-import { cn } from "@/app/lib/utils"
-
-const linkClassName = cn(
-  "font-medium underline underline-offset-4 decoration-[color-mix(in_srgb,var(--color-text-soft)_55%,transparent)]",
-  "text-[var(--color-text)] transition-colors hover:opacity-90",
-)
+import { styles } from "@/app/styles/ui"
 
 type HeadingProps = ComponentPropsWithoutRef<"h1">
 type ParagraphProps = ComponentPropsWithoutRef<"p">
@@ -20,82 +17,45 @@ type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">
 const components = {
   h1: (props: HeadingProps) => {
     const id = props.id || mdxHeadingSlug(props.children)
-    return (
-      <h1
-        id={id}
-        className="mt-2 scroll-m-28 font-sans text-3xl font-medium tracking-tight text-[var(--color-text)]"
-        {...props}
-      />
-    )
+    return <h1 {...props} {...stylex.props(styles.mdxH1)} id={id} />
   },
   h2: (props: HeadingProps) => {
     const id = props.id || mdxHeadingSlug(props.children)
-    return (
-      <h2
-        id={id}
-        className="mt-16 scroll-m-28 font-sans text-xl font-medium tracking-tight text-[var(--color-text)] first:mt-0 lg:mt-8 [&+p]:!mt-4"
-        {...props}
-      />
-    )
+    return <h2 {...props} {...stylex.props(styles.mdxH2)} id={id} />
   },
   h3: (props: HeadingProps) => {
     const id = props.id || mdxHeadingSlug(props.children)
-    return (
-      <h3
-        id={id}
-        className="mt-12 scroll-m-28 font-sans text-lg font-medium tracking-tight text-[var(--color-text)]"
-        {...props}
-      />
-    )
+    return <h3 {...props} {...stylex.props(styles.mdxH3)} id={id} />
   },
   h4: (props: HeadingProps) => {
     const id = props.id || mdxHeadingSlug(props.children)
-    return (
-      <h4
-        id={id}
-        className="mt-8 scroll-m-28 font-sans text-base font-medium tracking-tight text-[var(--color-text)]"
-        {...props}
-      />
-    )
+    return <h4 {...props} {...stylex.props(styles.mdxH4)} id={id} />
   },
   p: (props: ParagraphProps) => (
-    <p
-      className="text-lg leading-relaxed text-[var(--color-text)] [&:not(:first-child)]:mt-2"
-      {...props}
-    />
+    <p {...props} {...stylex.props(styles.mdxP)} />
   ),
-  ol: (props: ListProps) => (
-    <ol
-      className="mb-2 ml-6 mt-0 list-decimal text-lg text-[var(--color-text)]"
-      {...props}
-    />
-  ),
-  ul: (props: ListProps) => (
-    <ul
-      className="mb-2 ml-6 mt-0 list-disc text-lg text-[var(--color-text)]"
-      {...props}
-    />
-  ),
+  ol: (props: ListProps) => <ol {...props} {...stylex.props(styles.mdxOl)} />,
+  ul: (props: ListProps) => <ul {...props} {...stylex.props(styles.mdxUl)} />,
   li: (props: ListItemProps) => (
-    <li className="mt-2 pl-2 text-lg text-[var(--color-text)]" {...props} />
+    <li {...props} {...stylex.props(styles.mdxLi)} />
   ),
   em: (props: ComponentPropsWithoutRef<"em">) => (
-    <em className="font-medium italic" {...props} />
+    <em {...props} {...stylex.props(styles.mdxEm)} />
   ),
   strong: (props: ComponentPropsWithoutRef<"strong">) => (
-    <strong className="font-medium" {...props} />
+    <strong {...props} {...stylex.props(styles.mdxStrong)} />
   ),
   a: ({ href, children, ...props }: AnchorProps) => {
     if (href?.startsWith("/")) {
       return (
-        <Link href={href} className={linkClassName} {...props}>
+        <Link href={href} {...props} {...stylex.props(styles.mdxLink)}>
           {children}
         </Link>
       )
     }
     if (href?.startsWith("#")) {
       return (
-        <a href={href} className={linkClassName} {...props}>
+        <a href={href} {...props} {...stylex.props(styles.mdxLink)}>
           {children}
         </a>
       )
@@ -108,44 +68,81 @@ const components = {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className={linkClassName}
               {...props}
+              {...stylex.props(styles.mdxLink)}
             >
               {children}
             </a>
           }
         >
-          <LinkPreviewServer href={href} className={linkClassName}>
+          <LinkPreviewServer href={href} style={styles.mdxLink}>
             {children}
           </LinkPreviewServer>
         </Suspense>
       )
     }
     return (
-      <a href={href} className={linkClassName} {...props}>
+      <a href={href} {...props} {...stylex.props(styles.mdxLink)}>
         {children}
       </a>
     )
   },
-  code: ({ children, ...props }: ComponentPropsWithoutRef<"code">) => {
+  pre: (props: ComponentPropsWithoutRef<"pre">) => (
+    <pre
+      {...props}
+      {...stylex.props(stylex.defaultMarker(), styles.box, styles.mdxPre)}
+    />
+  ),
+  code: ({
+    children,
+    className,
+    ...props
+  }: ComponentPropsWithoutRef<"code">) => {
     const codeHTML = highlight(children as string)
+    const isBlock =
+      Boolean(className) ||
+      (typeof children === "string" && children.includes("\n"))
+    const sx = stylex.props(isBlock ? styles.mdxCodeInPre : styles.mdxCode)
     return (
       <code
-        dangerouslySetInnerHTML={{ __html: codeHTML }}
-        className="text-[0.9em] [pre_&]:text-[0.8rem]"
         {...props}
+        className={[sx.className, className].filter(Boolean).join(" ")}
+        style={sx.style}
+        dangerouslySetInnerHTML={{ __html: codeHTML }}
       />
     )
   },
+  hr: (props: ComponentPropsWithoutRef<"hr">) => (
+    <hr {...props} {...stylex.props(styles.mdxHr)} />
+  ),
+  table: (props: ComponentPropsWithoutRef<"table">) => (
+    <div {...stylex.props(styles.box, styles.mdxTableWrap)}>
+      <table {...props} {...stylex.props(styles.mdxTable)} />
+    </div>
+  ),
+  th: ({
+    children,
+    ...props
+  }: ComponentPropsWithoutRef<"th"> & { index?: number }) => (
+    <th {...props} {...stylex.props(styles.mdxTh)} >
+      {children}
+    </th>
+  ),
+  td: (props: ComponentPropsWithoutRef<"td">) => (
+    <td {...props} {...stylex.props(styles.mdxTd)} />
+  ),
   Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
-    <div className="my-6 w-full overflow-x-auto">
-      <table className="writings-table relative w-full text-sm text-[var(--color-text)]">
+    <div {...stylex.props(styles.box, styles.mdxTableWrap)}>
+      <table {...stylex.props(styles.mdxTable)}>
         <thead>
           <tr>
             {data.headers.map((header, index) => (
               <th
                 key={index}
-                className={index > 0 ? "text-right" : undefined}
+                {...stylex.props(
+                  styles.mdxTh,
+                  index > 0 && styles.mdxCellEnd,
+                )}
               >
                 {header}
               </th>
@@ -154,11 +151,15 @@ const components = {
         </thead>
         <tbody>
           {data.rows.map((row, index) => (
-            <tr key={index} className="m-0 border-b border-[var(--color-border)]">
+            <tr key={index}>
               {row.map((cell, cellIndex) => (
                 <td
                   key={cellIndex}
-                  className={cellIndex > 0 ? "text-right" : undefined}
+                  {...stylex.props(
+                    styles.mdxTd,
+                    index === data.rows.length - 1 && styles.mdxTdLast,
+                    cellIndex > 0 && styles.mdxCellEnd,
+                  )}
                 >
                   {cell}
                 </td>
@@ -170,10 +171,7 @@ const components = {
     </div>
   ),
   blockquote: (props: BlockquoteProps) => (
-    <blockquote
-      className="mt-6 border-l-2 border-[var(--color-border-strong)] pl-6 text-lg italic text-[var(--color-text-muted)]"
-      {...props}
-    />
+    <blockquote {...props} {...stylex.props(styles.mdxQuote)} />
   ),
 }
 
