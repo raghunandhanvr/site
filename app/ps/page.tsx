@@ -5,7 +5,7 @@ import Link from "next/link"
 import { withSiteTitle } from "@/app/config"
 
 export const metadata: Metadata = {
-  title: withSiteTitle("Problems"),
+  title: withSiteTitle("List of problem statements"),
   robots: { index: false, follow: false },
 }
 
@@ -22,6 +22,9 @@ export default async function ProblemsPage() {
 
   return (
     <main className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col px-6 pt-12 sm:px-10 sm:pt-32 lg:px-12">
+      <h1 className="mb-8 text-lg font-medium leading-[1.3] sm:mb-6 sm:text-xl">
+        List of problem statements
+      </h1>
       <ol className="list-decimal space-y-1 pl-5 marker:text-[var(--color-text)]">
         {problems.map((problem) => (
           <li key={problem.href} className="pl-1 text-base leading-normal">

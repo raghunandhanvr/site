@@ -19,11 +19,14 @@ export default async function SecuringMicroserviceCommunicationPage() {
       <div className="w-full max-w-2xl">
         <Link
           href="/ps"
-          className="writings-back-link group mb-8 inline-flex w-fit items-center gap-2 text-[var(--color-text-soft)] no-underline transition-colors hover:text-[var(--color-text)]"
+          className="writings-back-link group mb-4 inline-flex w-fit items-center gap-2 text-[var(--color-text-soft)] no-underline transition-colors hover:text-[var(--color-text)]"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           <span>Back</span>
         </Link>
+        <h1 className="mb-6 text-lg font-medium leading-[1.3] sm:text-xl">
+          Securing microservice communication
+        </h1>
 
         <div className="space-y-4 text-base leading-relaxed text-[var(--color-text)]">
           <p>
